@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>航運監控終端 - 大叔版</title>
+    <title>航運戰情室 - 嵌入優化版</title>
     <style>
         :root {
-            --bg-overlay: rgba(18, 18, 18, 0.75); /* 背景遮罩，讓文字更清晰 */
+            --bg-overlay: rgba(18, 18, 18, 0.75);
             --nav-bg: rgba(30, 30, 30, 0.9);
             --btn: rgba(51, 51, 51, 0.8);
             --text: #eee;
             --active: #00b894;
+            --external: #e67e22;
         }
 
         body, html { 
@@ -19,7 +20,7 @@
             font-family: "Microsoft JhengHei", sans-serif; 
             overflow: hidden; 
             color: var(--text);
-            /* 設定背景圖 */
+            /* 設定背景圖為 shipping-bg.webp */
             background: url('shipping-bg.webp') no-repeat center center fixed;
             background-size: cover;
         }
@@ -28,49 +29,44 @@
             display: flex; 
             flex-direction: column; 
             height: 100vh; 
-            background: var(--bg-overlay); /* 疊加一層半透明黑色，提升質感 */
-            backdrop-filter: blur(3px); /* 輕微毛玻璃效果 */
+            background: var(--bg-overlay);
+            backdrop-filter: blur(3px);
         }
         
-        /* 選單樣式 */
         #nav { 
-            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px;
-            flex-grow: 1; padding: 20px; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 10px;
+            flex-grow: 1; padding: 20px; transition: 0.5s ease;
         }
         
         #container.active #nav { 
             flex-grow: 0; 
             justify-content: flex-start; 
-            padding: 10px; 
+            padding: 8px 15px; 
             background: var(--nav-bg);
             backdrop-filter: none;
         }
 
         .btn { 
-            padding: 15px 25px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
-            background: var(--btn); color: white; font-weight: bold; font-size: 1.1rem; 
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
+            padding: 12px 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+            background: var(--btn); color: white; font-weight: bold; font-size: 1rem; 
+            transition: all 0.2s;
         }
         
-        #container.active .btn { padding: 6px 12px; font-size: 0.85rem; border-radius: 4px; }
+        #container.active .btn { padding: 5px 12px; font-size: 0.85rem; }
         
-        .btn:hover { background: rgba(80, 80, 80, 0.9); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .btn:hover { background: rgba(80, 80, 80, 0.9); transform: translateY(-2px); }
         .btn.selected { background: var(--active); border-color: #fff; }
         
+        .btn.ext { border-left: 4px solid var(--external); }
+
         .home-btn { background: #d35400 !important; display: none; }
         #container.active .home-btn { display: inline-block; }
 
-        /* 顯示區 */
         #content { flex-grow: 1; display: none; background: white; }
         #container.active #content { display: block; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        #welcome-text {
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
-            margin-bottom: 20px;
-            text-align: center;
-        }
+        #welcome-text { text-shadow: 2px 2px 10px rgba(0,0,0,0.8); text-align: center; margin-bottom: 20px; }
         #container.active #welcome-text { display: none; }
     </style>
 </head>
@@ -79,8 +75,8 @@
 <div id="container">
     <div id="nav">
         <div id="welcome-text" style="width: 100%;">
-            <h1 style="font-size: 3rem; margin: 0;">航運戰情室</h1>
-            <p style="font-size: 1.2rem; opacity: 0.8;">選擇行情項目，開始衝刺</p>
+            <h1 style="font-size: 2.5rem; margin: 0;">航運戰情室</h1>
+            <p style="font-size: 1.1rem; opacity: 0.8;">監控即時行情，衝刺獲利</p>
         </div>
 
         <button class="btn home-btn" onclick="goHome()">🏠 回首頁</button>
@@ -89,7 +85,13 @@
         <button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecs.html')">歐線次主連</button>
         <button class="btn" onclick="loadPage(this, 'https://www.stockq.org/market/baltic_index.php')">BDI 指數</button>
         <button class="btn" onclick="loadPage(this, 'https://www.stockq.org/index/SCFI.php')">SCFI 指數</button>
-        <button class="btn" onclick="loadPage(this, 'https://www.marinetraffic.com/en/ais/home/centerx:55.9/centery:27.3/zoom:7')">荷姆茲海峽</button>
+        <button class="btn" onclick="loadPage(this, 'https://www.braemarscreen.com/')">Braemar</button>
+        
+        <button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/usfinance/nq')">美股期貨</button>
+        <button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/futures/TXF1?s=p')">台指夜盤</button>
+
+        <button class="btn ext" onclick="window.open('https://www.marinetraffic.com/en/ais/home/centerx:56.4/centery:26.1/zoom:9', '_blank')">荷姆茲海峽 ↗</button>
+        <button class="btn ext" onclick="window.open('https://tw.tradingview.com/symbols/UKOIL/', '_blank')">布蘭特原油 ↗</button>
 
         <div id="custom-list" style="display:contents"></div>
         <button class="btn" style="background:#6c5ce7" onclick="addBtn()">➕ 新增自訂</button>
@@ -118,12 +120,12 @@
     }
 
     function addBtn() {
-        const name = prompt("請輸入按鈕名稱：");
-        const url = prompt("請輸入網址：", "https://");
+        const name = prompt("名稱：");
+        const url = prompt("網址：", "https://");
         if(!name || !url) return;
-        const isExternal = confirm("是否需要「開新分頁」開啟？(例如 TradingView)");
+        const isExt = confirm("是否設定為「另開新視窗」？\n(若網頁出現拒絕連線，請選是)");
         const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
-        btns.push({name, url, isExternal});
+        btns.push({name, url, isExt});
         localStorage.setItem('user_btns', JSON.stringify(btns));
         render();
     }
@@ -134,9 +136,9 @@
         const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
         btns.forEach((b, i) => {
             const btn = document.createElement('button');
-            btn.className = 'btn';
-            btn.innerText = b.name + (b.isExternal ? " ↗" : "");
-            btn.onclick = () => b.isExternal ? window.open(b.url, '_blank') : loadPage(btn, b.url);
+            btn.className = 'btn' + (b.isExt ? ' ext' : '');
+            btn.innerText = b.name + (b.isExt ? " ↗" : "");
+            btn.onclick = () => b.isExt ? window.open(b.url, '_blank') : loadPage(btn, b.url);
             btn.oncontextmenu = (e) => {
                 e.preventDefault();
                 if(confirm(`刪除「${b.name}」？`)) {
@@ -150,6 +152,5 @@
     }
     render();
 </script>
-
 </body>
 </html>
