@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>航運監控終端 - 大叔版</title>
+    <style>
+        :root {
+            --bg-overlay: rgba(18, 18, 18, 0.75); /* 背景遮罩，讓文字更清晰 */
+            --nav-bg: rgba(30, 30, 30, 0.9);
+            --btn: rgba(51, 51, 51, 0.8);
+            --text: #eee;
+            --active: #00b894;
+        }
+
+        body, html { 
+            margin: 0; 
+            height: 100%; 
+            font-family: "Microsoft JhengHei", sans-serif; 
+            overflow: hidden; 
+            color: var(--text);
+            /* 設定背景圖 */
+            background: url('shipping-bg.webp') no-repeat center center fixed;
+            background-size: cover;
+        }
+        
+        #container { 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            background: var(--bg-overlay); /* 疊加一層半透明黑色，提升質感 */
+            backdrop-filter: blur(3px); /* 輕微毛玻璃效果 */
+        }
+        
+        /* 選單樣式 */
+        #nav { 
+            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px;
+            flex-grow: 1; padding: 20px; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #container.active #nav { 
+            flex-grow: 0; 
+            justify-content: flex-start; 
+            padding: 10px; 
+            background: var(--nav-bg);
+            backdrop-filter: none;
+        }
+
+        .btn { 
+            padding: 15px 25px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+            background: var(--btn); color: white; font-weight: bold; font-size: 1.1rem; 
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        
+        #container.active .btn { padding: 6px 12px; font-size: 0.85rem; border-radius: 4px; }
+        
+        .btn:hover { background: rgba(80, 80, 80, 0.9); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .btn.selected { background: var(--active); border-color: #fff; }
+        
+        .home-btn { background: #d35400 !important; display: none; }
+        #container.active .home-btn { display: inline-block; }
+
+        /* 顯示區 */
+        #content { flex-grow: 1; display: none; background: white; }
+        #container.active #content { display: block; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        #welcome-text {
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #container.active #welcome-text { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="nav">
+        <div id="welcome-text" style="width: 100%;">
+            <h1 style="font-size: 3rem; margin: 0;">航運戰情室</h1>
+            <p style="font-size: 1.2rem; opacity: 0.8;">選擇行情項目，開始衝刺</p>
+        </div>
+
+        <button class="btn home-btn" onclick="goHome()">🏠 回首頁</button>
+        
+        <button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true')">歐線主連</button>
+        <button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecs.html')">歐線次主連</button>
+        <button class="btn" onclick="loadPage(this, 'https://www.stockq.org/market/baltic_index.php')">BDI 指數</button>
+        <button class="btn" onclick="loadPage(this, 'https://www.stockq.org/index/SCFI.php')">SCFI 指數</button>
+        <button class="btn" onclick="loadPage(this, 'https://www.marinetraffic.com/en/ais/home/centerx:55.9/centery:27.3/zoom:7')">荷姆茲海峽</button>
+
+        <div id="custom-list" style="display:contents"></div>
+        <button class="btn" style="background:#6c5ce7" onclick="addBtn()">➕ 新增自訂</button>
+    </div>
+
+    <div id="content">
+        <iframe id="ifr"></iframe>
+    </div>
+</div>
+
+<script>
+    const container = document.getElementById('container');
+    const ifr = document.getElementById('ifr');
+
+    function loadPage(btn, url) {
+        container.classList.add('active');
+        ifr.src = url;
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    function goHome() {
+        container.classList.remove('active');
+        ifr.src = "";
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
+    }
+
+    function addBtn() {
+        const name = prompt("請輸入按鈕名稱：");
+        const url = prompt("請輸入網址：", "https://");
+        if(!name || !url) return;
+        const isExternal = confirm("是否需要「開新分頁」開啟？(例如 TradingView)");
+        const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
+        btns.push({name, url, isExternal});
+        localStorage.setItem('user_btns', JSON.stringify(btns));
+        render();
+    }
+
+    function render() {
+        const list = document.getElementById('custom-list');
+        list.innerHTML = '';
+        const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
+        btns.forEach((b, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.innerText = b.name + (b.isExternal ? " ↗" : "");
+            btn.onclick = () => b.isExternal ? window.open(b.url, '_blank') : loadPage(btn, b.url);
+            btn.oncontextmenu = (e) => {
+                e.preventDefault();
+                if(confirm(`刪除「${b.name}」？`)) {
+                    btns.splice(i, 1);
+                    localStorage.setItem('user_btns', JSON.stringify(btns));
+                    render();
+                }
+            };
+            list.appendChild(btn);
+        });
+    }
+    render();
+</script>
+
+</body>
+</html>
