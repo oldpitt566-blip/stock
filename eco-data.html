@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>美國經濟數據公布時間</title>
+    <style>
+        body { 
+            background: #1e1e1e; 
+            color: #eee; 
+            font-family: "Microsoft JhengHei", sans-serif; 
+            padding: 30px; 
+            margin: 0;
+        }
+        h2 { color: #00b894; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .action-bar { margin: 20px 0; }
+        .btn-ext {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-ext:hover { background: #d35400; transform: translateY(-2px); }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+            background: #252525;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        th, td { 
+            padding: 15px; 
+            text-align: left; 
+            border-bottom: 1px solid #333;
+        }
+        th { 
+            background: #333; 
+            color: #fab1a0; 
+            font-weight: bold;
+        }
+        tr:hover { background: #2d2d2d; }
+        .lvl-high { color: #ff7675; font-weight: bold; }
+        .lvl-highest { color: #d63031; font-weight: bold; text-shadow: 0 0 5px rgba(214, 48, 49, 0.3); }
+    </style>
+</head>
+<body>
+    <h2>🇺🇸 美國重要經濟數據公布時間表</h2>
+    
+    <div class="action-bar">
+        <a href="https://www.macromicro.me/macro/us" target="_blank" class="btn-ext">📊 查看詳細總經數據 (MacroMicro) ↗</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>數據類型</th>
+                <th>重要程度</th>
+                <th>通常公布時間 (台灣時間)</th>
+                <th>對盤勢影響</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CPI (消費者物價指數)</td>
+                <td class="lvl-high">極高</td>
+                <td>每月中旬週二或週三 20:30/21:30</td>
+                <td>影響通膨預期與利率</td>
+            </tr>
+            <tr>
+                <td>非農就業數據 (NFP)</td>
+                <td class="lvl-high">極高</td>
+                <td>每月第一個週五 20:30/21:30</td>
+                <td>決定美股當晚大方向</td>
+            </tr>
+            <tr>
+                <td>Fed 利率決策 (FOMC)</td>
+                <td class="lvl-highest">最高</td>
+                <td>週四凌晨 02:00 (每碼 1.5 個月一次)</td>
+                <td>全球市場轉折點</td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="margin-top: 20px; opacity: 0.6; font-size: 0.9rem;">註：20:30 為夏令時間，21:30 為冬令時間。</p>
+</body>
+</html>

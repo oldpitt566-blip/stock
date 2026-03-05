@@ -89,9 +89,14 @@
         
         <button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/usfinance/nq')">美股期貨</button>
         <button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/futures/TXF1?s=p')">台指夜盤</button>
+        <button class="btn" onclick="loadPage(this, 'https://www.trendforce.com.tw/price/dram/dram_spot')">記憶體報價</button>
+        <button class="btn" onclick="loadPage(this, 'eco-data.html')">美國經濟數據</button>
+        <button class="btn ext" onclick="openExtPage('https://tw.tradingview.com/markets/stocks-usa/market-movers-large-cap/')">美股指標股 ↗</button>
+        <button class="btn ext" onclick="openExtPage('https://tw.tradingview.com/markets/stocks-taiwan/market-movers-large-cap/')">台灣指標股 ↗</button>
+        <button class="btn ext" onclick="openExtPage('https://index.ndc.gov.tw/n/zh_tw')">台股燈號 ↗</button>
 
-        <button class="btn ext" onclick="window.open('https://www.marinetraffic.com/en/ais/home/centerx:56.4/centery:26.1/zoom:9', '_blank')">荷姆茲海峽 ↗</button>
-        <button class="btn ext" onclick="window.open('https://tw.tradingview.com/symbols/UKOIL/', '_blank')">布蘭特原油 ↗</button>
+        <button class="btn ext" onclick="openExtPage('https://www.marinetraffic.com/en/ais/home/centerx:56.4/centery:26.1/zoom:9')">荷姆茲海峽 ↗</button>
+        <button class="btn ext" onclick="openExtPage('https://tw.tradingview.com/symbols/UKOIL/')">布蘭特原油 ↗</button>
 
         <div id="custom-list" style="display:contents"></div>
         <button class="btn" style="background:#6c5ce7" onclick="addBtn()">➕ 新增自訂</button>
@@ -110,13 +115,39 @@
         container.classList.add('active');
         ifr.src = url;
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
+        if(btn) btn.classList.add('selected');
     }
+
+    let activeExtWin = null;
+
+    function openExtPage(url) {
+        activeExtWin = window.open(url, '_blank');
+        
+        // 定時器備援 (電腦版較穩定)
+        const timer = setInterval(() => {
+            if (activeExtWin && activeExtWin.closed) {
+                clearInterval(timer);
+                activeExtWin = null;
+                goHome();
+            }
+        }, 1000);
+    }
+
+    // 手機版優化：當使用者切換回本分頁時，立刻檢查外部分頁是否已關閉
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && activeExtWin) {
+            if (activeExtWin.closed) {
+                activeExtWin = null;
+                goHome();
+            }
+        }
+    });
 
     function goHome() {
         container.classList.remove('active');
         ifr.src = "";
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
+        activeExtWin = null;
     }
 
     function addBtn() {
@@ -138,7 +169,7 @@
             const btn = document.createElement('button');
             btn.className = 'btn' + (b.isExt ? ' ext' : '');
             btn.innerText = b.name + (b.isExt ? " ↗" : "");
-            btn.onclick = () => b.isExt ? window.open(b.url, '_blank') : loadPage(btn, b.url);
+            btn.onclick = () => b.isExt ? openExtPage(b.url) : loadPage(btn, b.url);
             btn.oncontextmenu = (e) => {
                 e.preventDefault();
                 if(confirm(`刪除「${b.name}」？`)) {
