@@ -169,7 +169,7 @@
             <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.stockq.org/index/SCFI.php"><button class="btn" onclick="loadPage(this, 'https://www.stockq.org/index/SCFI.php')">SCFI 指數</button></div>
             <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.braemarscreen.com/"><button class="btn" onclick="loadPage(this, 'https://www.braemarscreen.com/')">Braemar</button></div>
             <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/usfinance/nq"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/usfinance/nq')">美股期貨</button></div>
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/forum/futures/TXF1?s=p"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/futures/TXF1?s=p')">台指夜盤</button></div>
+            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/forum/stock"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/stock')">台灣股市</button></div>
             <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.trendforce.com.tw/price/dram/dram_spot"><button class="btn" onclick="loadPage(this, 'https://www.trendforce.com.tw/price/dram/dram_spot')">記憶體報價</button></div>
             <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="eco-data.html"><button class="btn" onclick="loadPage(this, 'eco-data.html')">美國經濟數據</button></div>
             <div id="custom-list" style="display:contents"></div>
@@ -194,17 +194,48 @@
     const container = document.getElementById('container');
     const ifr = document.getElementById('ifr');
 
+    let refreshConfigs = []; // 儲存每個視窗的重整設定: {ifr, btn, interval, timer}
+
+    function clearAllTimers() {
+        refreshConfigs.forEach(conf => {
+            if (conf.timer) clearInterval(conf.timer);
+        });
+        refreshConfigs = [];
+    }
+
+    // 資源優化：背景自動暫停與恢復
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            // 頁面不可見時，暫停所有定時器以節省 CPU 和 網路
+            refreshConfigs.forEach(conf => {
+                if (conf.timer) {
+                    clearInterval(conf.timer);
+                    conf.timer = null;
+                }
+            });
+            console.log('偵測到背景運行：暫停所有重整以節省資源');
+        } else {
+            // 頁面恢復可見，立即執行一次重整並恢復定時器
+            refreshConfigs.forEach(conf => {
+                if (conf.interval > 0) {
+                    conf.ifr.src = conf.ifr.src; // 補抓最新行情
+                    conf.timer = setInterval(() => {
+                        conf.ifr.src = conf.ifr.src;
+                    }, conf.interval);
+                }
+            });
+            console.log('頁面恢復：重新啟動重整');
+        }
+    });
+
     function loadPage(btn, url) {
         container.classList.add('active');
         const content = document.getElementById('content');
         content.classList.remove('split-grid');
-        content.innerHTML = ''; // 清空內容
+        content.innerHTML = ''; 
         
-        // 清除舊的自動重整定時器
-        autoRefreshTimers.forEach(t => clearInterval(t));
-        autoRefreshTimers = [];
+        clearAllTimers();
 
-        // 建立與分割畫面一致的控制結構
         const wrapper = document.createElement('div');
         wrapper.className = 'split-item';
         
@@ -212,45 +243,64 @@
         controls.className = 'split-controls';
         
         const refBtn = document.createElement('button');
-        refBtn.className = 'ctrl-btn';
-        refBtn.innerHTML = '🔄';
+        refBtn.className = 'ctrl-btn'; refBtn.innerHTML = '🔄';
         
         const autoBtn = document.createElement('button');
-        autoBtn.className = 'ctrl-btn';
-        autoBtn.innerHTML = '🕒';
+        autoBtn.className = 'ctrl-btn'; autoBtn.innerHTML = '🕒';
         
         const zinBtn = document.createElement('button');
-        zinBtn.className = 'ctrl-btn';
-        zinBtn.innerHTML = '➕';
+        zinBtn.className = 'ctrl-btn'; zinBtn.innerHTML = '➕';
         
         const zoutBtn = document.createElement('button');
-        zoutBtn.className = 'ctrl-btn';
-        zoutBtn.innerHTML = '➖';
+        zoutBtn.className = 'ctrl-btn'; zoutBtn.innerHTML = '➖';
         
         const zInfo = document.createElement('span');
-        zInfo.className = 'zoom-info';
-        zInfo.innerText = '100%';
+        zInfo.className = 'zoom-info'; zInfo.innerText = '100%';
         
         const ifr = document.createElement('iframe');
-        ifr.id = 'ifr';
-        ifr.src = url;
+        ifr.id = 'ifr'; ifr.src = url;
         
-        // 自動重整邏輯
-        let refreshInterval = 0;
-        let refreshTimer = null;
+        // 建立設定檔
+        const myConf = { ifr, btn: autoBtn, interval: 0, timer: null };
+        refreshConfigs.push(myConf);
+
         const intervals = [0, 3000, 5000, 10000];
         const labels = ['🕒', '🕒 3s', '🕒 5s', '🕒 10s'];
-        let currentIdx = 0;
+        let idx = 0;
 
         autoBtn.onclick = () => {
-            currentIdx = (currentIdx + 1) % intervals.length;
-            refreshInterval = intervals[currentIdx];
-            autoBtn.innerHTML = labels[currentIdx];
-            if (refreshTimer) clearInterval(refreshTimer);
-            if (refreshInterval > 0) {
+            idx = (idx + 1) % intervals.length;
+            myConf.interval = intervals[idx];
+            autoBtn.innerHTML = labels[idx];
+            
+            if (myConf.timer) {
+                clearInterval(myConf.timer);
+                myConf.timer = null;
+            }
+
+            if (myConf.interval > 0) {
                 autoBtn.style.background = '#e84393';
-                refreshTimer = setInterval(() => { ifr.src = ifr.src; }, refreshInterval);
-                autoRefreshTimers.push(refreshTimer);
+                myConf.timer = setInterval(() => {
+                    // 嘗試記錄位置 (僅對同源網頁有效)
+                    let scrollX = 0, scrollY = 0;
+                    try {
+                        scrollX = ifr.contentWindow.scrollX;
+                        scrollY = ifr.contentWindow.scrollY;
+                    } catch(e) { /* 跨網域網頁會報錯，忽略即可 */ }
+
+                    // 執行重整
+                    ifr.src = ifr.src;
+
+                    // 網頁載入後嘗試恢復位置
+                    const recoverScroll = () => {
+                        try {
+                            ifr.contentWindow.scrollTo(scrollX, scrollY);
+                        } catch(e) {}
+                        ifr.removeEventListener('load', recoverScroll);
+                    };
+                    ifr.addEventListener('load', recoverScroll);
+
+                }, myConf.interval);
             } else {
                 autoBtn.style.background = '';
             }
@@ -276,7 +326,6 @@
         controls.appendChild(zinBtn);
         controls.appendChild(zoutBtn);
         controls.appendChild(zInfo);
-        
         wrapper.appendChild(controls);
         wrapper.appendChild(ifr);
         content.appendChild(wrapper);
@@ -295,15 +344,11 @@
         }
     }
 
-    let autoRefreshTimers = [];
-
     function startSplit() {
         const selected = Array.from(document.querySelectorAll('.split-chk:checked')).map(cb => cb.value);
         if (selected.length < 2) return alert("請至少勾選 2 個網頁進行分割");
         
-        // 清除舊的自動重整定時器
-        autoRefreshTimers.forEach(t => clearInterval(t));
-        autoRefreshTimers = [];
+        clearAllTimers();
 
         const content = document.getElementById('content');
         content.innerHTML = '';
@@ -313,7 +358,11 @@
         let cols = selected.length > 9 ? 4 : (selected.length > 4 ? 3 : 2);
         content.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
-        selected.forEach(url => {
+        // 資源優化：如果視窗太多，移除 3 秒模式，強制降低負擔
+        const intervals = selected.length > 4 ? [0, 5000, 10000, 20000] : [0, 3000, 5000, 10000];
+        const labels = selected.length > 4 ? ['🕒', '🕒 5s', '🕒 10s', '🕒 20s'] : ['🕒', '🕒 3s', '🕒 5s', '🕒 10s'];
+
+        selected.forEach((url, i) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'split-item';
             
@@ -321,55 +370,44 @@
             controls.className = 'split-controls';
             
             const refBtn = document.createElement('button');
-            refBtn.className = 'ctrl-btn';
-            refBtn.innerHTML = '🔄';
+            refBtn.className = 'ctrl-btn'; refBtn.innerHTML = '🔄';
             
             const autoBtn = document.createElement('button');
-            autoBtn.className = 'ctrl-btn';
-            autoBtn.innerHTML = '🕒';
-            autoBtn.title = '每3秒自動重整';
+            autoBtn.className = 'ctrl-btn'; autoBtn.innerHTML = '🕒';
             
             const zinBtn = document.createElement('button');
-            zinBtn.className = 'ctrl-btn';
-            zinBtn.innerHTML = '➕';
+            zinBtn.className = 'ctrl-btn'; zinBtn.innerHTML = '➕';
             
             const zoutBtn = document.createElement('button');
-            zoutBtn.className = 'ctrl-btn';
-            zoutBtn.innerHTML = '➖';
+            zoutBtn.className = 'ctrl-btn'; zoutBtn.innerHTML = '➖';
             
             const zInfo = document.createElement('span');
-            zInfo.className = 'zoom-info';
-            zInfo.innerText = '100%';
+            zInfo.className = 'zoom-info'; zInfo.innerText = '100%';
             
             const ifr = document.createElement('iframe');
             ifr.src = url;
             
-            // 自動重整邏輯 (改為循環切換: 關閉 -> 3s -> 5s -> 10s -> 關閉)
-            let refreshInterval = 0;
-            let refreshTimer = null;
-            
-            const intervals = [0, 3000, 5000, 10000];
-            const labels = ['🕒', '🕒 3s', '🕒 5s', '🕒 10s'];
-            let currentIdx = 0;
+            const myConf = { ifr, btn: autoBtn, interval: 0, timer: null };
+            refreshConfigs.push(myConf);
 
+            let idx = 0;
             autoBtn.onclick = () => {
-                currentIdx = (currentIdx + 1) % intervals.length;
-                refreshInterval = intervals[currentIdx];
-                autoBtn.innerHTML = labels[currentIdx];
+                idx = (idx + 1) % intervals.length;
+                myConf.interval = intervals[idx];
+                autoBtn.innerHTML = labels[idx];
                 
-                if (refreshTimer) {
-                    clearInterval(refreshTimer);
-                    refreshTimer = null;
-                }
-
-                if (refreshInterval > 0) {
-                    autoBtn.style.background = '#e84393'; // 啟動中
-                    refreshTimer = setInterval(() => {
-                        ifr.src = ifr.src;
-                    }, refreshInterval);
-                    autoRefreshTimers.push(refreshTimer);
+                if (myConf.timer) clearInterval(myConf.timer);
+                if (myConf.interval > 0) {
+                    autoBtn.style.background = '#e84393';
+                    // 加入微量延遲(i*200ms)，避免所有視窗在同一毫秒發出請求造成網路瞬間塞車
+                    setTimeout(() => {
+                        if (myConf.interval > 0) {
+                            myConf.timer = setInterval(() => { ifr.src = ifr.src; }, myConf.interval);
+                        }
+                    }, i * 200);
                 } else {
-                    autoBtn.style.background = ''; // 關閉
+                    autoBtn.style.background = '';
+                    myConf.timer = null;
                 }
             };
 
@@ -378,7 +416,6 @@
                 currentScale = Math.round((currentScale + delta) * 10) / 10;
                 if (currentScale < 0.3) currentScale = 0.3;
                 if (currentScale > 2.0) currentScale = 2.0;
-                
                 ifr.style.width = (100 / currentScale) + '%';
                 ifr.style.height = (100 / currentScale) + '%';
                 ifr.style.transform = `scale(${currentScale})`;
@@ -394,7 +431,6 @@
             controls.appendChild(zinBtn);
             controls.appendChild(zoutBtn);
             controls.appendChild(zInfo);
-            
             wrapper.appendChild(controls);
             wrapper.appendChild(ifr);
             content.appendChild(wrapper);
@@ -407,8 +443,6 @@
 
     function openExtPage(url) {
         activeExtWin = window.open(url, '_blank');
-        
-        // 定時器備援 (電腦版較穩定)
         const timer = setInterval(() => {
             if (activeExtWin && activeExtWin.closed) {
                 clearInterval(timer);
@@ -418,7 +452,6 @@
         }, 1000);
     }
 
-    // 手機版優化：當使用者切換回本分頁時，立刻檢查外部分頁是否已關閉
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible' && activeExtWin) {
             if (activeExtWin.closed) {
@@ -429,29 +462,17 @@
     });
 
     function goHome() {
-        // 1. 清除所有自動重整定時器
-        autoRefreshTimers.forEach(t => clearInterval(t));
-        autoRefreshTimers = [];
-
-        // 2. 移除容器 active 狀態 (內容區隱藏)
+        clearAllTimers(); // 清除所有定時器
         container.classList.remove('active');
-
-        // 3. 徹底清空內容區塊並重設樣式
         const content = document.getElementById('content');
         content.classList.remove('split-grid');
         content.innerHTML = ''; 
-
-        // 4. 強制關閉「分割配置模式」
         const nav = document.getElementById('nav');
         nav.classList.remove('show-chks');
         const applyBtn = document.getElementById('apply-split');
         if(applyBtn) applyBtn.style.display = 'none';
         document.querySelectorAll('.split-chk').forEach(c => c.checked = false);
-
-        // 5. 重置按鈕選取狀態
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
-        
-        // 6. 若有開啟中的外部視窗則關閉它 (選用，增加連動感)
         if (activeExtWin && !activeExtWin.closed) {
             activeExtWin.close();
         }
