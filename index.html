@@ -46,7 +46,46 @@
             backdrop-filter: none;
             flex-direction: column;
             align-items: flex-start;
+            transition: transform 0.3s ease, margin-top 0.3s ease;
         }
+
+        /* 選單隱藏樣式 */
+        #container.nav-hidden #nav {
+            transform: translateY(-100%);
+            margin-top: -50px; /* 留一點點邊緣或完全隱藏 */
+            position: absolute;
+            width: 100%;
+            z-index: 10000;
+        }
+        
+        #nav-toggle {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            z-index: 20000; /* 確保在最頂層 */
+            background: #6c5ce7;
+            color: white;
+            border: 2px solid white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none; /* 預設隱藏 */
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            transition: 0.3s;
+        }
+        
+        #nav-toggle:hover { background: #a29bfe; transform: scale(1.05); }
+
+        /* 當啟動網頁(active)時顯示此按鈕 */
+        #container.active ~ #nav-toggle, 
+        body > #nav-toggle { display: block; } 
+        
+        /* 由於按鈕在 body 下，我們直接控制它 */
+        #container:not(.active) ~ #nav-toggle { display: none; }
+
+        #container.nav-hidden #content { margin-top: 0; height: 100vh; }
 
         .nav-row {
             display: flex;
@@ -145,6 +184,8 @@
     </style>
 </head>
 <body>
+
+<button id="nav-toggle" onclick="toggleNav()">顯示選單 🔽</button>
 
 <div id="container">
     <div id="nav">
@@ -461,9 +502,17 @@
         }
     });
 
+    function toggleNav() {
+        container.classList.toggle('nav-hidden');
+        const isHidden = container.classList.contains('nav-hidden');
+        document.getElementById('nav-toggle').innerText = isHidden ? '顯示選單 🔽' : '收起選單 🔼';
+    }
+
     function goHome() {
         clearAllTimers(); // 清除所有定時器
         container.classList.remove('active');
+        container.classList.remove('nav-hidden'); // 回首頁時自動展開
+        document.getElementById('nav-toggle').innerText = '顯示選單 🔽';
         const content = document.getElementById('content');
         content.classList.remove('split-grid');
         content.innerHTML = ''; 
