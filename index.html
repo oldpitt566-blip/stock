@@ -435,21 +435,38 @@
             let idx = 0;
             autoBtn.onclick = () => {
                 idx = (idx + 1) % intervals.length;
-                myConf.interval = intervals[idx];
+                myConf.interval = intervals[idx]; // 立即更新狀態
                 autoBtn.innerHTML = labels[idx];
                 
-                if (myConf.timer) clearInterval(myConf.timer);
+                // 1. 立即且強制清除現有定時器
+                if (myConf.timer) {
+                    clearInterval(myConf.timer);
+                    myConf.timer = null;
+                }
+
+                // 2. 只有在 interval > 0 且確實有值時啟動
                 if (myConf.interval > 0) {
                     autoBtn.style.background = '#e84393';
-                    // 加入微量延遲(i*200ms)，避免所有視窗在同一毫秒發出請求造成網路瞬間塞車
-                    setTimeout(() => {
-                        if (myConf.interval > 0) {
-                            myConf.timer = setInterval(() => { ifr.src = ifr.src; }, myConf.interval);
-                        }
-                    }, i * 200);
+                    
+                    // 定義重整動作
+                    const doRefresh = () => {
+                        // 雙重檢查：如果定時器被清除了就不執行
+                        if (!myConf.interval) return; 
+                        
+                        let sx = 0, sy = 0;
+                        try { sx = ifr.contentWindow.scrollX; sy = ifr.contentWindow.scrollY; } catch(e) {}
+                        ifr.src = ifr.src;
+                        const rec = () => {
+                            try { ifr.contentWindow.scrollTo(sx, sy); } catch(e) {}
+                            ifr.removeEventListener('load', rec);
+                        };
+                        ifr.addEventListener('load', rec);
+                    };
+
+                    // 立即啟動定時器，不使用 setTimeout 以免造成追蹤失效
+                    myConf.timer = setInterval(doRefresh, myConf.interval);
                 } else {
                     autoBtn.style.background = '';
-                    myConf.timer = null;
                 }
             };
 
