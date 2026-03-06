@@ -61,22 +61,23 @@
         #nav-toggle {
             position: fixed;
             top: 10px;
-            right: 20px;
-            z-index: 20000; /* 確保在最頂層 */
-            background: #6c5ce7;
+            right: 15px;
+            z-index: 20000;
+            background: rgba(108, 92, 231, 0.85);
             color: white;
-            border: 2px solid white;
-            padding: 8px 16px;
-            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.5);
+            padding: 4px 10px;
+            border-radius: 4px;
             cursor: pointer;
-            display: none; /* 預設隱藏 */
-            font-size: 0.9rem;
+            display: none;
+            font-size: 0.75rem;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            transition: 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
         }
         
-        #nav-toggle:hover { background: #a29bfe; transform: scale(1.05); }
+        #nav-toggle:hover { background: #6c5ce7; }
 
         /* 當啟動網頁(active)時顯示此按鈕 */
         #container.active ~ #nav-toggle, 
@@ -185,7 +186,7 @@
 </head>
 <body>
 
-<button id="nav-toggle" onclick="toggleNav()">顯示選單 🔽</button>
+<button id="nav-toggle" onclick="toggleNav()">選單 🔽</button>
 
 <div id="container">
     <div id="nav">
@@ -505,14 +506,14 @@
     function toggleNav() {
         container.classList.toggle('nav-hidden');
         const isHidden = container.classList.contains('nav-hidden');
-        document.getElementById('nav-toggle').innerText = isHidden ? '顯示選單 🔽' : '收起選單 🔼';
+        document.getElementById('nav-toggle').innerText = isHidden ? '選單 🔽' : '選單 🔼';
     }
 
     function goHome() {
         clearAllTimers(); // 清除所有定時器
         container.classList.remove('active');
         container.classList.remove('nav-hidden'); // 回首頁時自動展開
-        document.getElementById('nav-toggle').innerText = '顯示選單 🔽';
+        document.getElementById('nav-toggle').innerText = '選單 🔽';
         const content = document.getElementById('content');
         content.classList.remove('split-grid');
         content.innerHTML = ''; 
