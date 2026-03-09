@@ -65,6 +65,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             backdrop-filter: blur(6px);
             transition: 0.3s;
+            /* 關鍵：停用觸控預設行為，讓 JavaScript 接管 */
+            touch-action: none; 
         }
         
         #nav-toggle:hover { background: rgba(108, 92, 231, 1); transform: scale(1.05); }
