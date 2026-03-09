@@ -52,27 +52,26 @@
             position: fixed;
             top: 15px;
             right: 15px;
-            z-index: 30000; /* 設為最高層級 */
-            background: rgba(108, 92, 231, 0.9);
+            z-index: 30000;
+            background: rgba(108, 92, 231, 0.95);
             color: white;
             border: 1px solid rgba(255,255,255,0.4);
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            display: none;
+            display: block !important; /* 強制顯示 */
             font-size: 1rem;
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             backdrop-filter: blur(6px);
             transition: 0.3s;
-            /* 關鍵：停用觸控預設行為，讓 JavaScript 接管 */
             touch-action: none; 
         }
         
         #nav-toggle:hover { background: rgba(108, 92, 231, 1); transform: scale(1.05); }
         
-        #container.active ~ #nav-toggle, body > #nav-toggle { display: block; } 
-        #container:not(.active) ~ #nav-toggle { display: none; }
+        /* 確保選單切換鈕始終顯示，或在 active 時顯示 */
+        #nav-toggle { display: block; } 
 
         #content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: white; }
         #container.active #content { display: block; }
@@ -87,12 +86,17 @@
         }
 
         /* 系統功能與常用配置專用的半高樣式 */
+        .mini-row {
+            /* 網頁版恢復與下方按鈕一致的寬度 (180px基準) */
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
         .mini-row .btn, 
         .mini-row #search-input,
         .mini-row #clock-wrapper {
             min-height: 45px !important;
             height: 45px;
-            font-size: 1.35rem;
+            font-size: 1.35rem; /* 保持放大後的字體 */
             padding: 5px 10px;
         }
 
@@ -139,17 +143,22 @@
                 gap: 10px;
                 padding: 10px;
             }
+            /* 手機版功能列：維持長度減半，達成兩兩一組效果 */
+            .mini-row {
+                grid-template-columns: repeat(4, 1fr) !important; /* 一排顯示四個小按鈕 */
+                gap: 8px !important;
+            }
             .mini-row .btn, 
-            .mini-row #search-input,
-            .mini-row #clock-wrapper {
-                min-height: 50px !important;
-                height: 50px;
-                font-size: 1.1rem; /* 放大功能鍵字體 */
+            .mini-row #search-input {
+                min-height: 45px !important;
+                height: 45px;
+                font-size: 1.2rem; /* 放大至與主按鈕一致 */
+                padding: 2px 0; /* 縮減左右內邊距確保文字不溢出 */
             }
             
-            /* 手機版時間層：置頂、寬度 100%、巨大化 */
+            /* 手機版時間層：維持巨大化置頂 */
             #clock-wrapper { 
-                grid-column: span 2 !important; /* 配合二欄改為 span 2 */
+                grid-column: span 4 !important; /* 配合四小格改為 span 4 */
                 display: flex !important;
                 height: 80px !important;
                 margin-bottom: 15px !important;
@@ -195,7 +204,48 @@
             margin-right: 8px; align-self: center;
         }
         #nav.show-chks .split-chk { display: inline-block; }
-        .btn-wrapper { display: flex; align-items: center; width: 100%; }
+        .btn-wrapper { display: flex; align-items: center; width: 100%; position: relative; }
+
+        /* 刪除圖標樣式 */
+        .del-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ff4757;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            cursor: pointer;
+            border: 2px solid white;
+            line-height: 1;
+        }
+        body.manage-mode .del-badge { display: flex; }
+        
+        /* 系統功能與搜尋框在管理模式下維持正常點擊 */
+        body.manage-mode .mini-row .btn, 
+        body.manage-mode #search-input,
+        body.manage-mode #nav-toggle { pointer-events: auto !important; animation: none !important; }
+
+        /* 僅讓可刪除的按鈕（數據分頁、自訂連結、常用配置）進入編輯狀態 */
+        body.manage-mode .btn-wrapper .btn,
+        body.manage-mode #ext-row .btn { animation: shake 0.3s infinite; pointer-events: none; }
+        
+        body.manage-mode .del-badge { pointer-events: auto; }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            75% { transform: rotate(-1deg); }
+            100% { transform: rotate(0deg); }
+        }
 
         #welcome-text { 
             text-shadow: 2px 2px 15px rgba(0,0,0,0.9); 
@@ -307,12 +357,12 @@
         <!-- 第一排：系統功能 -->
         <div class="nav-row mini-row">
             <div id="clock-wrapper"><div id="clock"></div></div>
-            <button class="btn home-btn" onclick="goHome()">🏠 回首頁</button>
-            <button class="btn" style="background:#2d3436" onclick="toggleSplitMode()">🔳 分割配置</button>
-            <button id="apply-split" class="btn" style="background:#e84393; display:none;" onclick="startSplit()">🚀 啟動分割</button>
-            <button class="btn" style="background:#6c5ce7" onclick="addBtn()">➕ 新增自訂</button>
-            <button class="btn" style="background:#f0932b" onclick="saveCurrentLayout()">💾 儲存配置</button>
-            <input type="text" id="search-input" placeholder="🔍 搜尋..." oninput="filterButtons()">
+            <button class="btn" style="background:#2d3436" onclick="toggleSplitMode()">分割</button>
+            <button id="apply-split" class="btn" style="background:#e84393; display:none;" onclick="startSplit()">啟動</button>
+            <button class="btn" style="background:#6c5ce7" onclick="addBtn()">新增</button>
+            <button class="btn" style="background:#f0932b" onclick="saveCurrentLayout()">儲存</button>
+            <button id="manage-btn" class="btn" style="background:#eb4d4b" onclick="toggleManageMode()">管理</button>
+            <input type="text" id="search-input" placeholder="搜尋" oninput="filterButtons()">
         </div>
 
         <!-- 預設集區域 -->
@@ -539,33 +589,55 @@
         renderPresets();
     }
 
+    // --- 管理模式 ---
+    let isManageMode = false;
+    function toggleManageMode() {
+        isManageMode = !isManageMode;
+        document.body.classList.toggle('manage-mode', isManageMode);
+        document.getElementById('manage-btn').innerText = isManageMode ? '✅ 完成' : '管理';
+        document.getElementById('manage-btn').style.background = isManageMode ? '#2ecc71' : '#eb4d4b';
+        renderPresets();
+        renderCustomBtns();
+    }
+
     function renderPresets() {
         const row = document.getElementById('presets-row');
         const list = document.getElementById('presets-list');
         const presets = JSON.parse(localStorage.getItem('user_presets') || "[]");
         
         if (presets.length === 0) { row.style.display = 'none'; return; }
-        row.style.display = 'grid'; // 使用 grid 保持一致性
+        row.style.display = 'grid';
         list.innerHTML = '';
 
         presets.forEach((p, i) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'btn-wrapper';
+            
             const btn = document.createElement('button');
             btn.className = 'btn';
-            btn.style.background = '#4834d4'; // 保留紫色區分
+            btn.style.background = '#4834d4';
             btn.innerText = p.name;
             btn.onclick = () => {
+                if (isManageMode) return;
                 if (p.isSplit) startSplit(p.views);
                 else loadPage(null, p.views[0].url, p.views[0].interval, p.views[0].scale);
             };
-            btn.oncontextmenu = (e) => {
-                e.preventDefault();
+
+            const del = document.createElement('div');
+            del.className = 'del-badge';
+            del.innerText = '×';
+            del.onclick = (e) => {
+                e.stopPropagation();
                 if (confirm(`刪除配置「${p.name}」？`)) {
                     presets.splice(i, 1);
                     localStorage.setItem('user_presets', JSON.stringify(presets));
                     renderPresets();
                 }
             };
-            list.appendChild(btn);
+
+            wrapper.appendChild(btn);
+            wrapper.appendChild(del);
+            list.appendChild(wrapper);
         });
     }
 
@@ -615,17 +687,26 @@
             const btn = document.createElement('button');
             btn.className = 'btn' + (b.isExt ? ' ext' : '');
             btn.innerText = b.name + (b.isExt ? " ↗" : "");
-            btn.onclick = () => b.isExt ? openExtPage(b.url) : loadPage(btn, b.url);
-            btn.oncontextmenu = (e) => {
-                e.preventDefault();
+            btn.onclick = () => {
+                if (isManageMode) return;
+                b.isExt ? openExtPage(b.url) : loadPage(btn, b.url);
+            };
+
+            const del = document.createElement('div');
+            del.className = 'del-badge';
+            del.innerText = '×';
+            del.onclick = (e) => {
+                e.stopPropagation();
                 if (confirm(`刪除「${b.name}」？`)) {
                     btns.splice(i, 1);
                     localStorage.setItem('user_btns', JSON.stringify(btns));
                     renderCustomBtns();
                 }
             };
+
             wrapper.appendChild(chk);
             wrapper.appendChild(btn);
+            wrapper.appendChild(del);
             list.appendChild(wrapper);
         });
         filterButtons(); // 重新套用搜尋
@@ -660,12 +741,19 @@
 
     // 初始化位置
     function initNavPos() {
-        const savedPos = JSON.parse(localStorage.getItem('nav_btn_pos'));
-        if (savedPos) {
-            navToggle.style.left = savedPos.left;
-            navToggle.style.top = savedPos.top;
-            navToggle.style.right = 'auto';
-        }
+        try {
+            const savedPos = JSON.parse(localStorage.getItem('nav_btn_pos'));
+            if (savedPos) {
+                // 檢查是否超出螢幕邊界
+                const left = parseFloat(savedPos.left);
+                const top = parseFloat(savedPos.top);
+                if (left > 0 && left < window.innerWidth && top > 0 && top < window.innerHeight) {
+                    navToggle.style.left = savedPos.left;
+                    navToggle.style.top = savedPos.top;
+                    navToggle.style.right = 'auto';
+                }
+            }
+        } catch(e) { localStorage.removeItem('nav_btn_pos'); }
     }
 
     navToggle.onpointerdown = (e) => {
