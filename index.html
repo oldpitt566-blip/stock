@@ -150,7 +150,16 @@
                 line-height: 1.3;
                 word-break: break-all;
             }
-            #welcome-text h1 { font-size: 1.8rem; }
+            #welcome-text h1 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 5px; }
+            .full-title { display: none !important; }  /* 手機版強制隱藏全名 */
+            .short-title { display: inline !important; } /* 手機版強制顯示簡稱 */
+            #welcome-text p { font-size: 1rem; letter-spacing: 1px; }
+            #welcome-text { 
+                transform: translateX(0) !important; 
+                text-align: center !important; 
+                margin-top: 50px !important; /* 向下移動約兩行距離 */
+                margin-bottom: 30px !important;
+            }
         }
 
         /* 勾選框邏輯 */
@@ -170,6 +179,8 @@
             transform: translateX(-40ch); /* 向右修正 20 個字元，總計偏移 -40ch */
         }
         #welcome-text h1 { font-size: 3rem; margin: 0; letter-spacing: 6px; font-weight: 900; }
+        .short-title { display: none; } /* 電腦版隱藏簡稱 */
+
         #welcome-text p { font-size: 1.2rem; margin: 10px 0 0; letter-spacing: 3px; opacity: 0.9; }
 
         /* 分割畫面佈局修復 */
@@ -246,9 +257,12 @@
 
 <div id="container">
     <div id="nav">
-        <div id="welcome-text" style="width: 100%;">
-            <h1 style="font-size: 2.5rem; margin: 0;">祥老師的投資戰情室</h1>
-            <p style="font-size: 1.1rem; opacity: 0.8;">監控即時行情，衝刺獲利</p>
+        <div id="welcome-text">
+            <h1>
+                <span class="full-title">祥老師的投資戰情室</span>
+                <span class="short-title">祥老師</span>
+            </h1>
+            <p>監控即時行情，衝刺獲利</p>
         </div>
 
         <!-- 第一排：系統功能 -->
