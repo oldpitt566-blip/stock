@@ -635,9 +635,7 @@
     let activeExtWin = null;
     function openExtPage(url) {
         activeExtWin = window.open(url, '_blank');
-        const timer = setInterval(() => {
-            if (activeExtWin && activeExtWin.closed) { clearInterval(timer); activeExtWin = null; goHome(); }
-        }, 1000);
+        // 移除自動偵測並回首頁的計時器
     }
 
     // 資源優化：背景自動暫停與恢復
@@ -651,7 +649,7 @@
                     conf.timer = setInterval(() => { conf.ifr.src = conf.ifr.src; }, conf.interval);
                 }
             });
-            if (activeExtWin && activeExtWin.closed) { activeExtWin = null; goHome(); }
+            // 移除 visibilitychange 時的外部視窗關閉檢測
         }
     });
 
