@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>航運戰情室 - 嵌入優化版</title>
+    <title>投資戰情室 - 嵌入優化版</title>
     <style>
         :root {
-            --bg-overlay: rgba(18, 18, 18, 0.75);
-            --nav-bg: rgba(30, 30, 30, 0.9);
-            --btn: rgba(51, 51, 51, 0.8);
+            --bg-overlay: rgba(10, 10, 10, 0.45); /* 調淡底色 */
+            --nav-bg: rgba(20, 20, 20, 0.85);
+            --btn: rgba(45, 45, 45, 0.7); /* 按鈕也稍微調淡 */
             --text: #eee;
             --active: #00b894;
             --external: #e67e22;
@@ -20,7 +20,6 @@
             font-family: "Microsoft JhengHei", sans-serif; 
             overflow: hidden; 
             color: var(--text);
-            /* 設定背景圖為 shipping-bg.webp */
             background: url('shipping-bg.webp') no-repeat center center fixed;
             background-size: cover;
         }
@@ -34,134 +33,167 @@
         }
         
         #nav { 
-            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 10px;
-            flex-grow: 1; padding: 20px; transition: 0.5s ease;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 20px; transition: transform 0.4s ease;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(8px);
+            z-index: 15000;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
         
-        #container.active #nav { 
-            flex-grow: 0; 
-            justify-content: flex-start; 
-            padding: 8px 15px; 
-            background: var(--nav-bg);
-            backdrop-filter: none;
-            flex-direction: column;
-            align-items: flex-start;
-            transition: transform 0.3s ease, margin-top 0.3s ease;
-        }
-
-        /* 選單隱藏樣式 */
+        /* 選單隱藏樣式：向上滑出畫面 */
         #container.nav-hidden #nav {
             transform: translateY(-100%);
-            margin-top: -50px; /* 留一點點邊緣或完全隱藏 */
-            position: absolute;
-            width: 100%;
-            z-index: 10000;
         }
         
         #nav-toggle {
             position: fixed;
-            top: 10px;
+            top: 15px;
             right: 15px;
             z-index: 20000;
-            background: rgba(108, 92, 231, 0.85);
+            background: rgba(108, 92, 231, 0.9);
             color: white;
-            border: 1px solid rgba(255,255,255,0.5);
-            padding: 4px 10px;
-            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
             display: none;
-            font-size: 0.75rem;
+            font-size: 1rem;
             font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            transition: 0.3s;
         }
         
-        #nav-toggle:hover { background: #6c5ce7; }
-
-        /* 當啟動網頁(active)時顯示此按鈕 */
-        #container.active ~ #nav-toggle, 
-        body > #nav-toggle { display: block; } 
+        #nav-toggle:hover { background: rgba(108, 92, 231, 1); transform: scale(1.05); }
         
-        /* 由於按鈕在 body 下，我們直接控制它 */
+        #container.active ~ #nav-toggle, body > #nav-toggle { display: block; } 
         #container:not(.active) ~ #nav-toggle { display: none; }
 
-        #container.nav-hidden #content { margin-top: 0; height: 100vh; }
+        #content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: white; }
+        #container.active #content { display: block; }
 
         .nav-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
             width: 100%;
-            justify-content: center;
-            margin-bottom: 10px;
+            max-width: 1200px;
+            margin-bottom: 20px;
         }
-        
-        #container.active .nav-row {
-            justify-content: flex-start;
-            margin-bottom: 5px;
-            gap: 8px;
+
+        /* 系統功能與常用配置專用的半高樣式 */
+        .mini-row .btn, 
+        .mini-row #search-input,
+        .mini-row #clock-wrapper {
+            min-height: 45px !important;
+            height: 45px;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+        }
+
+        #clock-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* 移除底色與邊框 */
+        }
+
+        #clock {
+            font-family: monospace;
+            font-size: 1.6rem !important; /* 放大時間 */
+            color: #00b894;
+            font-weight: bold;
+            margin: 0 !important;
         }
 
         .btn { 
-            padding: 12px 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+            padding: 15px 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
             background: var(--btn); color: white; font-weight: bold; font-size: 1rem; 
             transition: all 0.2s;
-        }
-        
-        #container.active .btn { padding: 5px 12px; font-size: 0.85rem; }
-        
-        .btn:hover { background: rgba(80, 80, 80, 0.9); transform: translateY(-2px); }
-        .btn.selected { background: var(--active); border-color: #fff; }
-        
-        .btn.ext { border-left: 4px solid var(--external); }
-
-        .home-btn { background: #d35400 !important; display: none; }
-        #container.active .home-btn { display: inline-block; }
-
-        #content { flex-grow: 1; display: none; background: white; }
-        #container.active #content { display: block; }
-        iframe { width: 100%; height: 100%; border: none; }
-/* 所有模式下的 iframe 縮放修正 */
-.split-item iframe { 
-    background: white; 
-    border: none;
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    transform-origin: 0 0 !important;
-    transition: transform 0.2s ease-out;
-    z-index: 1;
-}
-
-#content.split-grid {
-    display: grid !important;
-    gap: 8px;
-    background: #222;
-    padding: 4px;
-    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
-    grid-auto-rows: 1fr;
-}
-        /* 分割畫面內的小工具 */
-        .split-item { position: relative; width: 100%; height: 100%; overflow: hidden; background: #111; }
-        .split-controls {
-            position: absolute; top: 10px; left: 10px; z-index: 9999;
-            display: flex; gap: 6px; pointer-events: auto;
-        }
-        .ctrl-btn {
-            background: rgba(0, 184, 148, 0.9); color: white; border: none;
-            border-radius: 4px; padding: 6px 10px; cursor: pointer;
-            font-size: 0.8rem; font-weight: bold; backdrop-filter: blur(4px);
-            transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-        .ctrl-btn:hover { background: rgba(0, 184, 148, 1); transform: translateY(-1px); }
-        .zoom-info {
-            background: rgba(45, 52, 54, 0.9); color: white; padding: 4px 8px;
-            border-radius: 4px; font-size: 0.75rem; align-self: center;
-            backdrop-filter: blur(4px); font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center;
+            min-height: 80px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        #content.split-grid iframe { 
+        #search-input {
+            padding: 10px; border-radius: 6px; border: 1px solid #555; 
+            background: #222; color: white; width: 100%; font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        /* 手機版響應式 */
+        @media (max-width: 600px) {
+            .nav-row {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                padding: 5px;
+            }
+            .mini-row .btn, 
+            .mini-row #search-input,
+            .mini-row #clock-wrapper {
+                min-height: 40px !important;
+                height: 40px;
+                font-size: 0.8rem;
+            }
+            #clock { font-size: 1.2rem !important; }
+            .btn { 
+                font-size: 0.8rem;
+                padding: 10px 5px; 
+                min-height: 70px;
+                height: auto;
+                line-height: 1.3;
+                word-break: break-all;
+            }
+            #welcome-text h1 { font-size: 1.8rem; }
+        }
+
+        /* 勾選框邏輯 */
+        .split-chk { 
+            display: none; width: 25px; height: 25px; 
+            cursor: pointer; accent-color: #e84393;
+            margin-right: 8px; align-self: center;
+        }
+        #nav.show-chks .split-chk { display: inline-block; }
+        .btn-wrapper { display: flex; align-items: center; width: 100%; }
+
+        #welcome-text { 
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.9); 
+            text-align: center; 
+            margin-bottom: 40px; 
+            width: 100%;
+            transform: translateX(-40ch); /* 向右修正 20 個字元，總計偏移 -40ch */
+        }
+        #welcome-text h1 { font-size: 3rem; margin: 0; letter-spacing: 6px; font-weight: 900; }
+        #welcome-text p { font-size: 1.2rem; margin: 10px 0 0; letter-spacing: 3px; opacity: 0.9; }
+
+        /* 分割畫面佈局修復 */
+        #content.split-grid {
+            display: grid !important;
+            gap: 10px;
+            background: #111;
+            padding: 8px;
+            grid-auto-rows: 1fr;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .split-item { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
+        }
+
+        .split-item iframe { 
             background: white; 
             border: none;
             position: absolute;
@@ -171,18 +203,8 @@
             transition: transform 0.2s ease-out;
             z-index: 1;
         }
-
-        /* 勾選框樣式 */
-        .btn-wrapper { display: flex; align-items: center; gap: 5px; }
-        .split-chk { 
-            display: none; width: 20px; height: 20px; cursor: pointer; 
-            accent-color: #e84393;
-        }
-        #nav.show-chks .split-chk { display: inline-block; }
-
-        #welcome-text { text-shadow: 2px 2px 10px rgba(0,0,0,0.8); text-align: center; margin-bottom: 20px; }
-        #container.active #welcome-text { display: none; }
     </style>
+
 </head>
 <body>
 
@@ -191,41 +213,52 @@
 <div id="container">
     <div id="nav">
         <div id="welcome-text" style="width: 100%;">
-            <h1 style="font-size: 2.5rem; margin: 0;">航運戰情室</h1>
+            <h1 style="font-size: 2.5rem; margin: 0;">投資戰情室</h1>
             <p style="font-size: 1.1rem; opacity: 0.8;">監控即時行情，衝刺獲利</p>
         </div>
 
         <!-- 第一排：系統功能 -->
-        <div class="nav-row">
+        <div class="nav-row mini-row">
+            <div id="clock-wrapper"><div id="clock"></div></div>
             <button class="btn home-btn" onclick="goHome()">🏠 回首頁</button>
             <button class="btn" style="background:#2d3436" onclick="toggleSplitMode()">🔳 分割配置</button>
             <button id="apply-split" class="btn" style="background:#e84393; display:none;" onclick="startSplit()">🚀 啟動分割</button>
             <button class="btn" style="background:#6c5ce7" onclick="addBtn()">➕ 新增自訂</button>
+            <button class="btn" style="background:#f0932b" onclick="saveCurrentLayout()">💾 儲存配置</button>
+            <input type="text" id="search-input" placeholder="🔍 搜尋..." oninput="filterButtons()">
+        </div>
+
+        <!-- 預設集區域 -->
+        <div class="nav-row mini-row" id="presets-row" style="display:none; border-top: 1px solid #444; padding-top: 10px; margin-top: 5px;">
+            <div id="presets-list" style="display:contents"></div>
         </div>
         
         <!-- 第二排：可分割內嵌頁面 -->
         <div class="nav-row" id="embed-row">
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true"><button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true')">歐線主連</button></div>
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://quote.eastmoney.com/qihuo/ecs.html"><button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecs.html')">歐線次主連</button></div>
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.stockq.org/market/baltic_index.php"><button class="btn" onclick="loadPage(this, 'https://www.stockq.org/market/baltic_index.php')">BDI 指數</button></div>
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.braemarscreen.com/"><button class="btn" onclick="loadPage(this, 'https://www.braemarscreen.com/')">Braemar</button></div>
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/usfinance/nq"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/usfinance/nq')">美股期貨</button></div>
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/forum/stock"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/stock')">台灣股市</button></div>
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="https://www.trendforce.com.tw/price/dram/dram_spot"><button class="btn" onclick="loadPage(this, 'https://www.trendforce.com.tw/price/dram/dram_spot')">記憶體報價</button></div>
-            <div class="btn-wrapper"><input type="checkbox" class="split-chk" value="eco-data.html"><button class="btn" onclick="loadPage(this, 'eco-data.html')">美國經濟數據</button></div>
+            <div class="btn-wrapper" data-name="歐線主連"><input type="checkbox" class="split-chk" value="https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true"><button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true')">歐線主連</button></div>
+            <div class="btn-wrapper" data-name="歐線次主連"><input type="checkbox" class="split-chk" value="https://quote.eastmoney.com/qihuo/ecs.html"><button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecs.html')">歐線次主連</button></div>
+            <div class="btn-wrapper" data-name="BDI 指數"><input type="checkbox" class="split-chk" value="https://www.stockq.org/market/baltic_index.php"><button class="btn" onclick="loadPage(this, 'https://www.stockq.org/market/baltic_index.php')">BDI 指數</button></div>
+            <div class="btn-wrapper" data-name="Braemar"><input type="checkbox" class="split-chk" value="https://www.braemarscreen.com/"><button class="btn" onclick="loadPage(this, 'https://www.braemarscreen.com/')">Braemar</button></div>
+            <div class="btn-wrapper" data-name="美股期貨"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/usfinance/nq"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/usfinance/nq')">美股期貨</button></div>
+            <div class="btn-wrapper" data-name="台灣股市"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/forum/stock"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/stock')">台灣股市</button></div>
+            <div class="btn-wrapper" data-name="台指期夜盤"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/forum/futures/TXF1?s=p"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/futures/TXF1?s=p')">台指期夜盤</button></div>
+            <div class="btn-wrapper" data-name="記憶體報價"><input type="checkbox" class="split-chk" value="https://www.trendforce.com.tw/price/dram/dram_spot"><button class="btn" onclick="loadPage(this, 'https://www.trendforce.com.tw/price/dram/dram_spot')">記憶體報價</button></div>
+            <div class="btn-wrapper" data-name="美國經濟數據"><input type="checkbox" class="split-chk" value="eco-data.html"><button class="btn" onclick="loadPage(this, 'eco-data.html')">美國經濟數據</button></div>
+            <div class="btn-wrapper" data-name="即時新聞"><input type="checkbox" class="split-chk" value="https://news.cnyes.com/news/cat/headline"><button class="btn" onclick="loadPage(this, 'https://news.cnyes.com/news/cat/headline')">📰 即時新聞</button></div>
             <div id="custom-list" style="display:contents"></div>
         </div>
 
         <!-- 第三排：外部連結頁面 -->
-        <div class="nav-row">
-            <button class="btn ext" onclick="openExtPage('https://tw.tradingview.com/markets/stocks-usa/market-movers-large-cap/')">美股指標股 ↗</button>
-            <button class="btn ext" onclick="openExtPage('https://tw.tradingview.com/markets/stocks-taiwan/market-movers-large-cap/')">台灣指標股 ↗</button>
-            <button class="btn ext" onclick="openExtPage('https://index.ndc.gov.tw/n/zh_tw')">台股燈號 ↗</button>
-            <button class="btn ext" onclick="openExtPage('https://www.macromicro.me/charts/53117/taiwan-taiex-maintenance-margin')">融資維持率 ↗</button>
-            <button class="btn ext" onclick="openExtPage('https://www.sse.net.cn/index/singleIndex?indexType=scfi')">SCFI 指數 ↗</button>
-            <button class="btn ext" onclick="openExtPage('https://www.marinetraffic.com/en/ais/home/centerx:56.4/centery:26.1/zoom:9')">荷姆茲海峽 ↗</button>
-            <button class="btn ext" onclick="openExtPage('https://tw.tradingview.com/symbols/UKOIL/')">布蘭特原油 ↗</button>
+        <div class="nav-row" id="ext-row">
+            <button class="btn ext" data-name="美股指標股" onclick="openExtPage('https://tw.tradingview.com/markets/stocks-usa/market-movers-large-cap/')">美股指標股 ↗</button>
+            <button class="btn ext" data-name="台灣指標股" onclick="openExtPage('https://tw.tradingview.com/markets/stocks-taiwan/market-movers-large-cap/')">台灣指標股 ↗</button>
+            <button class="btn ext" data-name="台股燈號" onclick="openExtPage('https://index.ndc.gov.tw/n/zh_tw')">台股燈號 ↗</button>
+            <button class="btn ext" data-name="融資維持率" onclick="openExtPage('https://www.macromicro.me/charts/53117/taiwan-taiex-maintenance-margin')">融資維持率 ↗</button>
+            <button class="btn ext" data-name="SCFI 指數" onclick="openExtPage('https://www.sse.net.cn/index/singleIndex?indexType=scfi')">SCFI 指數 ↗</button>
+            <button class="btn ext" data-name="荷姆茲海峽" onclick="openExtPage('https://www.marinetraffic.com/en/ais/home/centerx:56.4/centery:26.1/zoom:9')">荷姆茲海峽 ↗</button>
+            <button class="btn ext" data-name="布蘭特原油" onclick="openExtPage('https://tw.tradingview.com/symbols/UKOIL/')">布蘭特原油 ↗</button>
         </div>
+
     </div>
 
     <div id="content">
@@ -235,341 +268,262 @@
 
 <script>
     const container = document.getElementById('container');
-    const ifr = document.getElementById('ifr');
+    const content = document.getElementById('content');
+    let refreshConfigs = []; // {ifr, btn, interval, timer, url, scale}
 
-    let refreshConfigs = []; // 儲存每個視窗的重整設定: {ifr, btn, interval, timer}
-
+    // --- 基礎功能 ---
     function clearAllTimers() {
-        refreshConfigs.forEach(conf => {
-            if (conf.timer) clearInterval(conf.timer);
-        });
+        refreshConfigs.forEach(conf => { if (conf.timer) clearInterval(conf.timer); });
         refreshConfigs = [];
     }
 
-    // 資源優化：背景自動暫停與恢復
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') {
-            // 頁面不可見時，暫停所有定時器以節省 CPU 和 網路
-            refreshConfigs.forEach(conf => {
-                if (conf.timer) {
-                    clearInterval(conf.timer);
-                    conf.timer = null;
-                }
-            });
-            console.log('偵測到背景運行：暫停所有重整以節省資源');
-        } else {
-            // 頁面恢復可見，立即執行一次重整並恢復定時器
-            refreshConfigs.forEach(conf => {
-                if (conf.interval > 0) {
-                    conf.ifr.src = conf.ifr.src; // 補抓最新行情
-                    conf.timer = setInterval(() => {
-                        conf.ifr.src = conf.ifr.src;
-                    }, conf.interval);
-                }
-            });
-            console.log('頁面恢復：重新啟動重整');
+    function toggleNav() {
+        container.classList.toggle('nav-hidden');
+        updateToggleText();
+    }
+
+    function updateToggleText() {
+        const toggleBtn = document.getElementById('nav-toggle');
+        if (toggleBtn) {
+            toggleBtn.innerText = container.classList.contains('nav-hidden') ? '選單 🔽' : '選單 🔼';
         }
-    });
+    }
 
-    function loadPage(btn, url) {
-        container.classList.add('active');
-        const content = document.getElementById('content');
-        content.classList.remove('split-grid');
-        content.innerHTML = ''; 
-        
+    function goHome() {
         clearAllTimers();
+        container.classList.remove('active', 'nav-hidden');
+        updateToggleText();
+        content.classList.remove('split-grid');
+        content.innerHTML = '';
+        document.getElementById('nav').classList.remove('show-chks');
+        document.getElementById('apply-split').style.display = 'none';
+        document.querySelectorAll('.split-chk').forEach(c => c.checked = false);
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
+        if (activeExtWin && !activeExtWin.closed) activeExtWin.close();
+        activeExtWin = null;
+    }
 
+    // --- 視窗建立核心 ---
+    function createViewElement(url, initialInterval = 0, initialScale = 1.0) {
         const wrapper = document.createElement('div');
         wrapper.className = 'split-item';
         
         const controls = document.createElement('div');
         controls.className = 'split-controls';
         
-        const refBtn = document.createElement('button');
-        refBtn.className = 'ctrl-btn'; refBtn.innerHTML = '🔄';
-        
-        const autoBtn = document.createElement('button');
-        autoBtn.className = 'ctrl-btn'; autoBtn.innerHTML = '🕒';
-        
-        const zinBtn = document.createElement('button');
-        zinBtn.className = 'ctrl-btn'; zinBtn.innerHTML = '➕';
-        
-        const zoutBtn = document.createElement('button');
-        zoutBtn.className = 'ctrl-btn'; zoutBtn.innerHTML = '➖';
-        
+        const refBtn = createCtrlBtn('🔄', () => { ifr.src = url; });
+        const autoBtn = createCtrlBtn('🕒', null);
+        const zinBtn = createCtrlBtn('➕', () => updateZoom(0.1));
+        const zoutBtn = createCtrlBtn('➖', () => updateZoom(-0.1));
         const zInfo = document.createElement('span');
-        zInfo.className = 'zoom-info'; zInfo.innerText = '100%';
+        zInfo.className = 'zoom-info'; zInfo.innerText = Math.round(initialScale * 100) + '%';
         
         const ifr = document.createElement('iframe');
-        ifr.id = 'ifr'; ifr.src = url;
+        ifr.src = url;
         
-        // 建立設定檔
-        const myConf = { ifr, btn: autoBtn, interval: 0, timer: null };
+        const myConf = { ifr, btn: autoBtn, interval: initialInterval, timer: null, url, scale: initialScale };
         refreshConfigs.push(myConf);
 
-        const intervals = [0, 3000, 5000, 10000];
-        const labels = ['🕒', '🕒 3s', '🕒 5s', '🕒 10s'];
-        let idx = 0;
+        // 縮放邏輯
+        const updateZoom = (delta) => {
+            myConf.scale = Math.round((myConf.scale + delta) * 10) / 10;
+            if (myConf.scale < 0.3) myConf.scale = 0.3;
+            if (myConf.scale > 2.0) myConf.scale = 2.0;
+            ifr.style.width = (100 / myConf.scale) + '%';
+            ifr.style.height = (100 / myConf.scale) + '%';
+            ifr.style.transform = `scale(${myConf.scale})`;
+            zInfo.innerText = Math.round(myConf.scale * 100) + '%';
+        };
+        if (initialScale !== 1.0) updateZoom(0);
+
+        // 自動重整邏輯
+        const intervals = [0, 3000, 5000, 10000, 30000];
+        const labels = ['🕒', '🕒 3s', '🕒 5s', '🕒 10s', '🕒 30s'];
+        let idx = intervals.indexOf(initialInterval);
+        if (idx === -1) idx = 0;
+
+        const setupTimer = () => {
+            if (myConf.timer) clearInterval(myConf.timer);
+            autoBtn.innerHTML = labels[idx];
+            autoBtn.style.background = myConf.interval > 0 ? '#e84393' : '';
+            if (myConf.interval > 0) {
+                myConf.timer = setInterval(() => {
+                    let sx = 0, sy = 0;
+                    try { sx = ifr.contentWindow.scrollX; sy = ifr.contentWindow.scrollY; } catch(e) {}
+                    ifr.src = ifr.src;
+                    const rec = () => { try { ifr.contentWindow.scrollTo(sx, sy); } catch(e) {} ifr.removeEventListener('load', rec); };
+                    ifr.addEventListener('load', rec);
+                }, myConf.interval);
+            }
+        };
 
         autoBtn.onclick = () => {
             idx = (idx + 1) % intervals.length;
             myConf.interval = intervals[idx];
-            autoBtn.innerHTML = labels[idx];
-            
-            if (myConf.timer) {
-                clearInterval(myConf.timer);
-                myConf.timer = null;
-            }
-
-            if (myConf.interval > 0) {
-                autoBtn.style.background = '#e84393';
-                myConf.timer = setInterval(() => {
-                    // 嘗試記錄位置 (僅對同源網頁有效)
-                    let scrollX = 0, scrollY = 0;
-                    try {
-                        scrollX = ifr.contentWindow.scrollX;
-                        scrollY = ifr.contentWindow.scrollY;
-                    } catch(e) { /* 跨網域網頁會報錯，忽略即可 */ }
-
-                    // 執行重整
-                    ifr.src = ifr.src;
-
-                    // 網頁載入後嘗試恢復位置
-                    const recoverScroll = () => {
-                        try {
-                            ifr.contentWindow.scrollTo(scrollX, scrollY);
-                        } catch(e) {}
-                        ifr.removeEventListener('load', recoverScroll);
-                    };
-                    ifr.addEventListener('load', recoverScroll);
-
-                }, myConf.interval);
-            } else {
-                autoBtn.style.background = '';
-            }
+            setupTimer();
         };
+        if (initialInterval > 0) setupTimer();
 
-        let currentScale = 1.0;
-        const updateZoom = (delta) => {
-            currentScale = Math.round((currentScale + delta) * 10) / 10;
-            if (currentScale < 0.3) currentScale = 0.3;
-            if (currentScale > 2.0) currentScale = 2.0;
-            ifr.style.width = (100 / currentScale) + '%';
-            ifr.style.height = (100 / currentScale) + '%';
-            ifr.style.transform = `scale(${currentScale})`;
-            zInfo.innerText = Math.round(currentScale * 100) + '%';
-        };
-
-        refBtn.onclick = () => { ifr.src = url; };
-        zinBtn.onclick = () => updateZoom(0.1);
-        zoutBtn.onclick = () => updateZoom(-0.1);
-
-        controls.appendChild(refBtn);
-        controls.appendChild(autoBtn);
-        controls.appendChild(zinBtn);
-        controls.appendChild(zoutBtn);
-        controls.appendChild(zInfo);
+        [refBtn, autoBtn, zinBtn, zoutBtn, zInfo].forEach(el => controls.appendChild(el));
         wrapper.appendChild(controls);
         wrapper.appendChild(ifr);
-        content.appendChild(wrapper);
+        return wrapper;
+    }
 
+    function createCtrlBtn(text, onClick) {
+        const b = document.createElement('button');
+        b.className = 'ctrl-btn'; b.innerHTML = text;
+        if (onClick) b.onclick = onClick;
+        return b;
+    }
+
+    // --- 頁面載入 ---
+    function loadPage(btn, url, interval = 0, scale = 1.0) {
+        // 如果正在分割模式，點擊按鈕改為切換勾選框
+        if (document.getElementById('nav').classList.contains('show-chks')) {
+            const chk = btn.parentElement.querySelector('.split-chk');
+            if (chk) chk.checked = !chk.checked;
+            return;
+        }
+
+        container.classList.add('active');
+        container.classList.add('nav-hidden'); // 自動縮起
+        updateToggleText();
+        content.classList.remove('split-grid');
+        content.innerHTML = '';
+        clearAllTimers();
+        content.appendChild(createViewElement(url, interval, scale));
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
-        if(btn) btn.classList.add('selected');
+        if (btn) btn.classList.add('selected');
     }
 
     function toggleSplitMode() {
         const nav = document.getElementById('nav');
-        const applyBtn = document.getElementById('apply-split');
         nav.classList.toggle('show-chks');
-        applyBtn.style.display = nav.classList.contains('show-chks') ? 'inline-block' : 'none';
-        if(!nav.classList.contains('show-chks')) {
-            document.querySelectorAll('.split-chk').forEach(c => c.checked = false);
-        }
+        document.getElementById('apply-split').style.display = nav.classList.contains('show-chks') ? 'inline-block' : 'none';
+        if (!nav.classList.contains('show-chks')) document.querySelectorAll('.split-chk').forEach(c => c.checked = false);
     }
 
-    function startSplit() {
-        const selected = Array.from(document.querySelectorAll('.split-chk:checked')).map(cb => cb.value);
-        if (selected.length < 2) return alert("請至少勾選 2 個網頁進行分割");
+    function startSplit(urls = null) {
+        const selected = urls || Array.from(document.querySelectorAll('.split-chk:checked')).map(cb => cb.value);
+        if (selected.length < 2) return alert("請至少選擇 2 個網頁");
         
         clearAllTimers();
-
-        const content = document.getElementById('content');
         content.innerHTML = '';
         content.classList.add('split-grid');
         container.classList.add('active');
+        container.classList.add('nav-hidden'); // 自動縮起
+        updateToggleText();
         
-        let cols = selected.length > 9 ? 4 : (selected.length > 4 ? 3 : 2);
+        // --- 優化網格分配邏輯 ---
+        const count = selected.length;
+        const cols = count <= 2 ? count : (count <= 4 ? 2 : (count <= 6 ? 3 : 4));
+        const rows = Math.ceil(count / cols);
+        
         content.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        content.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+        content.style.gridAutoRows = "1fr"; // 確保動態行高一致
 
-        // 資源優化：如果視窗太多，移除 3 秒模式，強制降低負擔
-        const intervals = selected.length > 4 ? [0, 5000, 10000, 20000] : [0, 3000, 5000, 10000];
-        const labels = selected.length > 4 ? ['🕒', '🕒 5s', '🕒 10s', '🕒 20s'] : ['🕒', '🕒 3s', '🕒 5s', '🕒 10s'];
-
-        selected.forEach((url, i) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'split-item';
-            
-            const controls = document.createElement('div');
-            controls.className = 'split-controls';
-            
-            const refBtn = document.createElement('button');
-            refBtn.className = 'ctrl-btn'; refBtn.innerHTML = '🔄';
-            
-            const autoBtn = document.createElement('button');
-            autoBtn.className = 'ctrl-btn'; autoBtn.innerHTML = '🕒';
-            
-            const zinBtn = document.createElement('button');
-            zinBtn.className = 'ctrl-btn'; zinBtn.innerHTML = '➕';
-            
-            const zoutBtn = document.createElement('button');
-            zoutBtn.className = 'ctrl-btn'; zoutBtn.innerHTML = '➖';
-            
-            const zInfo = document.createElement('span');
-            zInfo.className = 'zoom-info'; zInfo.innerText = '100%';
-            
-            const ifr = document.createElement('iframe');
-            ifr.src = url;
-            
-            const myConf = { ifr, btn: autoBtn, interval: 0, timer: null };
-            refreshConfigs.push(myConf);
-
-            let idx = 0;
-            autoBtn.onclick = () => {
-                idx = (idx + 1) % intervals.length;
-                myConf.interval = intervals[idx]; // 立即更新狀態
-                autoBtn.innerHTML = labels[idx];
-                
-                // 1. 立即且強制清除現有定時器
-                if (myConf.timer) {
-                    clearInterval(myConf.timer);
-                    myConf.timer = null;
-                }
-
-                // 2. 只有在 interval > 0 且確實有值時啟動
-                if (myConf.interval > 0) {
-                    autoBtn.style.background = '#e84393';
-                    
-                    // 定義重整動作
-                    const doRefresh = () => {
-                        // 雙重檢查：如果定時器被清除了就不執行
-                        if (!myConf.interval) return; 
-                        
-                        let sx = 0, sy = 0;
-                        try { sx = ifr.contentWindow.scrollX; sy = ifr.contentWindow.scrollY; } catch(e) {}
-                        ifr.src = ifr.src;
-                        const rec = () => {
-                            try { ifr.contentWindow.scrollTo(sx, sy); } catch(e) {}
-                            ifr.removeEventListener('load', rec);
-                        };
-                        ifr.addEventListener('load', rec);
-                    };
-
-                    // 立即啟動定時器，不使用 setTimeout 以免造成追蹤失效
-                    myConf.timer = setInterval(doRefresh, myConf.interval);
-                } else {
-                    autoBtn.style.background = '';
-                }
-            };
-
-            let currentScale = 1.0;
-            const updateZoom = (delta) => {
-                currentScale = Math.round((currentScale + delta) * 10) / 10;
-                if (currentScale < 0.3) currentScale = 0.3;
-                if (currentScale > 2.0) currentScale = 2.0;
-                ifr.style.width = (100 / currentScale) + '%';
-                ifr.style.height = (100 / currentScale) + '%';
-                ifr.style.transform = `scale(${currentScale})`;
-                zInfo.innerText = Math.round(currentScale * 100) + '%';
-            };
-
-            refBtn.onclick = () => { ifr.src = url; };
-            zinBtn.onclick = () => updateZoom(0.1);
-            zoutBtn.onclick = () => updateZoom(-0.1);
-
-            controls.appendChild(refBtn);
-            controls.appendChild(autoBtn);
-            controls.appendChild(zinBtn);
-            controls.appendChild(zoutBtn);
-            controls.appendChild(zInfo);
-            wrapper.appendChild(controls);
-            wrapper.appendChild(ifr);
-            content.appendChild(wrapper);
+        selected.forEach(url => {
+            const val = typeof url === 'string' ? url : url.url;
+            const interval = url.interval || 0;
+            const scale = url.scale || 1.0;
+            content.appendChild(createViewElement(val, interval, scale));
         });
         
-        toggleSplitMode();
+        if (!urls) toggleSplitMode();
     }
 
-    let activeExtWin = null;
+    // --- 配置存取 (Layout Presets) ---
+    function saveCurrentLayout() {
+        if (!container.classList.contains('active')) return alert("請先開啟網頁再儲存配置");
+        const name = prompt("請輸入配置名稱：", "我的配置 " + new Date().toLocaleTimeString());
+        if (!name) return;
 
-    function openExtPage(url) {
-        activeExtWin = window.open(url, '_blank');
-        const timer = setInterval(() => {
-            if (activeExtWin && activeExtWin.closed) {
-                clearInterval(timer);
-                activeExtWin = null;
-                goHome();
-            }
-        }, 1000);
+        const preset = {
+            name,
+            isSplit: content.classList.contains('split-grid'),
+            views: refreshConfigs.map(c => ({ url: c.url, interval: c.interval, scale: c.scale }))
+        };
+
+        const presets = JSON.parse(localStorage.getItem('user_presets') || "[]");
+        presets.push(preset);
+        localStorage.setItem('user_presets', JSON.stringify(presets));
+        renderPresets();
     }
 
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && activeExtWin) {
-            if (activeExtWin.closed) {
-                activeExtWin = null;
-                goHome();
-            }
-        }
-    });
+    function renderPresets() {
+        const row = document.getElementById('presets-row');
+        const list = document.getElementById('presets-list');
+        const presets = JSON.parse(localStorage.getItem('user_presets') || "[]");
+        
+        if (presets.length === 0) { row.style.display = 'none'; return; }
+        row.style.display = 'grid'; // 使用 grid 保持一致性
+        list.innerHTML = '';
 
-    function toggleNav() {
-        container.classList.toggle('nav-hidden');
-        const isHidden = container.classList.contains('nav-hidden');
-        document.getElementById('nav-toggle').innerText = isHidden ? '選單 🔽' : '選單 🔼';
+        presets.forEach((p, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.style.background = '#4834d4'; // 保留紫色區分
+            btn.innerText = p.name;
+            btn.onclick = () => {
+                if (p.isSplit) startSplit(p.views);
+                else loadPage(null, p.views[0].url, p.views[0].interval, p.views[0].scale);
+            };
+            btn.oncontextmenu = (e) => {
+                e.preventDefault();
+                if (confirm(`刪除配置「${p.name}」？`)) {
+                    presets.splice(i, 1);
+                    localStorage.setItem('user_presets', JSON.stringify(presets));
+                    renderPresets();
+                }
+            };
+            list.appendChild(btn);
+        });
     }
 
-    function goHome() {
-        clearAllTimers(); // 清除所有定時器
-        container.classList.remove('active');
-        container.classList.remove('nav-hidden'); // 回首頁時自動展開
-        document.getElementById('nav-toggle').innerText = '選單 🔽';
-        const content = document.getElementById('content');
-        content.classList.remove('split-grid');
-        content.innerHTML = ''; 
-        const nav = document.getElementById('nav');
-        nav.classList.remove('show-chks');
-        const applyBtn = document.getElementById('apply-split');
-        if(applyBtn) applyBtn.style.display = 'none';
-        document.querySelectorAll('.split-chk').forEach(c => c.checked = false);
-        document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
-        if (activeExtWin && !activeExtWin.closed) {
-            activeExtWin.close();
-        }
-        activeExtWin = null;
+    // --- 時鐘與搜尋 ---
+    function updateClock() {
+        const now = new Date();
+        const timeStr = now.getHours().toString().padStart(2, '0') + ":" + 
+                        now.getMinutes().toString().padStart(2, '0') + ":" + 
+                        now.getSeconds().toString().padStart(2, '0');
+        document.getElementById('clock').innerText = timeStr;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function filterButtons() {
+        const term = document.getElementById('search-input').value.toLowerCase();
+        document.querySelectorAll('.btn-wrapper, .btn.ext').forEach(el => {
+            const name = el.getAttribute('data-name') || el.innerText;
+            el.style.display = name.toLowerCase().includes(term) ? '' : 'none';
+        });
     }
 
+    // --- 自訂按鈕 ---
     function addBtn() {
         const name = prompt("名稱：");
         const url = prompt("網址：", "https://");
-        if(!name || !url) return;
+        if (!name || !url) return;
         const isExt = confirm("是否設定為「另開新視窗」？\n(若網頁出現拒絕連線，請選是)");
         const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
         btns.push({name, url, isExt});
         localStorage.setItem('user_btns', JSON.stringify(btns));
-        render();
+        renderCustomBtns();
     }
 
-    function render() {
+    function renderCustomBtns() {
         const list = document.getElementById('custom-list');
         list.innerHTML = '';
         const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
         btns.forEach((b, i) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'btn-wrapper';
+            wrapper.setAttribute('data-name', b.name);
             
             const chk = document.createElement('input');
-            chk.type = 'checkbox';
-            chk.className = 'split-chk';
-            chk.value = b.url;
+            chk.type = 'checkbox'; chk.className = 'split-chk'; chk.value = b.url;
             
             const btn = document.createElement('button');
             btn.className = 'btn' + (b.isExt ? ' ext' : '');
@@ -577,18 +531,46 @@
             btn.onclick = () => b.isExt ? openExtPage(b.url) : loadPage(btn, b.url);
             btn.oncontextmenu = (e) => {
                 e.preventDefault();
-                if(confirm(`刪除「${b.name}」？`)) {
+                if (confirm(`刪除「${b.name}」？`)) {
                     btns.splice(i, 1);
                     localStorage.setItem('user_btns', JSON.stringify(btns));
-                    render();
+                    renderCustomBtns();
                 }
             };
             wrapper.appendChild(chk);
             wrapper.appendChild(btn);
             list.appendChild(wrapper);
         });
+        filterButtons(); // 重新套用搜尋
     }
-    render();
+
+    // --- 外部視窗管理 ---
+    let activeExtWin = null;
+    function openExtPage(url) {
+        activeExtWin = window.open(url, '_blank');
+        const timer = setInterval(() => {
+            if (activeExtWin && activeExtWin.closed) { clearInterval(timer); activeExtWin = null; goHome(); }
+        }, 1000);
+    }
+
+    // 資源優化：背景自動暫停與恢復
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            refreshConfigs.forEach(conf => { if (conf.timer) { clearInterval(conf.timer); conf.timer = null; } });
+        } else {
+            refreshConfigs.forEach(conf => {
+                if (conf.interval > 0) {
+                    conf.ifr.src = conf.ifr.src;
+                    conf.timer = setInterval(() => { conf.ifr.src = conf.ifr.src; }, conf.interval);
+                }
+            });
+            if (activeExtWin && activeExtWin.closed) { activeExtWin = null; goHome(); }
+        }
+    });
+
+    renderCustomBtns();
+    renderPresets();
 </script>
+
 </body>
 </html>
