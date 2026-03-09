@@ -290,7 +290,7 @@
 </head>
 <body>
 
-<button id="nav-toggle" onclick="toggleNav()">選單 🔽</button>
+<button id="nav-toggle">選單 🔽</button>
 
 <div id="container">
     <div id="nav">
@@ -653,6 +653,62 @@
         }
     });
 
+    // --- 選單拖載與位置管理 ---
+    const navToggle = document.getElementById('nav-toggle');
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    // 初始化位置
+    function initNavPos() {
+        const savedPos = JSON.parse(localStorage.getItem('nav_btn_pos'));
+        if (savedPos) {
+            navToggle.style.left = savedPos.left;
+            navToggle.style.top = savedPos.top;
+            navToggle.style.right = 'auto';
+        }
+    }
+
+    navToggle.onpointerdown = (e) => {
+        isDragging = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        const rect = navToggle.getBoundingClientRect();
+        initialX = rect.left;
+        initialY = rect.top;
+        navToggle.setPointerCapture(e.pointerId);
+        navToggle.style.transition = 'none'; // 拖動時暫停動畫
+    };
+
+    navToggle.onpointermove = (e) => {
+        if (e.buttons === 0) return; // 沒按下就不動
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        
+        // 判斷移動距離，超過 5px 才算拖動
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+            isDragging = true;
+            navToggle.style.left = (initialX + dx) + 'px';
+            navToggle.style.top = (initialY + dy) + 'px';
+            navToggle.style.right = 'auto';
+        }
+    };
+
+    navToggle.onpointerup = (e) => {
+        navToggle.releasePointerCapture(e.pointerId);
+        navToggle.style.transition = '0.3s'; // 恢復動畫
+        
+        if (!isDragging) {
+            toggleNav(); // 如果沒移動，就執行原本的開關選單
+        } else {
+            // 如果有移動，儲存新位置
+            localStorage.setItem('nav_btn_pos', JSON.stringify({
+                left: navToggle.style.left,
+                top: navToggle.style.top
+            }));
+        }
+    };
+
+    initNavPos();
     renderCustomBtns();
     renderPresets();
 </script>
