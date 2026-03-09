@@ -38,7 +38,7 @@
             padding: 20px; transition: transform 0.4s ease;
             background: var(--bg-overlay);
             backdrop-filter: blur(8px);
-            z-index: 15000;
+            z-index: 25000; /* 提升層級以覆蓋控制按鈕 */
             overflow-y: auto;
             box-sizing: border-box;
         }
@@ -52,7 +52,7 @@
             position: fixed;
             top: 15px;
             right: 15px;
-            z-index: 20000;
+            z-index: 30000; /* 設為最高層級 */
             background: rgba(108, 92, 231, 0.9);
             color: white;
             border: 1px solid rgba(255,255,255,0.4);
