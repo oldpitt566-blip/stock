@@ -735,11 +735,21 @@
     let activeExtWin = null;
     function openExtPage(url) {
         activeExtWin = window.open(url, '_blank');
-        // 移除自動偵測並回首頁的計時器
+    }
+
+    // --- 螢幕喚醒鎖定 (防止手機自動關閉螢幕) ---
+    let wakeLock = null;
+    async function requestWakeLock() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLock.addEventListener('release', () => { wakeLock = null; });
+            }
+        } catch (err) {}
     }
 
     // 資源優化：背景自動暫停與恢復
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'hidden') {
             refreshConfigs.forEach(conf => { if (conf.timer) { clearInterval(conf.timer); conf.timer = null; } });
         } else {
@@ -749,9 +759,15 @@
                     conf.timer = setInterval(() => { conf.ifr.src = conf.ifr.src; }, conf.interval);
                 }
             });
-            // 移除 visibilitychange 時的外部視窗關閉檢測
+            // 重新請求喚醒鎖定
+            if (wakeLock !== null || document.visibilityState === 'visible') await requestWakeLock();
         }
     });
+
+    // 第一次點擊頁面時啟動喚醒鎖定 (瀏覽器政策要求使用者互動)
+    document.addEventListener('click', () => {
+        if (!wakeLock) requestWakeLock();
+    }, { once: true });
 
     // --- 選單拖載與位置管理 ---
     const navToggle = document.getElementById('nav-toggle');
@@ -763,7 +779,6 @@
         try {
             const savedPos = JSON.parse(localStorage.getItem('nav_btn_pos'));
             if (savedPos) {
-                // 檢查是否超出螢幕邊界
                 const left = parseFloat(savedPos.left);
                 const top = parseFloat(savedPos.top);
                 if (left > 0 && left < window.innerWidth && top > 0 && top < window.innerHeight) {
@@ -783,15 +798,13 @@
         initialX = rect.left;
         initialY = rect.top;
         navToggle.setPointerCapture(e.pointerId);
-        navToggle.style.transition = 'none'; // 拖動時暫停動畫
+        navToggle.style.transition = 'none';
     };
 
     navToggle.onpointermove = (e) => {
-        if (e.buttons === 0) return; // 沒按下就不動
+        if (e.buttons === 0) return;
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
-        
-        // 判斷移動距離，超過 5px 才算拖動
         if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
             isDragging = true;
             navToggle.style.left = (initialX + dx) + 'px';
@@ -802,12 +815,10 @@
 
     navToggle.onpointerup = (e) => {
         navToggle.releasePointerCapture(e.pointerId);
-        navToggle.style.transition = '0.3s'; // 恢復動畫
-        
+        navToggle.style.transition = '0.3s';
         if (!isDragging) {
-            toggleNav(); // 如果沒移動，就執行原本的開關選單
+            toggleNav();
         } else {
-            // 如果有移動，儲存新位置
             localStorage.setItem('nav_btn_pos', JSON.stringify({
                 left: navToggle.style.left,
                 top: navToggle.style.top
