@@ -3,68 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>祥老師的投資戰情室 - AI王風格版</title>
+    <title>祥老師的投資戰情室 - 穩定修正版</title>
     <style id="theme-style">
-        /* 預設為航海王風格變數 */
         :root {
-            --primary: #006241; 
-            --accent: #e60012;  
-            --bg-nav: rgba(15, 20, 25, 0.65); 
-            --btn-bg: rgba(45, 50, 55, 0.7);
-            --text: #ffffff;
-            --gold: #f1c40f;
-            --glow: #00d2ad;
-            --bg-img: url('sea.png'); 
-            --btn-gradient: none;
-        }
-
-        /* 祥老師風格變數 */
+            --primary: #006241; --accent: #e60012;  
+            --bg-nav: rgba(15, 20, 25, 0.85); 
+            --btn-bg: rgba(45, 50, 55, 0.8);
+            --text: #ffffff; --gold: #f1c40f; --glow: #00d2ad;
+            --bg-img: url('sea.png'); --btn-gradient: none;
+            --ani-speed: 0s;
+        /* 祥老師風格：極簡黑白精品感 */
         [data-theme="shiang"] {
-            --primary: #00b894; 
-            --accent: #e84393;
-            --bg-nav: rgba(10, 10, 10, 0.6); 
-            --btn-bg: rgba(45, 45, 45, 0.6);
-            --text: #eee;
-            --gold: #00d2ad;
-            --glow: #00b894;
+            --primary: #ffffff; 
+            --accent: #ffffff;  
+            --bg-nav: rgba(15, 15, 15, 0.85); 
+            --btn-bg: rgba(49, 49, 49, 0.4);
+            --text: #ffffff;
+            --gold: #ffffff;
+            --glow: rgba(255, 255, 255, 0.2);
             --bg-img: url('hsiang.png'); 
             --btn-gradient: none;
         }
 
-        /* AI王風格：紫色與藍色的流動漸層 */
+        /* 祥老師風格專屬按鈕樣式 */
+        [data-theme="shiang"] .btn {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2px; /* 更銳利的方角 */
+            font-weight: 300;
+            letter-spacing: 2px;
+            box-shadow: none;
+            backdrop-filter: blur(5px);
+        }
+        [data-theme="shiang"] .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffffff;
+            transform: translateY(-1px);
+        }
+        [data-theme="shiang"] .btn.selected {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border-color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+        [data-theme="shiang"] .row-label {
+            border-left: 1px solid #ffffff;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            letter-spacing: 4px;
+            padding-left: 20px;
+        }
+        [data-theme="shiang"] #nav-toggle {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            font-weight: 600;
+        }
+        [data-theme="shiang"] #search-input {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 1px solid #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        [data-theme="shiang"] #style-btn { border-left: 1px solid #ffffff; }
         [data-theme="ai"] {
-            --primary: #6c5ce7; /* 核心紫 */
-            --accent: #00d2ff;  /* 科技藍 */
-            --bg-nav: rgba(10, 10, 35, 0.7); /* 深海藍透明 */
-            --btn-bg: rgba(40, 40, 80, 0.5);
-            --text: #ffffff;
-            --gold: #00d2ff; /* 在 AI 模式下金改為電藍 */
-            --glow: #a29bfe;
+            --primary: #6c5ce7; --accent: #00d2ff;  
+            --bg-nav: rgba(10, 10, 35, 0.85); 
+            --btn-bg: rgba(40, 40, 80, 0.6);
+            --text: #ffffff; --gold: #00d2ff; --glow: #a29bfe;
             --bg-img: url('tsmc.png'); 
-            --btn-gradient: linear-gradient(135deg, rgba(108, 92, 231, 0.6), rgba(0, 210, 255, 0.6));
+            --btn-gradient: linear-gradient(135deg, #6c5ce7, #00d2ff, #6c5ce7);
+            --ani-speed: 3s;
+        }
+
+        @keyframes fluidGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body, html { 
             margin: 0; height: 100%; font-family: "Microsoft JhengHei", "Segoe UI", sans-serif; 
             overflow: hidden; color: var(--text);
+            background-color: #000;
             background: var(--bg-img) no-repeat center center fixed; background-size: cover;
             transition: background 0.8s ease; 
         }
         
-        #container { display: flex; flex-direction: column; height: 100vh; background: rgba(0, 0, 0, 0.4); }
+        #container { display: flex; flex-direction: column; height: 100vh; position: relative; }
         
         #nav { 
             display: flex; flex-direction: column; align-items: center; gap: 10px;
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            padding: 40px 20px; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--bg-nav); 
+            padding: 10px 20px 40px; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-nav); backdrop-filter: blur(10px);
             z-index: 25000; overflow-y: auto; box-sizing: border-box;
             border-bottom: 5px solid var(--primary);
-            backdrop-filter: blur(10px); /* 僅在選單區域保留輕微磨砂感以保護文字 */
         }
         
         #container.nav-hidden #nav { transform: translateY(-100%); }
-        
+        .ticker-wrap { width: 100%; max-width: 1200px; height: 40px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+
         #nav-toggle {
             position: fixed; top: 15px; right: 15px; z-index: 30000;
             background: var(--primary); color: white; border: 1px solid rgba(255,255,255,0.3);
@@ -72,113 +109,90 @@
             font-size: 1rem; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
             transition: 0.3s; letter-spacing: 2px; touch-action: none;
         }
-        
-        /* AI模式下導航鈕發光 */
-        [data-theme="ai"] #nav-toggle {
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
-            border: none;
+        [data-theme="ai"] #nav-toggle { 
+            background: linear-gradient(90deg, #6c5ce7, #00d2ff); 
+            background-size: 200% 200%; animation: fluidGradient 3s infinite linear; border: none;
         }
 
-        #content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: #000; }
+        #content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: #000; z-index: 1; }
         #container.active #content { display: block; }
 
-        .nav-row {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px; width: 100%; max-width: 1200px; margin-bottom: 25px;
-        }
-
+        .nav-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; margin-bottom: 25px; }
         .mini-row { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-        .mini-row > * { min-height: 50px !important; height: 50px; box-sizing: border-box; }
 
         #clock { font-family: 'Courier New', monospace; font-size: 1.8rem; color: var(--glow); font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 173, 0.5); }
 
         .btn { 
-            padding: 5px 15px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
-            background: var(--btn-bg); 
-            background-image: var(--btn-gradient); /* 套用 AI 漸層 */
-            color: white; font-weight: bold; font-size: 1.1rem; 
+            padding: 15px 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+            background: var(--btn-bg); background-image: var(--btn-gradient);
+            background-size: 200% 200%; animation: fluidGradient var(--ani-speed) infinite linear;
+            color: white; font-weight: bold; font-size: 1.3rem; 
             transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;
-            text-align: center; width: 100%; box-sizing: border-box;
+            text-align: center; width: 100%; box-sizing: border-box; min-height: 85px;
             box-shadow: inset 0 0 15px rgba(255,255,255,0.05); border-bottom: 4px solid rgba(0,0,0,0.4);
         }
-        #nav-toggle, .nav-row:not(.mini-row) .btn { min-height: 85px; font-size: 1.3rem; }
 
-        .btn:hover { 
-            filter: brightness(1.2); 
-            transform: translateY(-3px); 
-            border-bottom-color: var(--accent);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        /* AI 模式懸停發光 */
-        [data-theme="ai"] .btn:hover {
-            box-shadow: 0 0 20px rgba(108, 92, 231, 0.4), 0 0 40px rgba(0, 210, 255, 0.2);
-            border-color: var(--accent);
+        .mini-row .btn, .mini-row #search-input, .mini-row .style-select-wrapper { 
+            min-height: 50px !important; 
+            height: 50px !important; 
+            font-size: 1.1rem; 
+            padding: 5px 15px; 
+            box-sizing: border-box;
         }
 
+        .btn:hover { filter: brightness(1.2); transform: translateY(-3px); border-bottom-color: var(--accent); }
         .btn.selected { background: var(--primary) !important; box-shadow: 0 0 20px rgba(0,0,0,0.4); }
-        [data-theme="ai"] .btn.selected {
-            background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
-            box-shadow: 0 0 25px rgba(108, 92, 231, 0.6);
+        [data-theme="ai"] .btn.selected { background: linear-gradient(135deg, #6c5ce7, #00d2ff) !important; border: none; }
+
+        #search-input { 
+            border-radius: 4px; 
+            border: 1px solid #444; 
+            background: rgba(0,0,0,0.3); 
+            color: white; 
+            width: 100%; 
+            outline: none; 
+            border-bottom: 3px solid var(--primary); 
+            margin: 0;
         }
 
-        #search-input {
-            padding: 12px; border-radius: 4px; border: 1px solid #444; 
-            background: rgba(0,0,0,0.3); color: white; width: 100%; font-size: 1.1rem;
-            outline: none; border-bottom: 3px solid var(--primary);
-            transition: 0.3s;
-        }
-        #search-input:focus { border-bottom-color: var(--accent); background: rgba(0,0,0,0.5); }
+        /* 功能按鈕特定裝飾色 */
+        #btn-split { border-left: 4px solid var(--primary); }
+        #btn-add { border-left: 4px solid #6c5ce7; }
+        #btn-save { border-left: 4px solid #f0932b; }
+        #manage-btn { border-left: 4px solid var(--accent); }
+        #apply-split { background: var(--accent); border: none; }
 
         .style-select-wrapper { position: relative; display: flex; width: 100%; padding: 0 !important; }
-        #style-btn { border-left: 4px solid #a29bfe; margin: 0; height: 100%; }
-        
-        .style-dropdown { 
-            position: absolute; top: 100%; left: 0; width: 100%; background: #1a1a2e; 
-            border: 1px solid #444; border-radius: 4px; display: none; z-index: 35000;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.8); overflow: hidden;
-        }
+        #style-btn { border-left: 4px solid #a29bfe; margin: 0; height: 50px; }
+        .style-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: #1a1a2e; border: 1px solid #444; border-radius: 4px; display: none; z-index: 35000; box-shadow: 0 8px 20px rgba(0,0,0,0.8); }
         .style-dropdown.show { display: block; }
         .style-option { padding: 15px; cursor: pointer; font-weight: bold; border-bottom: 1px solid #333; transition: 0.2s; color: #fff; font-size: 1rem; }
-        .style-option:hover { background: linear-gradient(90deg, var(--primary), var(--accent)); color: white; }
+        .style-option:hover { background: var(--primary); }
 
-        .row-label {
-            text-align: left; max-width: 1200px; margin: 0 auto 12px; 
-            font-weight: 900; font-size: 1.2rem; padding-left: 15px;
-            letter-spacing: 2px; border-left: 6px solid var(--primary); text-transform: uppercase;
-            transition: 0.3s;
+        .row-label { text-align: left; max-width: 1200px; margin: 0 auto 12px; font-weight: 900; font-size: 1.2rem; padding-left: 15px; letter-spacing: 2px; border-left: 6px solid var(--primary); text-transform: uppercase; transition: 0.3s; }
+        [data-theme="ai"] .row-label { border-left-image: linear-gradient(to bottom, #6c5ce7, #00d2ff) 1; color: #00d2ff; text-shadow: 0 0 10px rgba(0, 210, 255, 0.5); }
+
+        /* 分割視窗項目與進度條 */
+        .split-item { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; border: 1px solid #333; }
+        .split-item iframe { background: white; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: 0 0; transition: opacity 0.5s ease; }
+        .refresh-progress { 
+            position: absolute; bottom: 0; left: 0; height: 3px; background: var(--glow); width: 0%; 
+            z-index: 10; transition: width 0.1s linear; box-shadow: 0 0 10px var(--glow);
         }
-        [data-theme="ai"] .row-label {
-            border-left-image: linear-gradient(to bottom, var(--primary), var(--accent)) 1;
-            border-left-width: 6px;
-            color: var(--accent);
-            text-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
-        }
+
+        .split-controls { position: absolute; top: 10px; left: 10px; z-index: 20000; display: flex; gap: 5px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 4px; border: 1px solid var(--primary); }
+        .ctrl-btn { background: var(--primary); color: white; border: 1px solid rgba(255,255,255,0.3); width: 45px; height: 40px; cursor: pointer; font-size: 20px; font-weight: bold; }
+        .zoom-info { background: rgba(0, 0, 0, 0.7); color: var(--gold); height: 34px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
 
         @media (max-width: 600px) {
             #nav { padding-top: 60px; justify-content: flex-start; }
             .nav-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .mini-row { grid-template-columns: repeat(4, 1fr) !important; }
             .mini-row #clock-wrapper { grid-column: span 4; }
-            .mini-row #search-input { grid-column: span 2; }
-            .mini-row .style-select-wrapper { grid-column: span 2; }
+            .mini-row #search-input, .mini-row .style-select-wrapper { grid-column: span 2; }
             #clock { font-size: 2.5rem !important; }
             #welcome-text h1 { font-size: 2.2rem !important; }
         }
-
-        #welcome-text { text-shadow: 2px 2px 15px rgba(0,0,0,0.9); text-align: center; margin-bottom: 40px; }
-        #welcome-text h1 { font-size: 3.5rem; margin: 0; letter-spacing: 8px; font-weight: 900; color: var(--gold); text-shadow: 4px 4px 0px rgba(0,0,0,0.8); cursor: pointer; transition: 0.3s; }
-        [data-theme="ai"] #welcome-text h1 { color: #fff; text-shadow: 0 0 20px rgba(108, 92, 231, 0.8); }
-        #welcome-text p { font-size: 1.3rem; margin: 10px 0 0; letter-spacing: 5px; color: #ccc; }
-
-        .split-item { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; border: 1px solid #333; }
-        .split-item iframe { background: white; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: 0 0; }
-
-        .split-controls { position: absolute; top: 10px; left: 10px; z-index: 20000; display: flex; gap: 5px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 4px; border: 1px solid var(--primary); }
-        .ctrl-btn { background: var(--primary); color: white; border: 1px solid rgba(255,255,255,0.3); width: 45px; height: 40px; cursor: pointer; font-size: 20px; font-weight: bold; transition: 0.2s; }
-        .ctrl-btn:hover { filter: brightness(1.2); }
-        .zoom-info { background: rgba(0, 0, 0, 0.7); color: var(--gold); height: 34px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
 
         .split-chk { display: none; width: 25px; height: 25px; accent-color: var(--accent); margin-right: 8px; }
         #nav.show-chks .split-chk { display: inline-block; }
@@ -195,6 +209,25 @@
 
 <div id="container">
     <div id="nav">
+        <div class="ticker-wrap">
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {
+                "symbols": [
+                    {"proName": "FOREXCOM:DJI", "title": "道瓊指數"},
+                    {"proName": "FOREXCOM:SPX500", "title": "S&P 500"},
+                    {"proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100"},
+                    {"proName": "FX_IDC:USDTWD", "title": "美金/台幣"},
+                    {"description": "台積電 ADR", "proName": "NYSE:TSM"},
+                    {"description": "BDI 指數", "proName": "INDEX:BDI"}
+                ],
+                "showSymbolLogo": true, "colorTheme": "dark", "isTransparent": true, "displayMode": "adaptive", "locale": "zh_TW"
+                }
+                </script>
+            </div>
+        </div>
+
         <div id="welcome-text">
             <h1 onclick="goHome()">祥老師戰情室</h1>
             <p>監控即時行情，衝刺獲利</p>
@@ -202,12 +235,11 @@
 
         <div class="nav-row mini-row">
             <div id="clock-wrapper"><div id="clock"></div></div>
-            <button class="btn" style="background:#2d3436; border-left: 4px solid var(--primary);" onclick="toggleSplitMode()">分割</button>
-            <button id="apply-split" class="btn" style="background:var(--accent); display:none;" onclick="startSplit()">啟動</button>
-            <button class="btn" style="background:#2d3436; border-left: 4px solid #6c5ce7;" onclick="addBtn()">新增</button>
-            <button class="btn" style="background:#2d3436; border-left: 4px solid #f0932b;" onclick="saveCurrentLayout()">儲存</button>
-            <button id="manage-btn" class="btn" style="background:var(--accent);" onclick="toggleManageMode()">管理</button>
-            
+            <button id="btn-split" class="btn" onclick="toggleSplitMode()">分割</button>
+            <button id="apply-split" class="btn" style="display:none;" onclick="startSplit()">啟動</button>
+            <button id="btn-add" class="btn" onclick="addBtn()">新增</button>
+            <button id="btn-save" class="btn" onclick="saveCurrentLayout()">儲存</button>
+            <button id="manage-btn" class="btn" onclick="toggleManageMode()">管理</button>
             <div class="style-select-wrapper">
                 <button id="style-btn" class="btn" onclick="toggleStyleDropdown()">風格</button>
                 <div id="style-dropdown" class="style-dropdown">
@@ -216,7 +248,6 @@
                     <div class="style-option" onclick="setTheme('ai')">AI王</div>
                 </div>
             </div>
-
             <input type="text" id="search-input" placeholder="搜尋..." oninput="filterButtons()">
         </div>
 
@@ -260,7 +291,7 @@
             <div id="custom-list" style="display:contents"></div>
         </div>
     </div>
-    <div id="content"><iframe id="ifr"></iframe></div>
+    <div id="content"></div>
 </div>
 
 <script>
@@ -269,76 +300,80 @@
     let refreshConfigs = [];
     let wakeLock = null;
 
-    function toggleStyleDropdown() {
-        document.getElementById('style-dropdown').classList.toggle('show');
-    }
-
+    function toggleStyleDropdown() { document.getElementById('style-dropdown').classList.toggle('show'); }
     function setTheme(theme) {
         if (theme === 'maritime') { document.body.removeAttribute('data-theme'); } 
         else { document.body.setAttribute('data-theme', theme); }
         localStorage.setItem('user_theme', theme);
         document.getElementById('style-dropdown').classList.remove('show');
     }
+    function initTheme() { setTheme(localStorage.getItem('user_theme') || 'maritime'); }
 
-    function initTheme() {
-        const savedTheme = localStorage.getItem('user_theme') || 'maritime';
-        setTheme(savedTheme);
+    function refreshFrame(parent, oldIfr, url, myConf) {
+        const newIfr = document.createElement('iframe');
+        newIfr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation');
+        newIfr.style.position = 'absolute'; newIfr.style.top = '0'; newIfr.style.left = '0';
+        newIfr.style.width = oldIfr.style.width; newIfr.style.height = oldIfr.style.height;
+        newIfr.style.transform = oldIfr.style.transform; newIfr.style.transformOrigin = '0 0';
+        newIfr.style.opacity = '0'; newIfr.style.transition = 'opacity 0.5s ease';
+        newIfr.style.zIndex = '0'; newIfr.src = url;
+        parent.appendChild(newIfr);
+        if (myConf.progress) { myConf.progress.style.transition = 'none'; myConf.progress.style.width = '0%'; }
+        newIfr.onload = () => {
+            newIfr.style.opacity = '1'; newIfr.style.zIndex = '1';
+            setTimeout(() => { if (oldIfr.parentNode === parent) parent.removeChild(oldIfr); myConf.ifr = newIfr; }, 500);
+        };
     }
-
-    window.onclick = function(event) {
-        if (!event.target.matches('#style-btn')) {
-            const dropdowns = document.getElementsByClassName("style-dropdown");
-            for (let i = 0; i < dropdowns.length; i++) {
-                if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
-            }
-        }
-    }
-
-    async function requestWakeLock() {
-        try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (err) {}
-    }
-
-    function clearAllTimers() { refreshConfigs.forEach(conf => { if (conf.timer) clearInterval(conf.timer); }); refreshConfigs = []; }
-    function toggleNav() { container.classList.toggle('nav-hidden'); updateToggleText(); }
-    function updateToggleText() { const b = document.getElementById('nav-toggle'); b.innerText = container.classList.contains('nav-hidden') ? '選單 🔽' : '選單 🔼'; }
-    function goHome() { clearAllTimers(); container.classList.remove('active', 'nav-hidden'); updateToggleText(); content.classList.remove('split-grid'); content.innerHTML = ''; document.getElementById('nav').classList.remove('show-chks'); document.getElementById('apply-split').style.display = 'none'; document.querySelectorAll('.split-chk').forEach(c => c.checked = false); document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected')); if (activeExtWin && !activeExtWin.closed) activeExtWin.close(); activeExtWin = null; }
 
     function createViewElement(url, initialInterval = 0, initialScale = 1.0) {
         const wrapper = document.createElement('div'); wrapper.className = 'split-item';
         const controls = document.createElement('div'); controls.className = 'split-controls';
-        const refBtn = createCtrlBtn('🔄', () => { ifr.src = url; });
-        const autoBtn = createCtrlBtn('🕒', null);
-        const zinBtn = createCtrlBtn('➕', () => updateZoom(0.1));
-        const zoutBtn = createCtrlBtn('➖', () => updateZoom(-0.1));
-        const zInfo = document.createElement('span'); zInfo.className = 'zoom-info'; zInfo.innerText = Math.round(initialScale * 100) + '%';
-        const ifr = document.createElement('iframe'); ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation'); ifr.src = url;
-        const myConf = { ifr, btn: autoBtn, interval: initialInterval, timer: null, url, scale: initialScale };
+        const progress = document.createElement('div'); progress.className = 'refresh-progress';
+        const ifr = document.createElement('iframe'); 
+        ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation'); 
+        ifr.src = url; ifr.style.zIndex = '1';
+        const myConf = { ifr, interval: initialInterval, timer: null, url, scale: initialScale, parent: wrapper, progress: progress };
         refreshConfigs.push(myConf);
-        const updateZoom = (delta) => { myConf.scale = Math.max(0.3, Math.min(2.0, Math.round((myConf.scale + delta) * 10) / 10)); ifr.style.width = (100 / myConf.scale) + '%'; ifr.style.height = (100 / myConf.scale) + '%'; ifr.style.transform = `scale(${myConf.scale})`; zInfo.innerText = Math.round(myConf.scale * 100) + '%'; };
+        const updateZoom = (delta) => { 
+            myConf.scale = Math.max(0.3, Math.min(2.0, Math.round((myConf.scale + delta) * 10) / 10)); 
+            myConf.ifr.style.width = (100 / myConf.scale) + '%'; myConf.ifr.style.height = (100 / myConf.scale) + '%'; 
+            myConf.ifr.style.transform = `scale(${myConf.scale})`; zInfo.innerText = Math.round(myConf.scale * 100) + '%'; 
+        };
         if (initialScale !== 1.0) updateZoom(0);
         const intervals = [0, 3000, 5000, 10000, 30000];
         const labels = ['🕒', '🕒 3s', '🕒 5s', '🕒 10s', '🕒 30s'];
-        let idx = intervals.indexOf(initialInterval);
-        if (idx === -1) idx = 0;
-        const setupTimer = () => { if (myConf.timer) clearInterval(myConf.timer); autoBtn.innerHTML = labels[idx]; autoBtn.style.background = myConf.interval > 0 ? 'var(--accent)' : ''; if (myConf.interval > 0) { myConf.timer = setInterval(() => { ifr.src = ifr.src; }, myConf.interval); } };
-        autoBtn.onclick = () => { idx = (idx + 1) % intervals.length; myConf.interval = intervals[idx]; setupTimer(); };
+        let idx = intervals.indexOf(initialInterval); if (idx === -1) idx = 0;
+        const setupTimer = () => { 
+            if (myConf.timer) { clearInterval(myConf.timer); myConf.timer = null; }
+            autoBtn.innerHTML = labels[idx]; autoBtn.style.background = myConf.interval > 0 ? 'var(--accent)' : ''; 
+            if (myConf.interval > 0) {
+                progress.style.transition = `width ${myConf.interval}ms linear`;
+                setTimeout(() => { progress.style.width = '100%'; }, 50);
+                myConf.timer = setInterval(() => { 
+                    refreshFrame(wrapper, myConf.ifr, url, myConf);
+                    progress.style.transition = 'none'; progress.style.width = '0%';
+                    setTimeout(() => { progress.style.transition = `width ${myConf.interval}ms linear`; progress.style.width = '100%'; }, 50);
+                }, myConf.interval); 
+            } else { progress.style.width = '0%'; }
+        };
+        const refBtn = createCtrlBtn('🔄', () => { refreshFrame(wrapper, myConf.ifr, url, myConf); });
+        const autoBtn = createCtrlBtn('🕒', null); autoBtn.onclick = () => { idx = (idx + 1) % intervals.length; myConf.interval = intervals[idx]; setupTimer(); };
+        const zinBtn = createCtrlBtn('➕', () => updateZoom(0.1));
+        const zoutBtn = createCtrlBtn('➖', () => updateZoom(-0.1));
+        const zInfo = document.createElement('span'); zInfo.className = 'zoom-info'; zInfo.innerText = Math.round(initialScale * 100) + '%';
         if (initialInterval > 0) setupTimer();
         [refBtn, autoBtn, zinBtn, zoutBtn, zInfo].forEach(el => controls.appendChild(el));
-        wrapper.appendChild(controls); wrapper.appendChild(ifr);
+        wrapper.appendChild(controls); wrapper.appendChild(ifr); wrapper.appendChild(progress);
         return wrapper;
     }
 
     function createCtrlBtn(text, onClick) { const b = document.createElement('button'); b.className = 'ctrl-btn'; b.innerHTML = text; if (onClick) b.onclick = onClick; return b; }
-
     function loadPage(btn, url, interval = 0, scale = 1.0) {
         if (document.getElementById('nav').classList.contains('show-chks')) { const chk = btn.parentElement.querySelector('.split-chk'); if (chk) chk.checked = !chk.checked; return; }
         container.classList.add('active'); if (!container.classList.contains('nav-hidden')) container.classList.add('nav-hidden');
-        updateToggleText(); content.classList.remove('split-grid'); content.innerHTML = ''; clearAllTimers();
-        content.appendChild(createViewElement(url, interval, scale));
+        updateToggleText(); content.innerHTML = ''; clearAllTimers(); content.appendChild(createViewElement(url, interval, scale));
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected')); if (btn) btn.classList.add('selected');
-        setTimeout(() => { const s = document.getElementById('search-input'); if (s.value) { s.value = ''; filterButtons(); } }, 300);
     }
-
     function toggleSplitMode() { const nav = document.getElementById('nav'); nav.classList.toggle('show-chks'); document.getElementById('apply-split').style.display = nav.classList.contains('show-chks') ? 'inline-block' : 'none'; }
     function startSplit(urls = null) {
         const selected = urls || Array.from(document.querySelectorAll('.split-chk:checked')).map(cb => cb.value);
@@ -349,51 +384,53 @@
         selected.forEach(u => { const val = typeof u === 'string' ? u : u.url; content.appendChild(createViewElement(val, u.interval || 0, u.scale || 1.0)); });
         if (!urls) toggleSplitMode();
     }
-
     function saveCurrentLayout() {
         if (!container.classList.contains('active')) return alert("請先開啟網頁");
-        const name = prompt("配置名稱：", "我的配置 " + new Date().toLocaleTimeString());
-        if (!name) return;
+        const name = prompt("配置名稱：", "我的配置 " + new Date().toLocaleTimeString()); if (!name) return;
         const preset = { name, isSplit: content.classList.contains('split-grid'), views: refreshConfigs.map(c => ({ url: c.url, interval: c.interval, scale: c.scale })) };
         const presets = JSON.parse(localStorage.getItem('user_presets') || "[]"); presets.push(preset); localStorage.setItem('user_presets', JSON.stringify(presets)); renderPresets();
     }
-
     let isManageMode = false;
     function toggleManageMode() { isManageMode = !isManageMode; document.body.classList.toggle('manage-mode', isManageMode); document.getElementById('manage-btn').innerText = isManageMode ? '✅ 完成' : '管理'; renderPresets(); renderCustomBtns(); }
-
     function renderPresets() {
         const row = document.getElementById('presets-row'); const list = document.getElementById('presets-list'); const presets = JSON.parse(localStorage.getItem('user_presets') || "[]");
         if (presets.length === 0) { row.style.display = 'none'; return; } row.style.display = 'grid'; list.innerHTML = '';
         presets.forEach((p, i) => { const wrapper = document.createElement('div'); wrapper.className = 'btn-wrapper'; const btn = document.createElement('button'); btn.className = 'btn'; btn.style.background = '#4834d4'; btn.innerText = p.name; btn.onclick = () => { if (isManageMode) return; p.isSplit ? startSplit(p.views) : loadPage(null, p.views[0].url, p.views[0].interval, p.views[0].scale); }; const del = document.createElement('div'); del.className = 'del-badge'; del.innerText = '×'; del.onclick = (e) => { e.stopPropagation(); if (confirm(`刪除「${p.name}」？`)) { presets.splice(i, 1); localStorage.setItem('user_presets', JSON.stringify(presets)); renderPresets(); } }; wrapper.appendChild(btn); wrapper.appendChild(del); list.appendChild(wrapper); });
     }
-
     function updateClock() { const now = new Date(); document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0'); }
     setInterval(updateClock, 1000); updateClock();
-
     function filterButtons() { const term = document.getElementById('search-input').value.toLowerCase(); document.querySelectorAll('.btn-wrapper, .btn.ext').forEach(el => { const name = el.getAttribute('data-name') || el.innerText; el.style.display = name.toLowerCase().includes(term) ? '' : 'none'; }); }
-
     function addBtn() { const name = prompt("名稱："); const url = prompt("網址：", "https://"); if (!name || !url) return; const isExt = confirm("另開新視窗？"); const btns = JSON.parse(localStorage.getItem('user_btns') || "[]"); btns.push({name, url, isExt}); localStorage.setItem('user_btns', JSON.stringify(btns)); renderCustomBtns(); }
-
     function renderCustomBtns() {
         const list = document.getElementById('custom-list'); list.innerHTML = ''; const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
         btns.forEach((b, i) => { const wrapper = document.createElement('div'); wrapper.className = 'btn-wrapper'; wrapper.setAttribute('data-name', b.name); const chk = document.createElement('input'); chk.type = 'checkbox'; chk.className = 'split-chk'; chk.value = b.url; const btn = document.createElement('button'); btn.className = 'btn' + (b.isExt ? ' ext' : ''); btn.innerText = b.name + (b.isExt ? " ↗" : ""); btn.onclick = () => { if (isManageMode) return; b.isExt ? openExtPage(b.url) : loadPage(btn, b.url); }; const del = document.createElement('div'); del.className = 'del-badge'; del.innerText = '×'; del.onclick = (e) => { e.stopPropagation(); if (confirm(`刪除「${b.name}」？`)) { btns.splice(i, 1); localStorage.setItem('user_btns', JSON.stringify(btns)); renderCustomBtns(); } }; wrapper.appendChild(chk); wrapper.appendChild(btn); wrapper.appendChild(del); list.appendChild(wrapper); });
         filterButtons();
     }
-
-    let activeExtWin = null;
-    function openExtPage(url) { activeExtWin = window.open(url, '_blank'); }
-
-    document.addEventListener('visibilitychange', async () => { if (document.visibilityState === 'hidden') { refreshConfigs.forEach(conf => { if (conf.timer) { clearInterval(conf.timer); conf.timer = null; } }); } else { refreshConfigs.forEach(conf => { if (conf.interval > 0) { conf.ifr.src = conf.ifr.src; conf.timer = setInterval(() => { conf.ifr.src = conf.ifr.src; }, conf.interval); } }); if (wakeLock !== null) await requestWakeLock(); } });
+    let activeExtWin = null; function openExtPage(url) { activeExtWin = window.open(url, '_blank'); }
+    window.onclick = function(event) { if (!event.target.matches('#style-btn')) { const dropdowns = document.getElementsByClassName("style-dropdown"); for (let i = 0; i < dropdowns.length; i++) { if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show'); } } }
+    async function requestWakeLock() { try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (err) {} }
+    function clearAllTimers() { refreshConfigs.forEach(conf => { if (conf.timer) clearInterval(conf.timer); }); refreshConfigs = []; }
+    function toggleNav() { container.classList.toggle('nav-hidden'); updateToggleText(); }
+    function updateToggleText() { const b = document.getElementById('nav-toggle'); b.innerText = container.classList.contains('nav-hidden') ? '選單 🔽' : '選單 🔼'; }
+    function goHome() { clearAllTimers(); container.classList.remove('active', 'nav-hidden'); updateToggleText(); content.innerHTML = ''; document.getElementById('nav').classList.remove('show-chks'); document.getElementById('apply-split').style.display = 'none'; document.querySelectorAll('.split-chk').forEach(c => c.checked = false); document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected')); }
+    document.addEventListener('visibilitychange', async () => { if (document.visibilityState === 'hidden') { refreshConfigs.forEach(conf => { if (conf.timer) { clearInterval(conf.timer); conf.timer = null; } }); } else { refreshConfigs.forEach(conf => { if (conf.interval > 0) { refreshFrame(conf.parent, conf.ifr, conf.url, conf); setupTimerOnRestore(conf); } }); if (wakeLock !== null) await requestWakeLock(); } });
+    function setupTimerOnRestore(myConf) {
+        if (myConf.timer) clearInterval(myConf.timer);
+        myConf.progress.style.transition = 'none'; myConf.progress.style.width = '0%';
+        setTimeout(() => { myConf.progress.style.transition = `width ${myConf.interval}ms linear`; myConf.progress.style.width = '100%'; }, 50);
+        myConf.timer = setInterval(() => { 
+            refreshFrame(myConf.parent, myConf.ifr, myConf.url, myConf);
+            myConf.progress.style.transition = 'none'; myConf.progress.style.width = '0%';
+            setTimeout(() => { myConf.progress.style.transition = `width ${myConf.interval}ms linear`; myConf.progress.style.width = '100%'; }, 50);
+        }, myConf.interval);
+    }
     document.addEventListener('click', () => { if (!wakeLock) requestWakeLock(); }, { once: true });
-
     const navToggle = document.getElementById('nav-toggle'); let isDragging = false, startX, startY, initialX, initialY;
     function initNavPos() { try { const p = JSON.parse(localStorage.getItem('nav_btn_pos')); if (p) { const l = parseFloat(p.left), t = parseFloat(p.top); if (l > 0 && l < window.innerWidth && t > 0 && t < window.innerHeight) { navToggle.style.left = p.left; navToggle.style.top = p.top; navToggle.style.right = 'auto'; } } } catch(e) {} }
     navToggle.onpointerdown = (e) => { isDragging = false; startX = e.clientX; startY = e.clientY; const r = navToggle.getBoundingClientRect(); initialX = r.left; initialY = r.top; navToggle.setPointerCapture(e.pointerId); navToggle.style.transition = 'none'; };
     navToggle.onpointermove = (e) => { if (e.buttons === 0) return; const dx = e.clientX - startX, dy = e.clientY - startY; if (Math.abs(dx) > 5 || Math.abs(dy) > 5) { isDragging = true; navToggle.style.left = (initialX + dx) + 'px'; navToggle.style.top = (initialY + dy) + 'px'; navToggle.style.right = 'auto'; } };
     navToggle.onpointerup = (e) => { navToggle.releasePointerCapture(e.pointerId); navToggle.style.transition = '0.3s'; if (!isDragging) toggleNav(); else localStorage.setItem('nav_btn_pos', JSON.stringify({ left: navToggle.style.left, top: navToggle.style.top })); };
-
-    initTheme();
-    initNavPos(); renderCustomBtns(); renderPresets();
+    initTheme(); initNavPos(); renderCustomBtns(); renderPresets();
 </script>
 </body>
 </html>
