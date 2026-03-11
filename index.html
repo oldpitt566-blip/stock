@@ -3,350 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>祥老師的投資戰情室 - 嵌入優化版</title>
-    <style>
+    <title>祥老師的投資戰情室 - AI王風格版</title>
+    <style id="theme-style">
+        /* 預設為航海王風格變數 */
         :root {
-            --bg-overlay: rgba(10, 10, 10, 0.45); /* 調淡底色 */
-            --nav-bg: rgba(20, 20, 20, 0.85);
-            --btn: rgba(45, 45, 45, 0.7); /* 按鈕也稍微調淡 */
+            --primary: #006241; 
+            --accent: #e60012;  
+            --bg-nav: rgba(15, 20, 25, 0.65); 
+            --btn-bg: rgba(45, 50, 55, 0.7);
+            --text: #ffffff;
+            --gold: #f1c40f;
+            --glow: #00d2ad;
+            --bg-img: url('sea.png'); 
+            --btn-gradient: none;
+        }
+
+        /* 祥老師風格變數 */
+        [data-theme="shiang"] {
+            --primary: #00b894; 
+            --accent: #e84393;
+            --bg-nav: rgba(10, 10, 10, 0.6); 
+            --btn-bg: rgba(45, 45, 45, 0.6);
             --text: #eee;
-            --active: #00b894;
-            --external: #e67e22;
+            --gold: #00d2ad;
+            --glow: #00b894;
+            --bg-img: url('hsiang.png'); 
+            --btn-gradient: none;
+        }
+
+        /* AI王風格：紫色與藍色的流動漸層 */
+        [data-theme="ai"] {
+            --primary: #6c5ce7; /* 核心紫 */
+            --accent: #00d2ff;  /* 科技藍 */
+            --bg-nav: rgba(10, 10, 35, 0.7); /* 深海藍透明 */
+            --btn-bg: rgba(40, 40, 80, 0.5);
+            --text: #ffffff;
+            --gold: #00d2ff; /* 在 AI 模式下金改為電藍 */
+            --glow: #a29bfe;
+            --bg-img: url('tsmc.png'); 
+            --btn-gradient: linear-gradient(135deg, rgba(108, 92, 231, 0.6), rgba(0, 210, 255, 0.6));
         }
 
         body, html { 
-            margin: 0; 
-            height: 100%; 
-            font-family: "Microsoft JhengHei", sans-serif; 
-            overflow: hidden; 
-            color: var(--text);
-            background: url('shipping-bg.webp') no-repeat center center fixed;
-            background-size: cover;
+            margin: 0; height: 100%; font-family: "Microsoft JhengHei", "Segoe UI", sans-serif; 
+            overflow: hidden; color: var(--text);
+            background: var(--bg-img) no-repeat center center fixed; background-size: cover;
+            transition: background 0.8s ease; 
         }
         
-        #container { 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; 
-            background: var(--bg-overlay);
-            backdrop-filter: blur(3px);
-        }
+        #container { display: flex; flex-direction: column; height: 100vh; background: rgba(0, 0, 0, 0.4); }
         
         #nav { 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            padding: 20px; transition: transform 0.4s ease;
-            background: var(--bg-overlay);
-            backdrop-filter: blur(8px);
-            z-index: 25000; /* 提升層級以覆蓋控制按鈕 */
-            overflow-y: auto;
-            box-sizing: border-box;
+            padding: 40px 20px; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-nav); 
+            z-index: 25000; overflow-y: auto; box-sizing: border-box;
+            border-bottom: 5px solid var(--primary);
+            backdrop-filter: blur(10px); /* 僅在選單區域保留輕微磨砂感以保護文字 */
         }
         
-        /* 選單隱藏樣式：向上滑出畫面 */
-        #container.nav-hidden #nav {
-            transform: translateY(-100%);
-        }
+        #container.nav-hidden #nav { transform: translateY(-100%); }
         
         #nav-toggle {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 30000;
-            background: rgba(108, 92, 231, 0.95);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.4);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: block !important; /* 強制顯示 */
-            font-size: 1rem;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            backdrop-filter: blur(6px);
-            transition: 0.3s;
-            touch-action: none; 
+            position: fixed; top: 15px; right: 15px; z-index: 30000;
+            background: var(--primary); color: white; border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px 24px; border-radius: 4px; cursor: pointer;
+            font-size: 1rem; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            transition: 0.3s; letter-spacing: 2px; touch-action: none;
         }
         
-        #nav-toggle:hover { background: rgba(108, 92, 231, 1); transform: scale(1.05); }
-        
-        /* 確保選單切換鈕始終顯示，或在 active 時顯示 */
-        #nav-toggle { display: block; } 
+        /* AI模式下導航鈕發光 */
+        [data-theme="ai"] #nav-toggle {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
+            border: none;
+        }
 
-        #content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: white; }
+        #content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: #000; }
         #container.active #content { display: block; }
 
         .nav-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-            width: 100%;
-            max-width: 1200px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px; width: 100%; max-width: 1200px; margin-bottom: 25px;
         }
 
-        /* 系統功能與常用配置專用的半高樣式 */
-        .mini-row {
-            /* 網頁版恢復與下方按鈕一致的寬度 (180px基準) */
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        .mini-row .btn, 
-        .mini-row #search-input,
-        .mini-row #clock-wrapper {
-            min-height: 45px !important;
-            height: 45px;
-            font-size: 1.35rem; /* 保持放大後的字體 */
-            padding: 5px 10px;
-        }
+        .mini-row { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        .mini-row > * { min-height: 50px !important; height: 50px; box-sizing: border-box; }
 
-        #clock-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* 移除底色與邊框 */
-        }
-
-        #clock {
-            font-family: monospace;
-            font-size: 1.6rem !important; /* 放大時間 */
-            color: #00b894;
-            font-weight: bold;
-            margin: 0 !important;
-        }
+        #clock { font-family: 'Courier New', monospace; font-size: 1.8rem; color: var(--glow); font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 173, 0.5); }
 
         .btn { 
-            padding: 15px 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
-            background: var(--btn); color: white; font-weight: bold; font-size: 1.5rem; 
-            transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            text-align: center;
-            min-height: 80px;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 5px 15px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+            background: var(--btn-bg); 
+            background-image: var(--btn-gradient); /* 套用 AI 漸層 */
+            color: white; font-weight: bold; font-size: 1.1rem; 
+            transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;
+            text-align: center; width: 100%; box-sizing: border-box;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.05); border-bottom: 4px solid rgba(0,0,0,0.4);
+        }
+        #nav-toggle, .nav-row:not(.mini-row) .btn { min-height: 85px; font-size: 1.3rem; }
+
+        .btn:hover { 
+            filter: brightness(1.2); 
+            transform: translateY(-3px); 
+            border-bottom-color: var(--accent);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* AI 模式懸停發光 */
+        [data-theme="ai"] .btn:hover {
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.4), 0 0 40px rgba(0, 210, 255, 0.2);
+            border-color: var(--accent);
+        }
+
+        .btn.selected { background: var(--primary) !important; box-shadow: 0 0 20px rgba(0,0,0,0.4); }
+        [data-theme="ai"] .btn.selected {
+            background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
+            box-shadow: 0 0 25px rgba(108, 92, 231, 0.6);
         }
 
         #search-input {
-            padding: 10px; border-radius: 6px; border: 1px solid #555; 
-            background: #222; color: white; width: 100%; font-size: 1rem;
-            box-sizing: border-box;
-            outline: none;
+            padding: 12px; border-radius: 4px; border: 1px solid #444; 
+            background: rgba(0,0,0,0.3); color: white; width: 100%; font-size: 1.1rem;
+            outline: none; border-bottom: 3px solid var(--primary);
+            transition: 0.3s;
+        }
+        #search-input:focus { border-bottom-color: var(--accent); background: rgba(0,0,0,0.5); }
+
+        .style-select-wrapper { position: relative; display: flex; width: 100%; padding: 0 !important; }
+        #style-btn { border-left: 4px solid #a29bfe; margin: 0; height: 100%; }
+        
+        .style-dropdown { 
+            position: absolute; top: 100%; left: 0; width: 100%; background: #1a1a2e; 
+            border: 1px solid #444; border-radius: 4px; display: none; z-index: 35000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.8); overflow: hidden;
+        }
+        .style-dropdown.show { display: block; }
+        .style-option { padding: 15px; cursor: pointer; font-weight: bold; border-bottom: 1px solid #333; transition: 0.2s; color: #fff; font-size: 1rem; }
+        .style-option:hover { background: linear-gradient(90deg, var(--primary), var(--accent)); color: white; }
+
+        .row-label {
+            text-align: left; max-width: 1200px; margin: 0 auto 12px; 
+            font-weight: 900; font-size: 1.2rem; padding-left: 15px;
+            letter-spacing: 2px; border-left: 6px solid var(--primary); text-transform: uppercase;
+            transition: 0.3s;
+        }
+        [data-theme="ai"] .row-label {
+            border-left-image: linear-gradient(to bottom, var(--primary), var(--accent)) 1;
+            border-left-width: 6px;
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
         }
 
         @media (max-width: 600px) {
-            #nav { 
-                justify-content: flex-start !important; /* 從頂部開始排版，防止裁切 */
-                padding-top: 40px; 
-            }
-            .nav-row {
-                grid-template-columns: repeat(2, 1fr); /* 改為二欄配置 */
-                gap: 10px;
-                padding: 10px;
-            }
-            /* 手機版功能列：維持長度減半，達成兩兩一組效果 */
-            .mini-row {
-                grid-template-columns: repeat(4, 1fr) !important; /* 一排顯示四個小按鈕 */
-                gap: 8px !important;
-            }
-            .mini-row .btn, 
-            .mini-row #search-input {
-                min-height: 45px !important;
-                height: 45px;
-                font-size: 1.2rem; /* 放大至與主按鈕一致 */
-                padding: 2px 0; /* 縮減左右內邊距確保文字不溢出 */
-            }
-            
-            /* 手機版時間層：維持巨大化置頂 */
-            #clock-wrapper { 
-                grid-column: span 4 !important; /* 配合四小格改為 span 4 */
-                display: flex !important;
-                height: 80px !important;
-                margin-bottom: 15px !important;
-                background: rgba(0,0,0,0.2);
-                border-radius: 8px;
-            }
-            #clock { 
-                font-size: 3rem !important; /* 再次放大時間 */
-                color: #00d2ad !important;
-                display: block !important;
-            }
-
-            /* 手機版標題層：簡化為「祥老師」 */
-            #welcome-text { 
-                display: block !important;
-                transform: translateX(0) !important; 
-                text-align: center !important; 
-                margin: 0 0 25px 0 !important;
-                width: 100% !important;
-            }
-            #welcome-text h1 { 
-                font-size: 2.2rem !important; 
-                letter-spacing: 4px !important; 
-                display: block !important;
-            }
-            .full-title { display: none !important; }
-            .short-title { display: inline-block !important; }
-            #welcome-text p { display: none !important; } 
-
-            .btn { 
-                font-size: 1.2rem; /* 放大主按鈕字體 */
-                padding: 15px 10px; 
-                min-height: 90px; /* 增加按鈕高度 */
-                height: auto;
-                line-height: 1.4;
-            }
+            #nav { padding-top: 60px; justify-content: flex-start; }
+            .nav-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .mini-row { grid-template-columns: repeat(4, 1fr) !important; }
+            .mini-row #clock-wrapper { grid-column: span 4; }
+            .mini-row #search-input { grid-column: span 2; }
+            .mini-row .style-select-wrapper { grid-column: span 2; }
+            #clock { font-size: 2.5rem !important; }
+            #welcome-text h1 { font-size: 2.2rem !important; }
         }
 
-        /* 勾選框邏輯 */
-        .split-chk { 
-            display: none; width: 25px; height: 25px; 
-            cursor: pointer; accent-color: #e84393;
-            margin-right: 8px; align-self: center;
-        }
+        #welcome-text { text-shadow: 2px 2px 15px rgba(0,0,0,0.9); text-align: center; margin-bottom: 40px; }
+        #welcome-text h1 { font-size: 3.5rem; margin: 0; letter-spacing: 8px; font-weight: 900; color: var(--gold); text-shadow: 4px 4px 0px rgba(0,0,0,0.8); cursor: pointer; transition: 0.3s; }
+        [data-theme="ai"] #welcome-text h1 { color: #fff; text-shadow: 0 0 20px rgba(108, 92, 231, 0.8); }
+        #welcome-text p { font-size: 1.3rem; margin: 10px 0 0; letter-spacing: 5px; color: #ccc; }
+
+        .split-item { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; border: 1px solid #333; }
+        .split-item iframe { background: white; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: 0 0; }
+
+        .split-controls { position: absolute; top: 10px; left: 10px; z-index: 20000; display: flex; gap: 5px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 4px; border: 1px solid var(--primary); }
+        .ctrl-btn { background: var(--primary); color: white; border: 1px solid rgba(255,255,255,0.3); width: 45px; height: 40px; cursor: pointer; font-size: 20px; font-weight: bold; transition: 0.2s; }
+        .ctrl-btn:hover { filter: brightness(1.2); }
+        .zoom-info { background: rgba(0, 0, 0, 0.7); color: var(--gold); height: 34px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+
+        .split-chk { display: none; width: 25px; height: 25px; accent-color: var(--accent); margin-right: 8px; }
         #nav.show-chks .split-chk { display: inline-block; }
         .btn-wrapper { display: flex; align-items: center; width: 100%; position: relative; }
-
-        /* 刪除圖標樣式 */
-        .del-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #ff4757;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-            cursor: pointer;
-            border: 2px solid white;
-            line-height: 1;
-        }
+        .del-badge { position: absolute; top: -10px; right: -10px; background: var(--accent); color: white; width: 32px; height: 32px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; cursor: pointer; border: 2px solid white; z-index: 100; }
         body.manage-mode .del-badge { display: flex; }
-        
-        /* 系統功能與搜尋框在管理模式下維持正常點擊 */
-        body.manage-mode .mini-row .btn, 
-        body.manage-mode #search-input,
-        body.manage-mode #nav-toggle { pointer-events: auto !important; animation: none !important; }
-
-        /* 僅讓可刪除的按鈕（數據分頁、自訂連結、常用配置）進入編輯狀態 */
-        body.manage-mode .btn-wrapper .btn,
-        body.manage-mode #ext-row .btn { animation: shake 0.3s infinite; pointer-events: none; }
-        
-        body.manage-mode .del-badge { pointer-events: auto; }
-
-        @keyframes shake {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(1deg); }
-            75% { transform: rotate(-1deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        #welcome-text { 
-            text-shadow: 2px 2px 15px rgba(0,0,0,0.9); 
-            text-align: center; 
-            margin-bottom: 40px; 
-            width: 100%;
-            transform: translateX(-40ch); /* 向右修正 20 個字元，總計偏移 -40ch */
-        }
-        #welcome-text h1 { 
-            font-size: 3rem; margin: 0; letter-spacing: 6px; font-weight: 900; 
-            cursor: pointer; /* 增加點擊游標 */
-            transition: 0.3s;
-        }
-        #welcome-text h1:hover {
-            color: #00d2ad; /* 懸停變色反饋 */
-            transform: scale(1.02);
-        }
-        .short-title { display: none; } /* 電腦版隱藏簡稱 */
-
-        #welcome-text p { font-size: 1.2rem; margin: 10px 0 0; letter-spacing: 3px; opacity: 0.9; }
-
-        /* 分割畫面佈局修復 */
-        #content.split-grid {
-            display: grid !important;
-            gap: 10px;
-            background: #111;
-            padding: 8px;
-            grid-auto-rows: 1fr;
-            height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .split-item { 
-            position: relative; 
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden; 
-            background: #000;
-            border: 1px solid #333;
-            border-radius: 4px;
-        }
-
-        .split-item iframe { 
-            background: white; 
-            border: none;
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            transform-origin: 0 0 !important;
-            transition: transform 0.2s ease-out;
-            z-index: 1;
-        }
-
-        /* 視窗控制項 (縮放、重整) 修復 */
-        .split-controls {
-            position: absolute; 
-            top: 10px; 
-            left: 10px; 
-            z-index: 20000;
-            display: flex; 
-            gap: 5px; 
-            pointer-events: auto;
-            /* 確保控制項不隨 Flex 或 Grid 壓縮 */
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-        .ctrl-btn {
-            background: rgba(0, 210, 173, 0.9); 
-            color: white; 
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 4px; 
-            /* 使用固定像素，防止縮放 */
-            width: 45px;
-            height: 40px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 24px; 
-            font-weight: bold; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            transition: 0.2s;
-        }
-        .ctrl-btn:hover { background: rgba(0, 210, 173, 1); transform: translateY(-2px); }
-        .zoom-info {
-            background: rgba(0, 0, 0, 0.7);
-            color: #00d2ad;
-            height: 34px;
-            padding: 0 8px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(1deg); } 75% { transform: rotate(-1deg); } 100% { transform: rotate(0deg); } }
+        body.manage-mode .btn-wrapper .btn { animation: shake 0.3s infinite; pointer-events: none; }
     </style>
-
 </head>
 <body>
 
@@ -355,31 +196,35 @@
 <div id="container">
     <div id="nav">
         <div id="welcome-text">
-            <h1 onclick="goHome()">
-                <span class="full-title">祥老師戰情室</span>
-                <span class="short-title">祥老師戰情室</span>
-            </h1>
+            <h1 onclick="goHome()">祥老師戰情室</h1>
             <p>監控即時行情，衝刺獲利</p>
         </div>
 
-        <!-- 第一排：系統功能 -->
         <div class="nav-row mini-row">
             <div id="clock-wrapper"><div id="clock"></div></div>
-            <button class="btn" style="background:#2d3436" onclick="toggleSplitMode()">分割</button>
-            <button id="apply-split" class="btn" style="background:#e84393; display:none;" onclick="startSplit()">啟動</button>
-            <button class="btn" style="background:#6c5ce7" onclick="addBtn()">新增</button>
-            <button class="btn" style="background:#f0932b" onclick="saveCurrentLayout()">儲存</button>
-            <button id="manage-btn" class="btn" style="background:#eb4d4b" onclick="toggleManageMode()">管理</button>
-            <input type="text" id="search-input" placeholder="搜尋" oninput="filterButtons()">
+            <button class="btn" style="background:#2d3436; border-left: 4px solid var(--primary);" onclick="toggleSplitMode()">分割</button>
+            <button id="apply-split" class="btn" style="background:var(--accent); display:none;" onclick="startSplit()">啟動</button>
+            <button class="btn" style="background:#2d3436; border-left: 4px solid #6c5ce7;" onclick="addBtn()">新增</button>
+            <button class="btn" style="background:#2d3436; border-left: 4px solid #f0932b;" onclick="saveCurrentLayout()">儲存</button>
+            <button id="manage-btn" class="btn" style="background:var(--accent);" onclick="toggleManageMode()">管理</button>
+            
+            <div class="style-select-wrapper">
+                <button id="style-btn" class="btn" onclick="toggleStyleDropdown()">風格</button>
+                <div id="style-dropdown" class="style-dropdown">
+                    <div class="style-option" onclick="setTheme('shiang')">祥老師</div>
+                    <div class="style-option" onclick="setTheme('maritime')">航海王</div>
+                    <div class="style-option" onclick="setTheme('ai')">AI王</div>
+                </div>
+            </div>
+
+            <input type="text" id="search-input" placeholder="搜尋..." oninput="filterButtons()">
         </div>
 
-        <!-- 預設集區域 -->
-        <div class="nav-row mini-row" id="presets-row" style="display:none; border-top: 1px solid #444; padding-top: 10px; margin-top: 5px;">
+        <div class="nav-row mini-row" id="presets-row" style="display:none; border-top: 2px dashed #444; padding-top: 20px;">
             <div id="presets-list" style="display:contents"></div>
         </div>
         
-        <!-- 第一區：台美股現期貨 -->
-        <div class="row-label" style="text-align: left; max-width: 1200px; margin: 0 auto 10px; color: #00d2ad; font-weight: bold; font-size: 1.1rem; padding-left: 5px;">台美股市監控</div>
+        <div class="row-label">台美股市監控</div>
         <div class="nav-row" id="row-1">
             <div class="btn-wrapper" data-name="台股現貨"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/forum/stock"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/stock')">台股現貨</button></div>
             <div class="btn-wrapper" data-name="台指期夜盤"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/forum/futures/TXF1?s=p"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/forum/futures/TXF1?s=p')">台指期夜盤</button></div>
@@ -387,8 +232,7 @@
             <div class="btn-wrapper" data-name="美股期貨"><input type="checkbox" class="split-chk" value="https://www.cmoney.tw/usfinance/nq"><button class="btn" onclick="loadPage(this, 'https://www.cmoney.tw/usfinance/nq')">美股期貨</button></div>
         </div>
 
-        <!-- 第二區：航運期貨、鐵礦石與原油 -->
-        <div class="row-label" style="text-align: left; max-width: 1200px; margin: 10px auto 10px; color: #ff9f43; font-weight: bold; font-size: 1.1rem; padding-left: 5px;">航運、鐵礦石與能源</div>
+        <div class="row-label">航運、鐵礦石與能源</div>
         <div class="nav-row" id="row-2">
             <div class="btn-wrapper" data-name="歐線主連"><input type="checkbox" class="split-chk" value="https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true"><button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true')">歐線主連</button></div>
             <div class="btn-wrapper" data-name="歐線次主連"><input type="checkbox" class="split-chk" value="https://quote.eastmoney.com/qihuo/ecs.html"><button class="btn" onclick="loadPage(this, 'https://quote.eastmoney.com/qihuo/ecs.html')">歐線次主連</button></div>
@@ -398,8 +242,7 @@
             <button class="btn ext" data-name="荷姆茲海峽" onclick="openExtPage('https://www.marinetraffic.com/en/ais/home/centerx:56.4/centery:26.1/zoom:9')">荷姆茲海峽 ↗</button>
         </div>
 
-        <!-- 第三區：其他經濟數據與自訂 -->
-        <div class="row-label" style="text-align: left; max-width: 1200px; margin: 10px auto 10px; color: #f1c40f; font-weight: bold; font-size: 1.1rem; padding-left: 5px;">綜合數據與自訂</div>
+        <div class="row-label">綜合數據與自訂</div>
         <div class="nav-row" id="row-3">
             <div class="btn-wrapper" data-name="BDI 指數"><input type="checkbox" class="split-chk" value="https://www.stockq.org/market/baltic_index.php"><button class="btn" onclick="loadPage(this, 'https://www.stockq.org/market/baltic_index.php')">BDI 指數</button></div>
             <div class="btn-wrapper" data-name="記憶體報價"><input type="checkbox" class="split-chk" value="https://www.trendforce.com.tw/price/dram/dram_spot"><button class="btn" onclick="loadPage(this, 'https://www.trendforce.com.tw/price/dram/dram_spot')">記憶體報價</button></div>
@@ -415,441 +258,141 @@
             <button class="btn ext" data-name="SCFI 指數" onclick="openExtPage('https://www.sse.net.cn/index/singleIndex?indexType=scfi')">SCFI 指數 ↗</button>
             <div id="custom-list" style="display:contents"></div>
         </div>
-
     </div>
-
-    <div id="content">
-        <iframe id="ifr"></iframe>
-    </div>
+    <div id="content"><iframe id="ifr"></iframe></div>
 </div>
 
 <script>
     const container = document.getElementById('container');
     const content = document.getElementById('content');
-    let refreshConfigs = []; // {ifr, btn, interval, timer, url, scale}
+    let refreshConfigs = [];
+    let wakeLock = null;
 
-    // --- 基礎功能 ---
-    function clearAllTimers() {
-        refreshConfigs.forEach(conf => { if (conf.timer) clearInterval(conf.timer); });
-        refreshConfigs = [];
+    function toggleStyleDropdown() {
+        document.getElementById('style-dropdown').classList.toggle('show');
     }
 
-    function toggleNav() {
-        container.classList.toggle('nav-hidden');
-        updateToggleText();
+    function setTheme(theme) {
+        if (theme === 'maritime') { document.body.removeAttribute('data-theme'); } 
+        else { document.body.setAttribute('data-theme', theme); }
+        localStorage.setItem('user_theme', theme);
+        document.getElementById('style-dropdown').classList.remove('show');
     }
 
-    function updateToggleText() {
-        const toggleBtn = document.getElementById('nav-toggle');
-        if (toggleBtn) {
-            toggleBtn.innerText = container.classList.contains('nav-hidden') ? '選單 🔽' : '選單 🔼';
+    function initTheme() {
+        const savedTheme = localStorage.getItem('user_theme') || 'maritime';
+        setTheme(savedTheme);
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.matches('#style-btn')) {
+            const dropdowns = document.getElementsByClassName("style-dropdown");
+            for (let i = 0; i < dropdowns.length; i++) {
+                if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
+            }
         }
     }
 
-    function goHome() {
-        clearAllTimers();
-        container.classList.remove('active', 'nav-hidden');
-        updateToggleText();
-        content.classList.remove('split-grid');
-        content.innerHTML = '';
-        document.getElementById('nav').classList.remove('show-chks');
-        document.getElementById('apply-split').style.display = 'none';
-        document.querySelectorAll('.split-chk').forEach(c => c.checked = false);
-        document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
-        if (activeExtWin && !activeExtWin.closed) activeExtWin.close();
-        activeExtWin = null;
+    async function requestWakeLock() {
+        try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (err) {}
     }
 
-    // --- 視窗建立核心 ---
+    function clearAllTimers() { refreshConfigs.forEach(conf => { if (conf.timer) clearInterval(conf.timer); }); refreshConfigs = []; }
+    function toggleNav() { container.classList.toggle('nav-hidden'); updateToggleText(); }
+    function updateToggleText() { const b = document.getElementById('nav-toggle'); b.innerText = container.classList.contains('nav-hidden') ? '選單 🔽' : '選單 🔼'; }
+    function goHome() { clearAllTimers(); container.classList.remove('active', 'nav-hidden'); updateToggleText(); content.classList.remove('split-grid'); content.innerHTML = ''; document.getElementById('nav').classList.remove('show-chks'); document.getElementById('apply-split').style.display = 'none'; document.querySelectorAll('.split-chk').forEach(c => c.checked = false); document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected')); if (activeExtWin && !activeExtWin.closed) activeExtWin.close(); activeExtWin = null; }
+
     function createViewElement(url, initialInterval = 0, initialScale = 1.0) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'split-item';
-        
-        const controls = document.createElement('div');
-        controls.className = 'split-controls';
-        
+        const wrapper = document.createElement('div'); wrapper.className = 'split-item';
+        const controls = document.createElement('div'); controls.className = 'split-controls';
         const refBtn = createCtrlBtn('🔄', () => { ifr.src = url; });
         const autoBtn = createCtrlBtn('🕒', null);
         const zinBtn = createCtrlBtn('➕', () => updateZoom(0.1));
         const zoutBtn = createCtrlBtn('➖', () => updateZoom(-0.1));
-        const zInfo = document.createElement('span');
-        zInfo.className = 'zoom-info'; zInfo.innerText = Math.round(initialScale * 100) + '%';
-        
-        const ifr = document.createElement('iframe');
-        // 加入沙箱保護，防止外部網址跳轉蓋掉主程式
-        ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation');
-        ifr.src = url;
-        
+        const zInfo = document.createElement('span'); zInfo.className = 'zoom-info'; zInfo.innerText = Math.round(initialScale * 100) + '%';
+        const ifr = document.createElement('iframe'); ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation'); ifr.src = url;
         const myConf = { ifr, btn: autoBtn, interval: initialInterval, timer: null, url, scale: initialScale };
         refreshConfigs.push(myConf);
-
-        // 縮放邏輯
-        const updateZoom = (delta) => {
-            myConf.scale = Math.round((myConf.scale + delta) * 10) / 10;
-            if (myConf.scale < 0.3) myConf.scale = 0.3;
-            if (myConf.scale > 2.0) myConf.scale = 2.0;
-            ifr.style.width = (100 / myConf.scale) + '%';
-            ifr.style.height = (100 / myConf.scale) + '%';
-            ifr.style.transform = `scale(${myConf.scale})`;
-            zInfo.innerText = Math.round(myConf.scale * 100) + '%';
-        };
+        const updateZoom = (delta) => { myConf.scale = Math.max(0.3, Math.min(2.0, Math.round((myConf.scale + delta) * 10) / 10)); ifr.style.width = (100 / myConf.scale) + '%'; ifr.style.height = (100 / myConf.scale) + '%'; ifr.style.transform = `scale(${myConf.scale})`; zInfo.innerText = Math.round(myConf.scale * 100) + '%'; };
         if (initialScale !== 1.0) updateZoom(0);
-
-        // 自動重整邏輯
         const intervals = [0, 3000, 5000, 10000, 30000];
         const labels = ['🕒', '🕒 3s', '🕒 5s', '🕒 10s', '🕒 30s'];
         let idx = intervals.indexOf(initialInterval);
         if (idx === -1) idx = 0;
-
-        const setupTimer = () => {
-            if (myConf.timer) clearInterval(myConf.timer);
-            autoBtn.innerHTML = labels[idx];
-            autoBtn.style.background = myConf.interval > 0 ? '#e84393' : '';
-            if (myConf.interval > 0) {
-                myConf.timer = setInterval(() => {
-                    let sx = 0, sy = 0;
-                    try { sx = ifr.contentWindow.scrollX; sy = ifr.contentWindow.scrollY; } catch(e) {}
-                    ifr.src = ifr.src;
-                    const rec = () => { try { ifr.contentWindow.scrollTo(sx, sy); } catch(e) {} ifr.removeEventListener('load', rec); };
-                    ifr.addEventListener('load', rec);
-                }, myConf.interval);
-            }
-        };
-
-        autoBtn.onclick = () => {
-            idx = (idx + 1) % intervals.length;
-            myConf.interval = intervals[idx];
-            setupTimer();
-        };
+        const setupTimer = () => { if (myConf.timer) clearInterval(myConf.timer); autoBtn.innerHTML = labels[idx]; autoBtn.style.background = myConf.interval > 0 ? 'var(--accent)' : ''; if (myConf.interval > 0) { myConf.timer = setInterval(() => { ifr.src = ifr.src; }, myConf.interval); } };
+        autoBtn.onclick = () => { idx = (idx + 1) % intervals.length; myConf.interval = intervals[idx]; setupTimer(); };
         if (initialInterval > 0) setupTimer();
-
         [refBtn, autoBtn, zinBtn, zoutBtn, zInfo].forEach(el => controls.appendChild(el));
-        wrapper.appendChild(controls);
-        wrapper.appendChild(ifr);
+        wrapper.appendChild(controls); wrapper.appendChild(ifr);
         return wrapper;
     }
 
-    function createCtrlBtn(text, onClick) {
-        const b = document.createElement('button');
-        b.className = 'ctrl-btn'; b.innerHTML = text;
-        if (onClick) b.onclick = onClick;
-        return b;
-    }
+    function createCtrlBtn(text, onClick) { const b = document.createElement('button'); b.className = 'ctrl-btn'; b.innerHTML = text; if (onClick) b.onclick = onClick; return b; }
 
-    // --- 頁面載入 ---
     function loadPage(btn, url, interval = 0, scale = 1.0) {
-        // 如果正在分割模式，點擊按鈕改為切換勾選框
-        if (document.getElementById('nav').classList.contains('show-chks')) {
-            const chk = btn.parentElement.querySelector('.split-chk');
-            if (chk) chk.checked = !chk.checked;
-            return;
-        }
-
-        // 確保進入 active 模式
-        container.classList.add('active');
-        
-        // 如果選單目前是顯示的，則將其縮起
-        if (!container.classList.contains('nav-hidden')) {
-            container.classList.add('nav-hidden');
-        }
-        updateToggleText();
-
-        content.classList.remove('split-grid');
-        content.innerHTML = '';
-        clearAllTimers();
+        if (document.getElementById('nav').classList.contains('show-chks')) { const chk = btn.parentElement.querySelector('.split-chk'); if (chk) chk.checked = !chk.checked; return; }
+        container.classList.add('active'); if (!container.classList.contains('nav-hidden')) container.classList.add('nav-hidden');
+        updateToggleText(); content.classList.remove('split-grid'); content.innerHTML = ''; clearAllTimers();
         content.appendChild(createViewElement(url, interval, scale));
-        
-        // 視覺反饋：更新選中狀態
-        document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
-        if (btn) btn.classList.add('selected');
-        
-        // 稍微延遲清空搜尋，確保使用者能看到切換過程
-        setTimeout(() => {
-            const searchInput = document.getElementById('search-input');
-            if (searchInput.value) {
-                searchInput.value = '';
-                filterButtons();
-            }
-        }, 300);
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected')); if (btn) btn.classList.add('selected');
+        setTimeout(() => { const s = document.getElementById('search-input'); if (s.value) { s.value = ''; filterButtons(); } }, 300);
     }
 
-    function toggleSplitMode() {
-        const nav = document.getElementById('nav');
-        nav.classList.toggle('show-chks');
-        document.getElementById('apply-split').style.display = nav.classList.contains('show-chks') ? 'inline-block' : 'none';
-        if (!nav.classList.contains('show-chks')) document.querySelectorAll('.split-chk').forEach(c => c.checked = false);
-    }
-
+    function toggleSplitMode() { const nav = document.getElementById('nav'); nav.classList.toggle('show-chks'); document.getElementById('apply-split').style.display = nav.classList.contains('show-chks') ? 'inline-block' : 'none'; }
     function startSplit(urls = null) {
         const selected = urls || Array.from(document.querySelectorAll('.split-chk:checked')).map(cb => cb.value);
         if (selected.length < 2) return alert("請至少選擇 2 個網頁");
-        
-        clearAllTimers();
-        content.innerHTML = '';
-        content.classList.add('split-grid');
-        container.classList.add('active');
-        container.classList.add('nav-hidden'); // 自動縮起
-        updateToggleText();
-        
-        // --- 優化網格分配邏輯 ---
-        const count = selected.length;
-        const cols = count <= 2 ? count : (count <= 4 ? 2 : (count <= 6 ? 3 : 4));
-        const rows = Math.ceil(count / cols);
-        
-        content.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-        content.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-        content.style.gridAutoRows = "1fr"; // 確保動態行高一致
-
-        selected.forEach(url => {
-            const val = typeof url === 'string' ? url : url.url;
-            const interval = url.interval || 0;
-            const scale = url.scale || 1.0;
-            content.appendChild(createViewElement(val, interval, scale));
-        });
-        
+        clearAllTimers(); content.innerHTML = ''; content.classList.add('split-grid'); container.classList.add('active', 'nav-hidden'); updateToggleText();
+        const count = selected.length; const cols = count <= 2 ? count : (count <= 4 ? 2 : (count <= 6 ? 3 : 4)); const rows = Math.ceil(count / cols);
+        content.style.gridTemplateColumns = `repeat(${cols}, 1fr)`; content.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+        selected.forEach(u => { const val = typeof u === 'string' ? u : u.url; content.appendChild(createViewElement(val, u.interval || 0, u.scale || 1.0)); });
         if (!urls) toggleSplitMode();
     }
 
-    // --- 配置存取 (Layout Presets) ---
     function saveCurrentLayout() {
-        if (!container.classList.contains('active')) return alert("請先開啟網頁再儲存配置");
-        const name = prompt("請輸入配置名稱：", "我的配置 " + new Date().toLocaleTimeString());
+        if (!container.classList.contains('active')) return alert("請先開啟網頁");
+        const name = prompt("配置名稱：", "我的配置 " + new Date().toLocaleTimeString());
         if (!name) return;
-
-        const preset = {
-            name,
-            isSplit: content.classList.contains('split-grid'),
-            views: refreshConfigs.map(c => ({ url: c.url, interval: c.interval, scale: c.scale }))
-        };
-
-        const presets = JSON.parse(localStorage.getItem('user_presets') || "[]");
-        presets.push(preset);
-        localStorage.setItem('user_presets', JSON.stringify(presets));
-        renderPresets();
+        const preset = { name, isSplit: content.classList.contains('split-grid'), views: refreshConfigs.map(c => ({ url: c.url, interval: c.interval, scale: c.scale })) };
+        const presets = JSON.parse(localStorage.getItem('user_presets') || "[]"); presets.push(preset); localStorage.setItem('user_presets', JSON.stringify(presets)); renderPresets();
     }
 
-    // --- 管理模式 ---
     let isManageMode = false;
-    function toggleManageMode() {
-        isManageMode = !isManageMode;
-        document.body.classList.toggle('manage-mode', isManageMode);
-        document.getElementById('manage-btn').innerText = isManageMode ? '✅ 完成' : '管理';
-        document.getElementById('manage-btn').style.background = isManageMode ? '#2ecc71' : '#eb4d4b';
-        renderPresets();
-        renderCustomBtns();
-    }
+    function toggleManageMode() { isManageMode = !isManageMode; document.body.classList.toggle('manage-mode', isManageMode); document.getElementById('manage-btn').innerText = isManageMode ? '✅ 完成' : '管理'; renderPresets(); renderCustomBtns(); }
 
     function renderPresets() {
-        const row = document.getElementById('presets-row');
-        const list = document.getElementById('presets-list');
-        const presets = JSON.parse(localStorage.getItem('user_presets') || "[]");
-        
-        if (presets.length === 0) { row.style.display = 'none'; return; }
-        row.style.display = 'grid';
-        list.innerHTML = '';
-
-        presets.forEach((p, i) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'btn-wrapper';
-            
-            const btn = document.createElement('button');
-            btn.className = 'btn';
-            btn.style.background = '#4834d4';
-            btn.innerText = p.name;
-            btn.onclick = () => {
-                if (isManageMode) return;
-                if (p.isSplit) startSplit(p.views);
-                else loadPage(null, p.views[0].url, p.views[0].interval, p.views[0].scale);
-            };
-
-            const del = document.createElement('div');
-            del.className = 'del-badge';
-            del.innerText = '×';
-            del.onclick = (e) => {
-                e.stopPropagation();
-                if (confirm(`刪除配置「${p.name}」？`)) {
-                    presets.splice(i, 1);
-                    localStorage.setItem('user_presets', JSON.stringify(presets));
-                    renderPresets();
-                }
-            };
-
-            wrapper.appendChild(btn);
-            wrapper.appendChild(del);
-            list.appendChild(wrapper);
-        });
+        const row = document.getElementById('presets-row'); const list = document.getElementById('presets-list'); const presets = JSON.parse(localStorage.getItem('user_presets') || "[]");
+        if (presets.length === 0) { row.style.display = 'none'; return; } row.style.display = 'grid'; list.innerHTML = '';
+        presets.forEach((p, i) => { const wrapper = document.createElement('div'); wrapper.className = 'btn-wrapper'; const btn = document.createElement('button'); btn.className = 'btn'; btn.style.background = '#4834d4'; btn.innerText = p.name; btn.onclick = () => { if (isManageMode) return; p.isSplit ? startSplit(p.views) : loadPage(null, p.views[0].url, p.views[0].interval, p.views[0].scale); }; const del = document.createElement('div'); del.className = 'del-badge'; del.innerText = '×'; del.onclick = (e) => { e.stopPropagation(); if (confirm(`刪除「${p.name}」？`)) { presets.splice(i, 1); localStorage.setItem('user_presets', JSON.stringify(presets)); renderPresets(); } }; wrapper.appendChild(btn); wrapper.appendChild(del); list.appendChild(wrapper); });
     }
 
-    // --- 時鐘與搜尋 ---
-    function updateClock() {
-        const now = new Date();
-        const timeStr = now.getHours().toString().padStart(2, '0') + ":" + 
-                        now.getMinutes().toString().padStart(2, '0') + ":" + 
-                        now.getSeconds().toString().padStart(2, '0');
-        document.getElementById('clock').innerText = timeStr;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+    function updateClock() { const now = new Date(); document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0'); }
+    setInterval(updateClock, 1000); updateClock();
 
-    function filterButtons() {
-        const term = document.getElementById('search-input').value.toLowerCase();
-        document.querySelectorAll('.btn-wrapper, .btn.ext').forEach(el => {
-            const name = el.getAttribute('data-name') || el.innerText;
-            el.style.display = name.toLowerCase().includes(term) ? '' : 'none';
-        });
-    }
+    function filterButtons() { const term = document.getElementById('search-input').value.toLowerCase(); document.querySelectorAll('.btn-wrapper, .btn.ext').forEach(el => { const name = el.getAttribute('data-name') || el.innerText; el.style.display = name.toLowerCase().includes(term) ? '' : 'none'; }); }
 
-    // --- 自訂按鈕 ---
-    function addBtn() {
-        const name = prompt("名稱：");
-        const url = prompt("網址：", "https://");
-        if (!name || !url) return;
-        const isExt = confirm("是否設定為「另開新視窗」？\n(若網頁出現拒絕連線，請選是)");
-        const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
-        btns.push({name, url, isExt});
-        localStorage.setItem('user_btns', JSON.stringify(btns));
-        renderCustomBtns();
-    }
+    function addBtn() { const name = prompt("名稱："); const url = prompt("網址：", "https://"); if (!name || !url) return; const isExt = confirm("另開新視窗？"); const btns = JSON.parse(localStorage.getItem('user_btns') || "[]"); btns.push({name, url, isExt}); localStorage.setItem('user_btns', JSON.stringify(btns)); renderCustomBtns(); }
 
     function renderCustomBtns() {
-        const list = document.getElementById('custom-list');
-        list.innerHTML = '';
-        const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
-        btns.forEach((b, i) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'btn-wrapper';
-            wrapper.setAttribute('data-name', b.name);
-            
-            const chk = document.createElement('input');
-            chk.type = 'checkbox'; chk.className = 'split-chk'; chk.value = b.url;
-            
-            const btn = document.createElement('button');
-            btn.className = 'btn' + (b.isExt ? ' ext' : '');
-            btn.innerText = b.name + (b.isExt ? " ↗" : "");
-            btn.onclick = () => {
-                if (isManageMode) return;
-                b.isExt ? openExtPage(b.url) : loadPage(btn, b.url);
-            };
-
-            const del = document.createElement('div');
-            del.className = 'del-badge';
-            del.innerText = '×';
-            del.onclick = (e) => {
-                e.stopPropagation();
-                if (confirm(`刪除「${b.name}」？`)) {
-                    btns.splice(i, 1);
-                    localStorage.setItem('user_btns', JSON.stringify(btns));
-                    renderCustomBtns();
-                }
-            };
-
-            wrapper.appendChild(chk);
-            wrapper.appendChild(btn);
-            wrapper.appendChild(del);
-            list.appendChild(wrapper);
-        });
-        filterButtons(); // 重新套用搜尋
+        const list = document.getElementById('custom-list'); list.innerHTML = ''; const btns = JSON.parse(localStorage.getItem('user_btns') || "[]");
+        btns.forEach((b, i) => { const wrapper = document.createElement('div'); wrapper.className = 'btn-wrapper'; wrapper.setAttribute('data-name', b.name); const chk = document.createElement('input'); chk.type = 'checkbox'; chk.className = 'split-chk'; chk.value = b.url; const btn = document.createElement('button'); btn.className = 'btn' + (b.isExt ? ' ext' : ''); btn.innerText = b.name + (b.isExt ? " ↗" : ""); btn.onclick = () => { if (isManageMode) return; b.isExt ? openExtPage(b.url) : loadPage(btn, b.url); }; const del = document.createElement('div'); del.className = 'del-badge'; del.innerText = '×'; del.onclick = (e) => { e.stopPropagation(); if (confirm(`刪除「${b.name}」？`)) { btns.splice(i, 1); localStorage.setItem('user_btns', JSON.stringify(btns)); renderCustomBtns(); } }; wrapper.appendChild(chk); wrapper.appendChild(btn); wrapper.appendChild(del); list.appendChild(wrapper); });
+        filterButtons();
     }
 
-    // --- 外部視窗管理 ---
     let activeExtWin = null;
-    function openExtPage(url) {
-        activeExtWin = window.open(url, '_blank');
-    }
+    function openExtPage(url) { activeExtWin = window.open(url, '_blank'); }
 
-    // --- 螢幕喚醒鎖定 (防止手機自動關閉螢幕) ---
-    let wakeLock = null;
-    async function requestWakeLock() {
-        try {
-            if ('wakeLock' in navigator) {
-                wakeLock = await navigator.wakeLock.request('screen');
-                wakeLock.addEventListener('release', () => { wakeLock = null; });
-            }
-        } catch (err) {}
-    }
+    document.addEventListener('visibilitychange', async () => { if (document.visibilityState === 'hidden') { refreshConfigs.forEach(conf => { if (conf.timer) { clearInterval(conf.timer); conf.timer = null; } }); } else { refreshConfigs.forEach(conf => { if (conf.interval > 0) { conf.ifr.src = conf.ifr.src; conf.timer = setInterval(() => { conf.ifr.src = conf.ifr.src; }, conf.interval); } }); if (wakeLock !== null) await requestWakeLock(); } });
+    document.addEventListener('click', () => { if (!wakeLock) requestWakeLock(); }, { once: true });
 
-    // 資源優化：背景自動暫停與恢復
-    document.addEventListener('visibilitychange', async () => {
-        if (document.visibilityState === 'hidden') {
-            refreshConfigs.forEach(conf => { if (conf.timer) { clearInterval(conf.timer); conf.timer = null; } });
-        } else {
-            refreshConfigs.forEach(conf => {
-                if (conf.interval > 0) {
-                    conf.ifr.src = conf.ifr.src;
-                    conf.timer = setInterval(() => { conf.ifr.src = conf.ifr.src; }, conf.interval);
-                }
-            });
-            // 重新請求喚醒鎖定
-            if (wakeLock !== null || document.visibilityState === 'visible') await requestWakeLock();
-        }
-    });
+    const navToggle = document.getElementById('nav-toggle'); let isDragging = false, startX, startY, initialX, initialY;
+    function initNavPos() { try { const p = JSON.parse(localStorage.getItem('nav_btn_pos')); if (p) { const l = parseFloat(p.left), t = parseFloat(p.top); if (l > 0 && l < window.innerWidth && t > 0 && t < window.innerHeight) { navToggle.style.left = p.left; navToggle.style.top = p.top; navToggle.style.right = 'auto'; } } } catch(e) {} }
+    navToggle.onpointerdown = (e) => { isDragging = false; startX = e.clientX; startY = e.clientY; const r = navToggle.getBoundingClientRect(); initialX = r.left; initialY = r.top; navToggle.setPointerCapture(e.pointerId); navToggle.style.transition = 'none'; };
+    navToggle.onpointermove = (e) => { if (e.buttons === 0) return; const dx = e.clientX - startX, dy = e.clientY - startY; if (Math.abs(dx) > 5 || Math.abs(dy) > 5) { isDragging = true; navToggle.style.left = (initialX + dx) + 'px'; navToggle.style.top = (initialY + dy) + 'px'; navToggle.style.right = 'auto'; } };
+    navToggle.onpointerup = (e) => { navToggle.releasePointerCapture(e.pointerId); navToggle.style.transition = '0.3s'; if (!isDragging) toggleNav(); else localStorage.setItem('nav_btn_pos', JSON.stringify({ left: navToggle.style.left, top: navToggle.style.top })); };
 
-    // 第一次點擊頁面時啟動喚醒鎖定 (瀏覽器政策要求使用者互動)
-    document.addEventListener('click', () => {
-        if (!wakeLock) requestWakeLock();
-    }, { once: true });
-
-    // --- 選單拖載與位置管理 ---
-    const navToggle = document.getElementById('nav-toggle');
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
-
-    // 初始化位置
-    function initNavPos() {
-        try {
-            const savedPos = JSON.parse(localStorage.getItem('nav_btn_pos'));
-            if (savedPos) {
-                const left = parseFloat(savedPos.left);
-                const top = parseFloat(savedPos.top);
-                if (left > 0 && left < window.innerWidth && top > 0 && top < window.innerHeight) {
-                    navToggle.style.left = savedPos.left;
-                    navToggle.style.top = savedPos.top;
-                    navToggle.style.right = 'auto';
-                }
-            }
-        } catch(e) { localStorage.removeItem('nav_btn_pos'); }
-    }
-
-    navToggle.onpointerdown = (e) => {
-        isDragging = false;
-        startX = e.clientX;
-        startY = e.clientY;
-        const rect = navToggle.getBoundingClientRect();
-        initialX = rect.left;
-        initialY = rect.top;
-        navToggle.setPointerCapture(e.pointerId);
-        navToggle.style.transition = 'none';
-    };
-
-    navToggle.onpointermove = (e) => {
-        if (e.buttons === 0) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-            isDragging = true;
-            navToggle.style.left = (initialX + dx) + 'px';
-            navToggle.style.top = (initialY + dy) + 'px';
-            navToggle.style.right = 'auto';
-        }
-    };
-
-    navToggle.onpointerup = (e) => {
-        navToggle.releasePointerCapture(e.pointerId);
-        navToggle.style.transition = '0.3s';
-        if (!isDragging) {
-            toggleNav();
-        } else {
-            localStorage.setItem('nav_btn_pos', JSON.stringify({
-                left: navToggle.style.left,
-                top: navToggle.style.top
-            }));
-        }
-    };
-
-    initNavPos();
-    renderCustomBtns();
-    renderPresets();
+    initTheme();
+    initNavPos(); renderCustomBtns(); renderPresets();
 </script>
-
 </body>
 </html>
