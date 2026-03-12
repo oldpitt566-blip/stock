@@ -83,7 +83,9 @@
             background-color: rgba(108, 92, 231, 0.2);
             color: #00d2ff;
             font-size: 1rem;
-            white-space: nowrap;
+            /* 移除 white-space: nowrap，允許標題自動折行 */
+            line-height: 1.2;
+            vertical-align: middle;
         }
         td:first-child, td:nth-child(2), th:first-child, th:nth-child(2) {
             text-align: left;
