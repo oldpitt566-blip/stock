@@ -5,14 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>祥老師的投資戰情室 - 穩定修正版</title>
     <style id="theme-style">
+        /* 預設為航海王風格變數 */
         :root {
-            --primary: #006241; --accent: #e60012;  
-            --bg-nav: rgba(15, 20, 25, 0.85); 
-            --btn-bg: rgba(45, 50, 55, 0.8);
+            --primary: #006241; /* 長榮綠 */
+            --accent: #e60012;  /* 裕民紅 */
+            --bg-nav: rgba(10, 25, 20, 0.7); 
+            --btn-bg: rgba(0, 98, 65, 0.4);
             --text: #ffffff; --gold: #f1c40f; --glow: #00d2ad;
-            --bg-img: url('sea.png'); --btn-gradient: none;
+            --bg-img: url('sea.png'); 
+            --btn-gradient: linear-gradient(135deg, rgba(0, 98, 65, 0.7) 60%, rgba(192, 57, 43, 0.5));
             --ani-speed: 0s;
-        /* 祥老師風格：極簡黑白精品感 */
+        }
+        /* 航海王風格特定按鈕修正 */
+        body:not([data-theme]) .btn {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--primary);
+            background-image: var(--btn-gradient);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        body:not([data-theme]) .btn:hover {
+            background-image: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(52, 73, 94, 0.9));
+            border-left-color: #ffffff;
+        }
+        body:not([data-theme]) .btn.selected {
+            background-image: linear-gradient(135deg, #e60012, #1a1a1b) !important;
+            box-shadow: 0 0 20px rgba(230, 0, 18, 0.4);
+            border-left-color: #ffffff;
+        }
         [data-theme="shiang"] {
             --primary: #ffffff; 
             --accent: #ffffff;  
@@ -124,8 +143,10 @@
 
         .btn { 
             padding: 15px 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
-            background: var(--btn-bg); background-image: var(--btn-gradient);
-            background-size: 200% 200%; animation: fluidGradient var(--ani-speed) infinite linear;
+            background: var(--btn-bg); 
+            /* 加入下半部黑色漸層，增加沈穩感 */
+            background-image: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%), var(--btn-gradient);
+            background-size: 100% 100%, 200% 200%; animation: fluidGradient var(--ani-speed) infinite linear;
             color: white; font-weight: bold; font-size: 1.3rem; 
             transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;
             text-align: center; width: 100%; box-sizing: border-box; min-height: 85px;
@@ -220,7 +241,11 @@
                     {"proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100"},
                     {"proName": "FX_IDC:USDTWD", "title": "美金/台幣"},
                     {"description": "台積電 ADR", "proName": "NYSE:TSM"},
-                    {"description": "BDI 指數", "proName": "INDEX:BDI"}
+                    {"description": "BDI 指數", "proName": "INDEX:BDI"},
+                    {"description": "VIX 恐慌指數", "proName": "VIX"},
+                    {"description": "比特幣", "proName": "BITSTAMP:BTCUSD"},
+                    {"description": "布蘭特原油", "proName": "TVC:UKOIL"},
+                    {"description": "黃金", "proName": "TVC:GOLD"}
                 ],
                 "showSymbolLogo": true, "colorTheme": "dark", "isTransparent": true, "displayMode": "adaptive", "locale": "zh_TW"
                 }
@@ -286,6 +311,7 @@
             <button class="btn ext" data-name="台股燈號" onclick="openExtPage('https://index.ndc.gov.tw/n/zh_tw')">台股燈號 ↗</button>
             <button class="btn ext" data-name="融資維持率" onclick="openExtPage('https://www.macromicro.me/charts/53117/taiwan-taiex-maintenance-margin')">融資維持率 ↗</button>
             <button class="btn ext" data-name="川普投顧" onclick="openExtPage('https://truthsocial.com/@realDonaldTrump')">川普投顧 ↗</button>
+            <button class="btn ext" data-name="比特幣" onclick="openExtPage('https://tw.tradingview.com/symbols/BTCUSD/')">比特幣 ↗</button>
             <button class="btn ext" data-name="SCFI 指數" onclick="openExtPage('https://www.sse.net.cn/index/singleIndex?indexType=scfi')">SCFI 指數 ↗</button>
             <div class="btn-wrapper" data-name="產業鏈查詢"><input type="checkbox" class="split-chk" value="ai-chain.html"><button class="btn" onclick="loadPage(this, 'ai-chain.html')">產業鏈查詢</button></div>
             <div id="custom-list" style="display:contents"></div>
