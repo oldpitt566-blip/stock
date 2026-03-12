@@ -16,11 +16,42 @@
             --ani-speed: 0s;
         }
         [data-theme="shiang"] {
-            --primary: #ffffff; --accent: #ffffff;  
-            --bg-nav: rgba(15, 15, 15, 0.85); 
-            --btn-bg: rgba(49, 49, 49, 0.4);
-            --text: #ffffff; --gold: #ffffff; --glow: rgba(255, 255, 255, 0.2);
-            --bg-img: url('hsiang.png'); --btn-gradient: none;
+            --primary: #ffffff; 
+            --accent: #ffffff;  
+            --bg-nav: rgba(20, 20, 20, 0.98); /* 紮實深黑背景 */
+            --btn-bg: rgba(35, 35, 35, 0.9);  /* 加深按鈕底色 */
+            --text: #ffffff;
+            --gold: #ffffff;
+            --glow: rgba(255, 255, 255, 0.3);
+            --bg-img: url('hsiang.png'); 
+            --btn-gradient: linear-gradient(transparent, transparent); /* 修正語法錯誤 */
+        }
+
+        /* 祥老師風格專屬對比修正 */
+        [data-theme="shiang"] .btn {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: var(--btn-bg) !important;
+            color: #ffffff !important;
+            border-radius: 2px;
+            box-shadow: none;
+            background-image: none !important; /* 徹底移除精品風格的漸層 */
+        }
+        [data-theme="shiang"] .btn.selected {
+            background: #ffffff !important;
+            color: #000000 !important; /* 選中時白底黑字，極高辨識度 */
+            border-color: #ffffff;
+        }
+        [data-theme="shiang"] .row-label {
+            border-left: 2px solid #ffffff;
+            color: #ffffff !important;
+            letter-spacing: 4px;
+            text-shadow: none;
+        }
+        [data-theme="shiang"] #search-input {
+            border: 1px solid #555;
+            border-bottom: 2px solid #fff;
+            background: #000;
+            color: #fff;
         }
         [data-theme="ai"] {
             --primary: #6c5ce7; --accent: #00d2ff;  
@@ -47,11 +78,13 @@
         }
         
         #container { display: flex; flex-direction: column; height: 100vh; position: relative; }
-        
+        /* 恆定跑馬燈樣式 - 強化底色確保清晰度 */
         .ticker-wrap { 
-            width: 100%; height: 40px; background: rgba(0,0,0,0.9); 
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
-            z-index: 28000; position: fixed; top: 0; left: 0; 
+            width: 100%; height: 40px; 
+            background: #000000; /* 純黑底色 */
+            border-bottom: 1px solid rgba(255,255,255,0.15); 
+            z-index: 35000; /* 提升至最頂層，超過所有控制鈕 */
+            position: fixed; top: 0; left: 0; 
         }
 
         #nav { 
@@ -71,6 +104,17 @@
             padding: 10px 20px; border-radius: 4px; cursor: pointer;
             font-size: 0.9rem; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
             transition: 0.3s; letter-spacing: 2px; touch-action: none;
+        }
+        [data-theme="shiang"] #nav-toggle {
+            background: #1a1a1a !important; /* 深炭黑 */
+            color: #ffffff !important;      /* 純白字 */
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        [data-theme="shiang"] #nav-toggle:hover {
+            background: #ffffff !important;
+            color: #000000 !important;
         }
         [data-theme="ai"] #nav-toggle { 
             background: linear-gradient(90deg, #6c5ce7, #00d2ff); 
