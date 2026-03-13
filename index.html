@@ -53,10 +53,10 @@
         #container.nav-hidden #nav { transform: translateY(-110%); }
 
         #nav-toggle {
-            position: fixed; right: 15px; top: 55px; z-index: 30000;
-            background: var(--primary); color: #fff; border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 20px; border-radius: 4px; cursor: pointer;
-            font-size: 0.9rem; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            position: fixed; right: 20px; top: 20px; z-index: 50000;
+            background: var(--primary); color: #fff; border: 2px solid rgba(255,255,255,0.5);
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            font-size: 1rem; font-weight: 900; box-shadow: 0 4px 20px rgba(0,0,0,0.8);
             transition: 0.3s; letter-spacing: 2px; touch-action: none;
         }
         [data-theme="shiang"] #nav-toggle { background: #fff !important; color: #000 !important; border: 1px solid #000; }
@@ -107,21 +107,27 @@
         #home-dashboard { 
             position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 40px); 
             z-index: 10; pointer-events: none; transition: 0.4s ease; 
-            display: none; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box;
+            display: none; flex-direction: column; align-items: center; justify-content: center; padding: 10px; box-sizing: border-box;
             background: rgba(0,0,0,0.3); backdrop-filter: blur(25px);
         }
         #container.show-dashboard #home-dashboard { display: flex; pointer-events: auto; }
         #container.hide-ticker #home-dashboard { top: 0; height: 100%; padding-top: 40px; }
-        .dashboard-main { width: 100%; max-width: 1000px; height: 100%; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-bottom: 40px; }
+        .dashboard-main { width: 100%; max-width: 800px; height: auto; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
 
-        #dashboard-grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
-        .widget-box { height: 110px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; }
-        .widget-box:hover { border-color: var(--accent); transform: scale(1.02); background: rgba(255,255,255,0.05); }
-        .widget-box iframe { filter: brightness(1.5) contrast(1.1); width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(1.05); }
+        #dashboard-grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; height: auto; }
+        .widget-box { height: 90px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; }
+        .widget-box:hover { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        .widget-box iframe { 
+            filter: brightness(1.5) contrast(1.1); 
+            width: 145% !important; height: 150% !important; 
+            border: none; pointer-events: none; 
+            transform: scale(0.68); transform-origin: left center;
+            position: absolute; left: 0;
+        }
 
-        #w-datetime { flex-direction: column; gap: 5px; cursor: default; }
-        #dash-date { font-size: 1.1rem; font-weight: 700; text-shadow: 0 2px 8px #000; color: #fff; }
-        #dash-time { font-size: 2.2rem; font-weight: 900; text-shadow: 0 2px 10px #000; font-family: monospace; color: #fff; }
+        #w-datetime { flex-direction: column; gap: 0; cursor: default; }
+        #dash-date { font-size: 0.9rem; font-weight: 700; text-shadow: 0 2px 8px #000; color: #fff; }
+        #dash-time { font-size: 1.8rem; font-weight: 900; text-shadow: 0 2px 10px #000; font-family: monospace; color: #fff; }
 
         /* 分割視窗控制列樣式 */
         .split-item { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; border: 1px solid #333; }
@@ -150,9 +156,14 @@
         body.manage-mode .btn-wrapper:not(.dragging) .btn { animation: shake 0.3s infinite; pointer-events: none; }
 
         @media (max-width: 768px) { 
-            #dashboard-grid-container { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; } 
-            #dash-time { font-size: 1.8rem; } 
-            .widget-box { height: 125px; } 
+            #dashboard-grid-container { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                grid-template-rows: repeat(5, 1fr) !important; 
+                gap: 8px; 
+            } 
+            #dash-time { font-size: 1.5rem; } 
+            #dash-date { font-size: 0.8rem; }
+            .widget-box { border-radius: 8px; } 
             .mini-row { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 10px; height: auto !important; }
             .mini-row > * { width: 100%; height: 50px !important; }
             #clock-wrapper, #search-input { grid-column: span 2; }
