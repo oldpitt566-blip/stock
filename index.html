@@ -1,1 +1,319 @@
-<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>祥老師投資戰情室</title><style>:root{--primary:#006241;--accent:#e60012;--bg-nav:rgba(20,45,40,0.55);--btn-bg:rgba(0,98,65,0.4);--text:#fff;--gold:#f1c40f;--glow:#00d2ad;--bg-img:url('sea.png');--btn-gradient:none;--ani-speed:0s}[data-theme="shiang"]{--primary:#fff;--accent:#fff;--bg-nav:rgba(20,20,20,0.6);--btn-bg:rgba(45,45,45,0.8);--text:#fff;--gold:#fff;--glow:rgba(255,255,255,0.3);--bg-img:url('hsiang.png');--btn-gradient:linear-gradient(transparent,transparent)}[data-theme="ai"]{--primary:#6c5ce7;--accent:#00d2ff;--bg-nav:rgba(10,10,35,0.85);--btn-bg:rgba(40,40,80,0.6);--text:#fff;--gold:#00d2ff;--glow:#a29bfe;--bg-img:url('tsmc.png');--btn-gradient:linear-gradient(135deg,#6c5ce7,#00d2ff,#6c5ce7);--ani-speed:3s}@keyframes fluidGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}body,html{margin:0;height:100%;font-family:sans-serif;overflow:hidden;color:var(--text);background-color:#000;background:var(--bg-img) no-repeat center center fixed;background-size:cover;transition:background .8s ease}#container{display:flex;flex-direction:column;height:100vh;position:relative}.ticker-wrap{width:100%;height:40px;background:#000;border-bottom:1px solid rgba(255,255,255,.15);z-index:35000;position:fixed;top:0;left:0}#nav{display:flex;flex-direction:column;align-items:center;gap:10px;position:absolute;top:40px;left:0;width:100%;height:calc(100% - 40px);padding:20px 20px 40px;transition:transform .5s cubic-bezier(.4,0,.2,1);background:var(--bg-nav);backdrop-filter:blur(10px);z-index:25000;overflow-y:auto;box-sizing:border-box;border-bottom:5px solid var(--primary)}#container.nav-hidden #nav{transform:translateY(-110%)}#nav-toggle{position:fixed;top:55px;right:15px;z-index:30000;background:var(--primary);color:#fff;border:1px solid rgba(255,255,255,.3);padding:10px 20px;border-radius:4px;cursor:pointer;font-size:.9rem;font-weight:900;box-shadow:0 4px 15px rgba(0,0,0,.6);transition:.3s;letter-spacing:2px;touch-action:none}[data-theme="shiang"] #nav-toggle{background:#fff!important;color:#000!important;border:1px solid #000;font-weight:300}[data-theme="ai"] #nav-toggle{background:linear-gradient(90deg,#6c5ce7,#00d2ff);background-size:200% 200%;animation:fluidGradient 3s infinite linear;border:none}#content{position:absolute;top:40px;left:0;width:100%;height:calc(100% - 40px);display:none;background:#000;z-index:1}#content.split-grid{display:grid!important;gap:5px;padding:5px;box-sizing:border-box;height:calc(100% - 40px)}#container.active #content{display:block}.nav-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:15px;width:100%;max-width:1200px;margin-bottom:25px}.mini-row{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}#clock{font-family:monospace;font-size:1.8rem;color:var(--glow);font-weight:900;text-shadow:0 0 10px rgba(0,210,173,.5)}.btn{padding:15px 20px;cursor:pointer;border:1px solid rgba(255,255,255,.1);border-radius:4px;background:var(--btn-bg);background-image:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.6) 100%),var(--btn-gradient);background-size:100% 100%,200% 200%;animation:fluidGradient var(--ani-speed) infinite linear;color:#fff;font-weight:700;font-size:1.3rem;transition:all .3s ease;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;box-sizing:border-box;min-height:85px;box-shadow:inset 0 0 15px rgba(255,255,255,.05);border-bottom:4px solid rgba(0,0,0,.4)}.btn.split-selected{background:var(--accent)!important;box-shadow:0 0 20px var(--accent);transform:scale(.98)}[data-theme="shiang"] .btn.split-selected{background:#fff!important;color:#000!important;border-color:#fff}.mini-row .btn,#search-input,.style-select-wrapper{min-height:50px!important;height:50px!important;font-size:1.1rem;padding:5px 15px;box-sizing:border-box}.btn:hover{filter:brightness(1.2);transform:translateY(-3px);border-bottom-color:var(--accent)}.btn.selected{background:var(--primary)!important;box-shadow:0 0 20px rgba(0,0,0,.4)}#search-input{border-radius:4px;border:1px solid #444;background:rgba(0,0,0,.3);color:#fff;width:100%;outline:0;border-bottom:3px solid var(--primary);margin:0}.btn-wrapper[draggable="true"]{cursor:move}.dragging{opacity:.4;transform:scale(.95);border:2px dashed var(--glow)!important;z-index:100}.drag-over{border:2px solid var(--glow)!important;background:rgba(255,255,255,.1)}.style-select-wrapper{position:relative;display:flex;width:100%;padding:0!important}#style-dropdown{position:absolute;top:100%;left:0;width:100%;background:#1a1a2e;border:1px solid #444;border-radius:4px;display:none;z-index:35000;box-shadow:0 8px 20px rgba(0,0,0,.8)}#style-dropdown.show{display:block}.style-option{padding:15px;cursor:pointer;font-weight:700;border-bottom:1px solid #333;transition:.2s;color:#fff;font-size:1rem}.style-option:hover{background:var(--primary)}.row-label{text-align:left;max-width:1200px;margin:0 auto 12px;font-weight:900;font-size:1.2rem;padding-left:15px;letter-spacing:2px;border-left:6px solid var(--primary);text-transform:uppercase;transition:.3s}.split-item{position:relative;width:100%;height:100%;overflow:hidden;background:#000;border:1px solid #333}.split-item iframe{background:#fff;border:none;position:absolute;top:0;left:0;width:100%;height:100%;transform-origin:0 0;transition:opacity 0.5s ease}.refresh-progress{position:absolute;bottom:0;left:0;height:3px;background:var(--glow);width:0%;z-index:10;transition:width .1s linear;box-shadow:0 0 10px var(--glow)}.split-controls{position:absolute;top:10px;left:10px;z-index:20000;display:flex;gap:5px;background:rgba(0,0,0,.7);padding:5px;border-radius:4px;border:1px solid var(--primary)}.ctrl-btn{background:var(--primary);color:#fff;border:1px solid rgba(255,255,255,.3);width:45px;height:40px;cursor:pointer;font-size:20px;font-weight:700}.zoom-info{background:rgba(0,0,0,.7);color:var(--gold);height:34px;padding:0 8px;border-radius:4px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}.btn-wrapper{display:flex;align-items:center;width:100%;position:relative}.del-badge{position:absolute;top:-10px;right:-10px;background:var(--accent);color:#fff;width:32px;height:32px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:24px;font-weight:700;cursor:pointer;border:2px solid #fff;z-index:100}[data-theme="shiang"] .del-badge,[data-theme="shiang"] .ctrl-btn{background:#fff!important;color:#000!important;border:1px solid #000}body.manage-mode .del-badge{display:flex}@keyframes shake{0%{transform:rotate(0deg)}25%{transform:rotate(1deg)}75%{transform:rotate(-1deg)}100%{transform:rotate(0deg)}}body.manage-mode .btn-wrapper:not(.dragging) .btn{animation:shake .3s infinite;pointer-events:none}</style></head><body><div id="container"><div class="ticker-wrap"><div class="tradingview-widget-container"><script src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>{"symbols":[{"proName":"FOREXCOM:DJI","title":"道瓊"},{"proName":"FOREXCOM:SPX500","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq 100"},{"proName":"FX_IDC:USDTWD","title":"美金/台幣"},{"proName":"NYSE:TSM","title":"台積ADR"},{"proName":"INDEX:BDI","title":"BDI"},{"proName":"VIX","title":"VIX"},{"proName":"BITSTAMP:BTCUSD","title":"比特幣"},{"proName":"TVC:UKOIL","title":"原油"},{"proName":"TVC:GOLD","title":"黃金"}],"showSymbolLogo":true,"colorTheme":"dark","isTransparent":true,"displayMode":"regular","locale":"zh_TW"}</script></div></div><button id="nav-toggle">選單 🔽</button><div id="nav"><div id="welcome-text"><h1 onclick="goHome()">祥老師戰情室</h1><p>監控即時行情，衝刺獲利</p></div><div class="nav-row mini-row"><div id="clock-wrapper"><div id="clock"></div></div><button id="btn-split" class="btn" onclick="toggleSplitMode()">分割</button><button id="apply-split" class="btn" style="display:none" onclick="startSplit()">啟動</button><button id="btn-add" class="btn" onclick="addBtn()">新增</button><button id="btn-save" class="btn" onclick="saveCurrentLayout()">儲存</button><button id="manage-btn" class="btn" onclick="toggleManageMode()">管理</button><div class="style-select-wrapper"><button id="style-btn" class="btn" onclick="toggleStyleDropdown(event)">風格</button><div id="style-dropdown" class="style-dropdown"><div class="style-option" onclick="setTheme('shiang')">祥老師</div><div class="style-option" onclick="setTheme('maritime')">航海王</div><div class="style-option" onclick="setTheme('ai')">AI王</div></div></div><input type="text" id="search-input" placeholder="搜尋..." oninput="filterButtons()"></div><div class="nav-row mini-row" id="presets-row" style="display:none;border-top:2px dashed #444;padding-top:20px"><div id="presets-list" style="display:contents"></div></div><div class="row-label">台美股市監控</div><div class="nav-row" id="row-1"></div><div class="row-label">航運、鐵礦石與能源</div><div class="nav-row" id="row-2"></div><div class="row-label">綜合數據與自訂</div><div class="nav-row" id="row-3"></div></div><div id="content"></div></div><script>const container=document.getElementById('container'),content=document.getElementById('content');let refreshConfigs=[],wakeLock=null,isManageMode=!1,dragSrcEl=null;const defaultBtns={"row-1":[{"name":"台股現貨","url":"https://www.cmoney.tw/forum/stock"},{"name":"台指期夜盤","url":"https://www.cmoney.tw/forum/futures/TXF1?s=p"},{"name":"美股現貨","url":"https://www.cmoney.tw/usfinance/ixic"},{"name":"美股期貨","url":"https://www.cmoney.tw/usfinance/nq"}],"row-2":[{"name":"歐線主連","url":"https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true"},{"name":"歐線次主連","url":"https://quote.eastmoney.com/qihuo/ecs.html"},{"name":"鐵礦石主連","url":"https://quote.eastmoney.com/qihuo/im.html?jump_to_web=true"},{"name":"Braemar","url":"https://www.braemarscreen.com/"},{"name":"布蘭特原油","url":"https://tw.tradingview.com/symbols/UKOIL/","isExt":!0},{"name":"荷姆茲海峽","url":"https://www.marinetraffic.com/en/ais/home/centerx:56.4/centery:26.1/zoom:9","isExt":!0}],"row-3":[{"name":"BDI 指數","url":"https://www.stockq.org/market/baltic_index.php"},{"name":"美國經濟數據","url":"eco-data.html"},{"name":"貪婪指數","url":"https://www.macromicro.me/charts/50108/cnn-fear-and-greed","isExt":!0},{"name":"川普投顧","url":"https://truthsocial.com/@realDonaldTrump","isExt":!0},{"name":"比特幣","url":"https://tw.tradingview.com/symbols/BTCUSD/","isExt":!0},{"name":"SCFI 指數","url":"https://www.sse.net.cn/index/singleIndex?indexType=scfi","isExt":!0},{"name":"產業鏈查詢","url":"ai-chain.html"}]};function toggleStyleDropdown(e){if(e)e.stopPropagation();document.getElementById('style-dropdown').classList.toggle('show')}function setTheme(t){"maritime"===t?document.body.removeAttribute('data-theme'):document.body.setAttribute('data-theme',t);localStorage.setItem('user_theme',t);document.getElementById('style-dropdown').classList.remove('show')}function initTheme(){setTheme(localStorage.getItem('user_theme')||'maritime')}function refreshFrame(p,o,u,c){const n=document.createElement('iframe');n.setAttribute('sandbox','allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation');Object.assign(n.style,{position:'absolute',top:'0',left:'0',width:o.style.width,height:o.style.height,transform:o.style.transform,transformOrigin:'0 0',opacity:'0',transition:'opacity 0.5s ease',zIndex:'0'});n.src=u;p.appendChild(n);if(c.progress){c.progress.style.transition='none';c.progress.style.width='0%'}n.onload=()=>{n.style.opacity='1';n.style.zIndex='1';setTimeout(()=>{if(o.parentNode===p)p.removeChild(o);c.ifr=n},500)}}function createViewElement(u,iI=0,iS=1.0){const w=document.createElement('div');w.className='split-item';const c=document.createElement('div');c.className='split-controls';const pg=document.createElement('div');pg.className='refresh-progress';const ifr=document.createElement('iframe');ifr.setAttribute('sandbox','allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation');ifr.src=u;ifr.style.zIndex='1';const zI=document.createElement('span');zI.className='zoom-info';zI.innerText=Math.round(100*iS)+'%';const myC={ifr,interval:iI,timer:null,url:u,scale:iS,parent:w,progress:pg};refreshConfigs.push(myC);const uZ=(d)=>{myC.scale=Math.max(.3,Math.min(2.0,Math.round(10*(myC.scale+d))/10));myC.ifr.style.width=100/myC.scale+'%';myC.ifr.style.height=100/myC.scale+'%';myC.ifr.style.transform=`scale(${myC.scale})`;zI.innerText=Math.round(100*myC.scale)+'%'};if(1!==iS)uZ(0);const ivs=[0,3000,5000,10000,30000],lbs=['🕒','🕒 3s','🕒 5s','🕒 10s','🕒 30s'];let idx=ivs.indexOf(iI);if(-1===idx)idx=0;const sT=()=>{if(myC.timer)clearInterval(myC.timer);aB.innerHTML=lbs[idx];aB.style.background=myC.interval>0?'var(--accent)':'';if(myC.interval>0){pg.style.transition=`width ${myC.interval}ms linear`;setTimeout(()=>{pg.style.width='100%'},50);myC.timer=setInterval(()=>{refreshFrame(w,myC.ifr,u,myC);pg.style.transition='none';pg.style.width='0%';setTimeout(()=>{pg.style.transition=`width ${myC.interval}ms linear`;pg.style.width='100%'},50)},myC.interval)}else pg.style.width='0%'};const rB=createCtrlBtn('🔄',()=>{refreshFrame(w,myC.ifr,u,myC)});const aB=createCtrlBtn('🕒',null);aB.onclick=()=>{idx=(idx+1)%ivs.length;myC.interval=ivs[idx];sT()};const ziB=createCtrlBtn('➕',()=>uZ(.1));const zoB=createCtrlBtn('➖',()=>uZ(-.1));if(iI>0)sT();[rB,aB,ziB,zoB,zI].forEach(el=>c.appendChild(el));w.appendChild(c);w.appendChild(ifr);w.appendChild(pg);return w}function createCtrlBtn(t,o){const b=document.createElement('button');b.className='ctrl-btn';b.innerHTML=t;if(o)b.onclick=o;return b}function loadPage(b,u,i=0,s=1.0){if(document.getElementById('nav').classList.contains('show-chks')){if(b)b.classList.toggle('split-selected');return}container.classList.add('active','nav-hidden');updateToggleText();content.innerHTML='';clearAllTimers();content.classList.remove('split-grid');content.appendChild(createViewElement(u,i,s));document.querySelectorAll('.btn').forEach(btn=>btn.classList.remove('selected','split-selected'));if(b)b.classList.add('selected')}function toggleSplitMode(){const n=document.getElementById('nav');n.classList.toggle('show-chks');document.getElementById('apply-split').style.display=n.classList.contains('show-chks')?'inline-block':'none';document.querySelectorAll('.btn').forEach(b=>b.classList.remove('split-selected'))}function startSplit(urls=null){let s=[];if(urls)s=urls;else{document.querySelectorAll('.btn.split-selected').forEach(btn=>{s.push(JSON.parse(btn.closest('.btn-wrapper').getAttribute('data-raw')))})};if(s.length<2)return alert("請至少選擇 2 個網頁");clearAllTimers();content.innerHTML='';content.classList.add('split-grid');container.classList.add('active','nav-hidden');updateToggleText();const count=s.length,cols=count<=2?count:count<=4?2:3,rows=Math.ceil(count/cols);content.style.gridTemplateColumns=`repeat(${cols}, 1fr)`;content.style.gridTemplateRows=`repeat(${rows}, 1fr)`;s.forEach(u=>{const val=typeof u==='string'?u:u.url,iv=u.interval||0,sc=u.scale||1.0;content.appendChild(createViewElement(val,iv,sc))});if(!urls)toggleSplitMode()}function handleDragStart(e){if(!isManageMode)return e.preventDefault();dragSrcEl=this;e.dataTransfer.effectAllowed='move';this.classList.add('dragging')}function handleDragOver(e){if(e.preventDefault)e.preventDefault();return!1}function handleDragEnter(e){if(dragSrcEl!==this&&dragSrcEl.parentNode===this.parentNode)this.classList.add('drag-over')}function handleDragLeave(e){this.classList.remove('drag-over')}function handleDrop(e){if(e.stopPropagation)e.stopPropagation();if(dragSrcEl!==this&&dragSrcEl.parentNode===this.parentNode){const row=this.parentNode,ws=Array.from(row.children),sIdx=ws.indexOf(dragSrcEl),dIdx=ws.indexOf(this);if(sIdx<dIdx)row.insertBefore(dragSrcEl,this.nextSibling);else row.insertBefore(dragSrcEl,this);saveAllOrders()}return!1}function handleDragEnd(){this.classList.remove('dragging');document.querySelectorAll('.btn-wrapper').forEach(el=>el.classList.remove('drag-over'))}function saveAllOrders(){const allData={};["row-1","row-2","row-3"].forEach(rId=>{const ws=Array.from(document.querySelectorAll("#"+rId+" .btn-wrapper"));allData[rId]=ws.map(w=>JSON.parse(w.getAttribute('data-raw')))});localStorage.setItem('user_layout',JSON.stringify(allData))}function addDL(el){el.addEventListener('dragstart',handleDragStart);el.addEventListener('dragenter',handleDragEnter);el.addEventListener('dragover',handleDragOver);el.addEventListener('dragleave',handleDragLeave);el.addEventListener('drop',handleDrop);el.addEventListener('dragend',handleDragEnd);el.addEventListener('touchstart',e=>{if(!isManageMode)return;dragSrcEl=el;el.classList.add('dragging')},{passive:!0});el.addEventListener('touchmove',e=>{if(!isManageMode||!dragSrcEl)return;const t=e.touches[0],target=document.elementFromPoint(t.clientX,t.clientY),w=target?target.closest('.btn-wrapper'):null;if(w&&w!==dragSrcEl&&w.parentNode===dragSrcEl.parentNode){const row=w.parentNode;if(t.clientY>w.getBoundingClientRect().top+w.offsetHeight/2)row.insertBefore(dragSrcEl,w.nextSibling);else row.insertBefore(dragSrcEl,w)}},{passive:!0});el.addEventListener('touchend',()=>{if(dragSrcEl){dragSrcEl.classList.remove('dragging');saveAllOrders();dragSrcEl=null}})}function toggleManageMode(){isManageMode=!isManageMode;document.body.classList.toggle('manage-mode',isManageMode);document.getElementById('manage-btn').innerText=isManageMode?'✅ 完成':'管理';renderAllRows();renderPresets()}function renderAllRows(){const saved=JSON.parse(localStorage.getItem('user_layout')||JSON.stringify(defaultBtns)),custom=JSON.parse(localStorage.getItem('user_btns')||"[]");["row-1","row-2","row-3"].forEach(rId=>{const row=document.getElementById(rId);row.innerHTML='';let data=saved[rId]||[];if(rId==="row-3")custom.forEach(cb=>{if(!data.find(db=>db.name===cb.name))data.push(cb)});data.forEach(b=>{const w=document.createElement('div');w.className='btn-wrapper';w.setAttribute('data-name',b.name);w.setAttribute('data-raw',JSON.stringify(b));w.setAttribute('draggable',isManageMode);addDL(w);const btn=document.createElement('button');btn.className='btn'+(b.isExt?' ext':'');btn.innerText=b.name+(b.isExt?" ↗":"");btn.onclick=()=>{if(isManageMode)return;b.isExt?window.open(b.url,'_blank'):loadPage(btn,b.url)};const del=document.createElement('div');del.className='del-badge';del.innerText='×';del.onclick=(e)=>{e.stopPropagation();if(confirm(`刪除「${b.name}」？`)){let cur=JSON.parse(localStorage.getItem('user_btns')||"[]").filter(i=>i.name!==b.name);localStorage.setItem('user_btns',JSON.stringify(cur));let lay=JSON.parse(localStorage.getItem('user_layout')||"{}");if(lay[rId])lay[rId]=lay[rId].filter(i=>i.name!==b.name);localStorage.setItem('user_layout',JSON.stringify(lay));renderAllRows()}};w.appendChild(btn);if(b.custom)w.appendChild(del);row.appendChild(w)})});filterButtons()}function addBtn(){const n=prompt("按鈕名稱："),u=prompt("網址：","https://");if(n&&u){const iE=confirm("是否另開新視窗？"),btns=JSON.parse(localStorage.getItem('user_btns')||"[]");btns.push({name:n,url:u,isExt:iE,custom:!0});localStorage.setItem('user_btns',JSON.stringify(btns));renderAllRows()}}function renderPresets(){const row=document.getElementById('presets-row'),list=document.getElementById('presets-list'),ps=JSON.parse(localStorage.getItem('user_presets')||"[]");if(ps.length===0){row.style.display='none';return}row.style.display='grid';list.innerHTML='';ps.forEach((p,i)=>{const w=document.createElement('div');w.className='btn-wrapper';const btn=document.createElement('button');btn.className='btn';btn.style.background='#4834d4';btn.innerText=p.name;btn.onclick=()=>{if(isManageMode)return;p.isSplit?startSplit(p.views) : loadPage(null,p.views[0].url,p.views[0].interval,p.views[0].scale)};const del=document.createElement('div');del.className='del-badge';del.innerText='×';del.onclick=(e)=>{e.stopPropagation();if(confirm(`刪除配置「${p.name}」？`)){ps.splice(i,1);localStorage.setItem('user_presets',JSON.stringify(ps));renderPresets()}};w.appendChild(btn);w.appendChild(del);list.appendChild(w)})}function saveCurrentLayout(){if(!container.classList.contains('active'))return alert("請先開啟網頁");const n=prompt("配置名稱：","我的配置 "+new Date().toLocaleTimeString());if(!n)return;const p={name:n,isSplit:content.classList.contains('split-grid'),views:refreshConfigs.map(c=>({url:c.url,interval:c.interval,scale:c.scale}))},ps=JSON.parse(localStorage.getItem('user_presets')||"[]");ps.push(p);localStorage.setItem('user_presets',JSON.stringify(ps));renderPresets()}function clearAllTimers(){refreshConfigs.forEach(c=>{if(c.timer)clearInterval(c.timer)});refreshConfigs=[]}function goHome(){clearAllTimers();container.classList.remove('active','nav-hidden');updateToggleText();content.innerHTML=''}function updateToggleText(){document.getElementById('nav-toggle').innerText=container.classList.contains('nav-hidden')?'選單 🔽':'選單 🔼'}function toggleNav(){container.classList.toggle('nav-hidden');updateToggleText()}async function requestWakeLock(){try{if('wakeLock'in navigator)wakeLock=await navigator.wakeLock.request('screen')}catch(e){}}window.addEventListener('click',e=>{const d=document.getElementById('style-dropdown'),s=document.getElementById('style-btn');if(d&&d.classList.contains('show')&&e.target!==s)d.classList.remove('show')});document.addEventListener('click',()=>{if(!wakeLock)requestWakeLock()},{once:!0});function updateClock(){const n=new Date();document.getElementById('clock').innerText=n.getHours().toString().padStart(2,'0')+":"+n.getMinutes().toString().padStart(2,'0')+":"+n.getSeconds().toString().padStart(2,'0')}setInterval(updateClock,1000);updateClock();function filterButtons(){const t=document.getElementById('search-input').value.toLowerCase();document.querySelectorAll('.btn-wrapper').forEach(el=>{const n=el.getAttribute('data-name').toLowerCase();el.style.display=n.includes(t)?'':'none'})}const nT=document.getElementById('nav-toggle');let iD=!1,sX,sY,iX,iY;function iNP(){try{const p=JSON.parse(localStorage.getItem('nav_btn_pos'));if(p){nT.style.left=p.left;nT.style.top=p.top;nT.style.right='auto'}}catch(e){}}nT.onpointerdown=e=>{iD=!1;sX=e.clientX;sY=e.clientY;const r=nT.getBoundingClientRect();iX=r.left;iY=r.top;nT.setPointerCapture(e.pointerId);nT.style.transition='none'};nT.onpointermove=e=>{if(0!==e.buttons){const dx=e.clientX-sX,dy=e.clientY-sY;(Math.abs(dx)>5||Math.abs(dy)>5)&&(iD=!0,nT.style.left=iX+dx+'px',nT.style.top=iY+dy+'px',nT.style.right='auto')}};nT.onpointerup=e=>{nT.releasePointerCapture(e.pointerId);nT.style.transition='0.3s';iD?localStorage.setItem('nav_btn_pos',JSON.stringify({left:nT.style.left,top:nT.style.top})):toggleNav()};initTheme();renderAllRows();renderPresets();iNP();</script></body></html>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>祥老師投資戰情室 - 行動端排版修正版</title>
+    <style>
+        :root {
+            --primary: #006241; --accent: #e60012;  
+            --bg-nav: rgba(10, 25, 20, 0.85); 
+            --btn-bg: rgba(0, 98, 65, 0.4);
+            --text: #ffffff; --gold: #f1c40f; --glow: #00d2ad;
+            --bg-img: url('sea.png'); --btn-gradient: none;
+            --ani-speed: 0s; --bullish: #00FF00; --bearish: #FF3B30;
+        }
+        [data-theme="shiang"] {
+            --primary: #fff; --accent: #fff; --bg-nav: rgba(15, 15, 15, 0.9); 
+            --btn-bg: rgba(45, 45, 45, 0.8); --text: #fff; --gold: #fff; 
+            --glow: rgba(255, 255, 255, 0.3); --bg-img: url('hsiang.png'); 
+            --btn-gradient: linear-gradient(transparent, transparent);
+        }
+        [data-theme="ai"] {
+            --primary: #6c5ce7; --accent: #00d2ff; --bg-nav: rgba(10, 10, 35, 0.85); 
+            --btn-bg: rgba(40, 40, 80, 0.6); --text: #fff; --gold: #00d2ff; 
+            --glow: #a29bfe; --bg-img: url('tsmc.png'); 
+            --btn-gradient: linear-gradient(135deg, #6c5ce7, #00d2ff, #6c5ce7);
+            --ani-speed: 3s;
+        }
+
+        body, html { 
+            margin: 0; height: 100%; font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden; 
+            color: var(--text); background-color: #000;
+            background: var(--bg-img) no-repeat center center fixed; background-size: cover;
+            transition: background 0.8s ease; 
+        }
+        
+        #container { display: flex; flex-direction: column; height: 100vh; position: relative; }
+        .ticker-wrap { width: 100%; height: 40px; background: #000; border-bottom: 1px solid rgba(255,255,255,0.15); z-index: 35000; position: fixed; top: 0; left: 0; }
+
+        #nav { 
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 40px);
+            padding: 20px 20px 40px; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-nav); z-index: 25000; overflow-y: auto; box-sizing: border-box;
+            border-bottom: 5px solid var(--primary);
+        }
+        #container.nav-hidden #nav { transform: translateY(-110%); }
+
+        #nav-toggle {
+            position: fixed; right: 15px; top: 55px; z-index: 30000;
+            background: var(--primary); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 20px; border-radius: 4px; cursor: pointer;
+            font-size: 0.9rem; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            transition: 0.3s; letter-spacing: 2px; touch-action: none;
+        }
+        [data-theme="shiang"] #nav-toggle { background: #fff !important; color: #000 !important; border: 1px solid #000; }
+
+        #content { position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 40px); display: none; background: #000; z-index: 1; }
+        #container.active #content { display: block; }
+        #container.active #content.split-grid { display: grid; gap: 5px; padding: 5px; box-sizing: border-box; }
+
+        #clock { font-family: monospace; font-size: 1.4rem; color: #ffffff; font-weight: 900; text-shadow: 0 2px 10px rgba(0,0,0,1); display: block; min-width: 120px; text-align: center; }
+
+        .btn, #search-input { 
+            padding: 15px 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px;
+            background: var(--btn-bg); 
+            background-image: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%), var(--btn-gradient);
+            background-size: 100% 100%, 200% 200%;
+            color: #fff; font-weight: 700; font-size: 1.3rem; 
+            transition: 0.3s; display: flex; align-items: center; justify-content: center;
+            text-align: center; width: 100%; box-sizing: border-box; min-height: 85px;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.05); border-bottom: 4px solid rgba(0,0,0,0.4);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        .btn:hover, #search-input:focus { filter: brightness(1.2); transform: translateY(-3px); border-bottom-color: var(--accent); outline: none; }
+        .btn.selected { background: var(--primary) !important; box-shadow: 0 0 20px rgba(0,0,0,0.4); }
+        .btn.split-selected { background: var(--accent) !important; box-shadow: 0 0 20px var(--accent); transform: scale(0.98); }
+
+        .nav-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; margin: 0 auto 25px; }
+        .mini-row { display: flex; gap: 10px; width: 100%; max-width: 1200px; margin: 0 auto 25px; justify-content: space-between; align-items: stretch; }
+        .mini-row > * { flex: 1; min-width: 0; }
+
+        .mini-row .btn, #search-input, .style-select-wrapper, #clock-wrapper { 
+            min-height: 50px !important; height: 50px !important; 
+            font-size: 1.1rem; padding: 0 10px; display: flex; align-items: center; justify-content: center;
+        }
+        #search-input::placeholder { color: rgba(255,255,255,0.6); }
+
+        .style-select-wrapper { position: relative; display: flex; width: 100%; padding: 0 !important; }
+        #style-dropdown { 
+            position: absolute; top: 50px; left: 0; width: 100%; background: #1a1a2e; 
+            border: 1px solid #444; border-radius: 4px; display: none; z-index: 50000; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.9); 
+        }
+        #style-dropdown.show { display: block; }
+        .style-option { padding: 15px; cursor: pointer; font-weight: 700; border-bottom: 1px solid #333; color: #fff; text-align: center; }
+        .style-option:hover { background: var(--primary); }
+
+        #home-dashboard { 
+            position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 40px); 
+            z-index: 10; pointer-events: none; transition: 0.5s; 
+            display: none; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(25px);
+        }
+        #container.show-dashboard #home-dashboard { display: flex; pointer-events: auto; }
+        .dashboard-main { width: 100%; max-width: 1000px; height: 100%; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-bottom: 40px; }
+
+        #dashboard-grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
+        .widget-box { height: 110px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; }
+        .widget-box:hover { border-color: var(--accent); transform: scale(1.02); background: rgba(255,255,255,0.05); }
+        .widget-box iframe { filter: brightness(1.5) contrast(1.1); width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(1.05); }
+
+        #w-datetime { flex-direction: column; gap: 5px; cursor: default; }
+        #dash-date { font-size: 1.1rem; font-weight: 700; text-shadow: 0 2px 8px #000; color: #fff; }
+        #dash-time { font-size: 2.2rem; font-weight: 900; text-shadow: 0 2px 10px #000; font-family: monospace; color: #fff; }
+
+        .btn-wrapper { position: relative; width: 100%; }
+        .del-badge { position: absolute; top: -10px; right: -10px; background: var(--accent); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; cursor: pointer; border: 2px solid #fff; z-index: 100; }
+        body.manage-mode .del-badge { display: flex; }
+        @keyframes shake { 0% { transform: rotate(0deg) } 25% { transform: rotate(1deg) } 75% { transform: rotate(-1deg) } 100% { transform: rotate(0deg) } }
+        body.manage-mode .btn-wrapper:not(.dragging) .btn { animation: shake 0.3s infinite; pointer-events: none; }
+
+        @media (max-width: 768px) { 
+            #dashboard-grid-container { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; } 
+            #dash-time { font-size: 1.8rem; } 
+            .widget-box { height: 125px; } 
+            
+            /* 強制手機端功能列兩欄排列 */
+            .mini-row { 
+                display: grid !important; 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px; 
+                height: auto !important;
+            }
+            .mini-row > * { width: 100%; height: 50px !important; }
+            #clock-wrapper { grid-column: span 2; }
+            #search-input { grid-column: span 2; }
+            
+            .nav-row:not(.mini-row) { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div id="container" class="nav-hidden">
+        <div class="ticker-wrap">
+            <div class="tradingview-widget-container">
+                <script src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {"symbols":[{"proName":"DJI","title":"道瓊"},{"proName":"SPX500","title":"S&P 500"},{"proName":"NSXUSD","title":"Nasdaq 100"},{"proName":"FX_IDC:USDTWD","title":"美金/台幣"},{"proName":"NYSE:TSM","title":"台積ADR"},{"proName":"INDEX:BDI","title":"BDI"},{"proName":"VIX","title":"VIX"},{"proName":"BITSTAMP:BTCUSD","title":"比特幣"},{"proName":"TVC:UKOIL","title":"原油"},{"proName":"TVC:GOLD","title":"黃金"}],"showSymbolLogo":true,"colorTheme":"dark","isTransparent":true,"displayMode":"regular","locale":"zh_TW"}
+                </script>
+            </div>
+        </div>
+
+        <div id="home-dashboard">
+            <div class="dashboard-main">
+                <div id="dashboard-grid-container">
+                    <div class="widget-box" id="w-datetime">
+                        <div id="dash-date">----/--/-- ---</div>
+                        <div id="dash-time">00:00:00</div>
+                    </div>
+                    <div class="widget-box" id="w-tsm" onclick="loadDashboardPage('tsm')"></div>
+                    <div class="widget-box" id="w-dji" onclick="loadDashboardPage('dji')"></div>
+                    <div class="widget-box" id="w-spx" onclick="loadDashboardPage('spx')"></div>
+                    <div class="widget-box" id="w-ixic" onclick="loadDashboardPage('ixic')"></div>
+                    <div class="widget-box" id="w-vix" onclick="loadDashboardPage('vix')"></div>
+                    <div class="widget-box" id="w-btc" onclick="loadDashboardPage('btc')"></div>
+                    <div class="widget-box" id="w-oil" onclick="loadDashboardPage('oil')"></div>
+                    <div class="widget-box" id="w-gold" onclick="loadDashboardPage('gold')"></div>
+                    <div class="widget-box" id="w-twd" onclick="loadDashboardPage('twd')"></div>
+                </div>
+            </div>
+        </div>
+
+        <button id="nav-toggle">選單 🔽</button>
+        <div id="nav">
+            <div id="welcome-text"><h1 onclick="goHome()">祥老師戰情室</h1><p>監控即時行情，衝刺獲利</p></div>
+            <div class="nav-row mini-row">
+                <div id="clock-wrapper"><div id="clock"></div></div>
+                <button id="btn-dash" class="btn" style="border-left: 4px solid var(--gold);" onclick="showDashboard()">儀表板</button>
+                <button id="btn-split" class="btn" onclick="toggleSplitMode()">分割</button>
+                <button id="apply-split" class="btn" style="display:none; background:var(--accent);" onclick="startSplit()">開始分割</button>
+                <button id="btn-add" class="btn" onclick="addBtn()">新增</button>
+                <button id="btn-save" class="btn" onclick="saveCurrentLayout()">儲存</button>
+                <button id="manage-btn" class="btn" onclick="toggleManageMode()">管理</button>
+                <div class="style-select-wrapper">
+                    <button id="style-btn" class="btn" onclick="toggleStyleDropdown(event)">風格</button>
+                    <div id="style-dropdown"><div class="style-option" onclick="setTheme('shiang')">祥老師</div><div class="style-option" onclick="setTheme('maritime')">航海王</div><div class="style-option" onclick="setTheme('ai')">AI王</div></div>
+                </div>
+                <input type="text" id="search-input" placeholder="搜尋..." oninput="filterButtons()">
+            </div>
+            <div class="nav-row mini-row" id="presets-row" style="display:none; border-top:1px dashed #444; padding-top:10px;"><div id="presets-list" style="display:contents"></div></div>
+            <div class="row-label">台美股市監控</div><div class="nav-row draggable-row" id="row-1"></div>
+            <div class="row-label">航運、鐵礦石與能源</div><div class="nav-row draggable-row" id="row-2"></div>
+            <div class="row-label">綜合數據與自訂</div><div class="nav-row draggable-row" id="row-3"></div>
+        </div>
+        <div id="content"></div>
+    </div>
+
+    <script>
+        const globalContainer = document.getElementById('container'), globalContent = document.getElementById('content');
+        let refreshConfigs = [], wakeLock = null, isManageMode = false, dragSrcEl = null;
+
+        const defaultBtns = {
+            "row-1": [{name:"台股現貨", url:"https://www.cmoney.tw/forum/stock"},{name:"台指期夜盤", url:"https://www.cmoney.tw/forum/futures/TXF1?s=p"},{name:"美股現貨", url:"https://www.cmoney.tw/usfinance/ixic"},{name:"美股期貨", url:"https://www.cmoney.tw/usfinance/nq"}],
+            "row-2": [{name:"歐線主連", url:"https://quote.eastmoney.com/qihuo/ecm.html?jump_to_web=true"},{name:"歐線次主連", url:"https://quote.eastmoney.com/qihuo/ecs.html"},{name:"鐵礦石主連", url:"https://quote.eastmoney.com/qihuo/im.html?jump_to_web=true"},{name:"Braemar", url:"https://www.braemarscreen.com/"},{name:"布蘭特原油", url:"https://tw.tradingview.com/symbols/UKOIL/", isExt:true},{name:"荷姆茲海峽", url:"https://www.marinetraffic.com/en/ais/home/centerx:56.4/centery:26.1/zoom:9", isExt:true}],
+            "row-3": [{name:"BDI 指數", url:"https://www.stockq.org/market/baltic_index.php"},{name:"記憶體報價", url:"https://www.trendforce.com.tw/price/dram/dram_spot"},{name:"美國經濟數據", url:"eco-data.html"},{name:"貪婪指數", url:"https://www.macromicro.me/charts/50108/cnn-fear-and-greed", isExt:true},{name:"融資融卷", url:"https://tw.stock.yahoo.com/margin-balance", isExt:true},{name:"即時新聞", url:"https://news.cnyes.com/news/cat/headline", isExt:true},{name:"美股指標股", url:"https://tw.tradingview.com/markets/stocks-usa/market-movers-large-cap/", isExt:true},{name:"台灣指標股", url:"https://tw.tradingview.com/markets/stocks-taiwan/market-movers-large-cap/", isExt:true},{name:"台股燈號", url:"https://index.ndc.gov.tw/n/zh_tw", isExt:true},{name:"融資維持率", url:"https://www.macromicro.me/charts/53117/taiwan-taiex-maintenance-margin", isExt:true},{name:"川普投顧", url:"https://truthsocial.com/@realDonaldTrump", isExt:true},{name:"比特幣", url:"https://tw.tradingview.com/symbols/BTCUSD/", isExt:true},{name:"SCFI 指數", url:"https://www.sse.net.cn/index/singleIndex?indexType=scfi", isExt:true},{name:"產業鏈查詢", url:"ai-chain.html"}]
+        };
+
+        function filterButtons() {
+            const t = document.getElementById('search-input').value.toLowerCase();
+            document.querySelectorAll('.btn-wrapper').forEach(el => {
+                const name = el.getAttribute('data-name');
+                if (name) { el.style.display = name.toLowerCase().includes(t) ? '' : 'none'; }
+            });
+        }
+
+        function updateClock() { 
+            const n = new Date(); const timeStr = n.getHours().toString().padStart(2, '0') + ":" + n.getMinutes().toString().padStart(2, '0') + ":" + n.getSeconds().toString().padStart(2, '0');
+            const clockEl = document.getElementById('clock'), dashTime = document.getElementById('dash-time'), dashDate = document.getElementById('dash-date');
+            if (clockEl) clockEl.innerText = timeStr; if (dashTime) dashTime.innerText = timeStr;
+            if (dashDate) { const y = n.getFullYear(), mo = (n.getMonth() + 1).toString().padStart(2, '0'), d = n.getDate().toString().padStart(2, '0'), days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']; dashDate.innerText = `${y}/${mo}/${d} ${days[n.getDay()]}`; }
+        }
+        setInterval(updateClock, 1000);
+
+        function setTheme(t) { if (t === 'maritime') document.body.removeAttribute('data-theme'); else document.body.setAttribute('data-theme', t); localStorage.setItem('user_theme', t); document.getElementById('style-dropdown').classList.remove('show'); if (globalContainer.classList.contains('show-dashboard')) updateWidgets(); }
+        function initTheme() { setTheme(localStorage.getItem('user_theme') || 'maritime'); }
+
+        function showDashboard() { globalContainer.classList.remove('active'); globalContainer.classList.add('show-dashboard', 'nav-hidden'); updateToggleText(); updateWidgets(); }
+
+        function updateWidgets() {
+            const symbols = { 'w-tsm':'TSM', 'w-dji':'DJI', 'w-spx':'SPX500', 'w-ixic':'NSXUSD', 'w-vix':'VIX', 'w-btc':'BTCUSD', 'w-oil':'UKOIL', 'w-gold':'GOLD', 'w-twd':'USDTWD' };
+            for (const [id, sym] of Object.entries(symbols)) {
+                const el = document.getElementById(id); if (!el) continue; el.innerHTML = '';
+                const s = document.createElement('script'); s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js'; s.async = true;
+                s.innerHTML = JSON.stringify({ "symbol":sym, "width":"100%", "colorTheme":"dark", "isTransparent":true, "locale":"zh_TW" });
+                el.appendChild(s);
+            }
+        }
+
+        function loadPage(b, u) {
+            if (document.getElementById('nav').classList.contains('show-chks')) { if (b) b.classList.toggle('split-selected'); return; }
+            globalContainer.classList.remove('show-dashboard'); globalContainer.classList.add('active', 'nav-hidden'); updateToggleText();
+            globalContent.innerHTML = ''; globalContent.classList.remove('split-grid');
+            const ifr = document.createElement('iframe'); ifr.src = u; ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation'); ifr.style.width='100%'; ifr.style.height='100%'; ifr.style.border='none'; globalContent.appendChild(ifr);
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('selected', 'split-selected')); if (b) b.classList.add('selected');
+        }
+
+        function toggleSplitMode() { const n = document.getElementById('nav'); n.classList.toggle('show-chks'); document.getElementById('apply-split').style.display = n.classList.contains('show-chks') ? 'inline-block' : 'none'; document.querySelectorAll('.btn').forEach(b => b.classList.remove('split-selected')); }
+
+        function startSplit(urls = null) {
+            let s = []; if (urls) s = urls; else { document.querySelectorAll('.btn.split-selected').forEach(btn => { const raw = btn.closest('.btn-wrapper').getAttribute('data-raw'); if(raw) s.push(JSON.parse(raw)); }); }
+            if (s.length < 2) return alert("請選擇 2 個以上網頁");
+            globalContent.innerHTML = ''; globalContent.classList.add('split-grid'); globalContainer.classList.remove('show-dashboard'); globalContainer.classList.add('active', 'nav-hidden'); updateToggleText();
+            const count = s.length, cols = count <= 2 ? count : (count <= 4 ? 2 : 3), rows = Math.ceil(count / cols);
+            globalContent.style.gridTemplateColumns = `repeat(${cols}, 1fr)`; globalContent.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+            s.forEach(item => { const ifr = document.createElement('iframe'); ifr.src = item.url; ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation'); ifr.style.width='100%'; ifr.style.height='100%'; ifr.style.border='none'; globalContent.appendChild(ifr); });
+            if(!urls) toggleSplitMode();
+        }
+
+        function loadDashboardPage(type) {
+            const maps = { 'tsm': 'https://www.cmoney.tw/usfinance/ixic', 'dji': 'https://www.cmoney.tw/usfinance/ixic', 'spx': 'https://www.cmoney.tw/usfinance/ixic', 'ixic': 'https://www.cmoney.tw/usfinance/ixic', 'vix': 'https://www.macromicro.me/charts/50108/cnn-fear-and-greed', 'btc': 'https://tw.tradingview.com/symbols/BTCUSD/', 'oil': 'https://tw.tradingview.com/symbols/UKOIL/', 'gold': 'https://tw.tradingview.com/symbols/GOLD/', 'twd': 'eco-data.html' };
+            if(maps[type]) loadPage(null, maps[type]);
+        }
+
+        function saveCurrentLayout() { if (!globalContainer.classList.contains('active')) return alert("請先開啟網頁再儲存"); const n = prompt("配置名稱：", "我的配置 " + new Date().toLocaleTimeString()); if (!n) return; const p = { name: n, isSplit: globalContent.classList.contains('split-grid'), views: Array.from(globalContent.querySelectorAll('iframe')).map(ifr => ({ url: ifr.src })) }; const ps = JSON.parse(localStorage.getItem('user_presets') || "[]"); ps.push(p); localStorage.setItem('user_presets', JSON.stringify(ps)); renderPresets(); }
+        function renderPresets() { const row = document.getElementById('presets-row'), list = document.getElementById('presets-list'), ps = JSON.parse(localStorage.getItem('user_presets') || "[]"); if (ps.length === 0) { row.style.display = 'none'; return; } row.style.display = 'grid'; list.innerHTML = ''; ps.forEach((p, i) => { const w = document.createElement('div'); w.className = 'btn-wrapper'; const btn = document.createElement('button'); btn.className = 'btn'; btn.style.background = '#4834d4'; btn.innerText = p.name; btn.onclick = () => { if (isManageMode) return; if(p.isSplit) { startSplit(p.views); } else { loadPage(null, p.views[0].url); } }; const del = document.createElement('div'); del.className = 'del-badge'; del.innerText = '×'; del.onclick = (e) => { e.stopPropagation(); if (confirm(`刪除配置「${p.name}」？`)) { ps.splice(i, 1); localStorage.setItem('user_presets', JSON.stringify(ps)); renderPresets(); } }; w.appendChild(btn); w.appendChild(del); list.appendChild(w); }); }
+
+        function addBtn() { const n = prompt("名稱："), u = prompt("網址：", "https://"); if (n && u) { const iE = confirm("是否另開？"), btns = JSON.parse(localStorage.getItem('user_btns') || "[]"); btns.push({ name: n, url: u, isExt: iE, custom: true }); localStorage.setItem('user_btns', JSON.stringify(btns)); renderAllRows(); } }
+        function toggleManageMode() { isManageMode = !isManageMode; document.body.classList.toggle('manage-mode', isManageMode); document.getElementById('manage-btn').innerText = isManageMode ? '✅ 完成' : '管理'; renderAllRows(); renderPresets(); }
+
+        function saveAllOrders() { const allData = {}; ["row-1", "row-2", "row-3"].forEach(rId => { const ws = Array.from(document.querySelectorAll("#" + rId + " .btn-wrapper")); allData[rId] = ws.map(w => JSON.parse(w.getAttribute('data-raw'))); }); localStorage.setItem('user_layout', JSON.stringify(allData)); }
+        function addDL(el) {
+            el.addEventListener('dragstart', e => { if (!isManageMode) return; dragSrcEl = el; el.classList.add('dragging'); });
+            el.addEventListener('dragover', e => { if (e.preventDefault) e.preventDefault(); return false; });
+            el.addEventListener('drop', e => { if (e.stopPropagation) e.stopPropagation(); if (dragSrcEl !== el && dragSrcEl.parentNode === el.parentNode) { const row = el.parentNode; const ws = Array.from(row.children); if (ws.indexOf(dragSrcEl) < ws.indexOf(el)) row.insertBefore(dragSrcEl, el.nextSibling); else row.insertBefore(dragSrcEl, el); saveAllOrders(); } return false; });
+            el.addEventListener('dragend', () => { el.classList.remove('dragging'); });
+            el.addEventListener('touchstart', e => { if (!isManageMode) return; dragSrcEl = el; el.classList.add('dragging'); }, { passive: true });
+            el.addEventListener('touchmove', e => { if (!isManageMode || !dragSrcEl) return; const t = e.touches[0], target = document.elementFromPoint(t.clientX, t.clientY), w = target ? target.closest('.btn-wrapper') : null; if (w && w !== dragSrcEl && w.parentNode === dragSrcEl.parentNode) { const row = w.parentNode; if (t.clientY > w.getBoundingClientRect().top + w.offsetHeight / 2) row.insertBefore(dragSrcEl, w.nextSibling); else row.insertBefore(dragSrcEl, w); } }, { passive: true });
+            el.addEventListener('touchend', () => { if (dragSrcEl) { dragSrcEl.classList.remove('dragging'); saveAllOrders(); dragSrcEl = null; } });
+        }
+
+        function renderAllRows() {
+            const saved = JSON.parse(localStorage.getItem('user_layout') || JSON.stringify(defaultBtns)), custom = JSON.parse(localStorage.getItem('user_btns') || "[]");
+            ["row-1", "row-2", "row-3"].forEach(rId => {
+                const row = document.getElementById(rId); if(!row) return; row.innerHTML = '';
+                let data = saved[rId] || []; if (rId === "row-3") custom.forEach(cb => { if (!data.find(db => db.name === cb.name)) data.push(cb) });
+                data.forEach(b => {
+                    const w = document.createElement('div'); w.className = 'btn-wrapper'; w.setAttribute('data-name', b.name); w.setAttribute('data-raw', JSON.stringify(b)); w.setAttribute('draggable', isManageMode); addDL(w);
+                    const btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = b.name + (b.isExt ? " ↗" : "");
+                    btn.onclick = () => { if (isManageMode) return; b.isExt ? window.open(b.url, '_blank') : loadPage(btn, b.url); };
+                    const del = document.createElement('div'); del.className = 'del-badge'; del.innerText = '×';
+                    del.onclick = (e) => { e.stopPropagation(); if (confirm(`刪除「${b.name}」？`)) { let cur = JSON.parse(localStorage.getItem('user_btns') || "[]").filter(i => i.name !== b.name); localStorage.setItem('user_btns', JSON.stringify(cur)); let lay = JSON.parse(localStorage.getItem('user_layout') || "{}"); if (lay[rId]) lay[rId] = lay[rId].filter(i => i.name !== b.name); localStorage.setItem('user_layout', JSON.stringify(lay)); renderAllRows(); } };
+                    w.appendChild(btn); if (b.custom) w.appendChild(del); row.appendChild(w);
+                })
+            });
+        }
+
+        const nT = document.getElementById('nav-toggle'); let iD = false, sX, sY, iX, iY;
+        function iNP() { try { const p = JSON.parse(localStorage.getItem('nav_btn_pos')); if (p) { nT.style.left = p.left; nT.style.top = p.top; nT.style.right = 'auto'; } } catch (e) {} }
+        nT.onpointerdown = e => { iD = false; sX = e.clientX; sY = e.clientY; const r = nT.getBoundingClientRect(); iX = r.left; iY = r.top; nT.setPointerCapture(e.pointerId); nT.style.transition = 'none'; };
+        nT.onpointermove = e => { if (e.buttons !== 0) { const dx = e.clientX - sX, dy = e.clientY - sY; if (Math.abs(dx) > 5 || Math.abs(dy) > 5) { iD = true; nT.style.left = iX + dx + 'px'; nT.style.top = iY + dy + 'px'; nT.style.right = 'auto'; } } };
+        nT.onpointerup = e => { nT.releasePointerCapture(e.pointerId); nT.style.transition = '0.3s'; if (iD) localStorage.setItem('nav_btn_pos', JSON.stringify({ left: nT.style.left, top: nT.style.top })); else globalContainer.classList.toggle('nav-hidden'); updateToggleText(); };
+
+        function goHome() { 
+            clearAllTimers(); 
+            globalContainer.classList.remove('active', 'show-dashboard'); 
+            globalContainer.classList.add('nav-hidden'); 
+            updateToggleText(); 
+            globalContent.innerHTML = ''; 
+            globalContent.classList.remove('split-grid'); 
+        }
+        function updateToggleText() { document.getElementById('nav-toggle').innerText = globalContainer.classList.contains('nav-hidden') ? '選單 🔽' : '選單 🔼'; }
+        function clearAllTimers() { refreshConfigs = []; }
+        function toggleStyleDropdown(e) { if(e) e.stopPropagation(); document.getElementById('style-dropdown').classList.toggle('show'); }
+        window.addEventListener('click', e => { const d = document.getElementById('style-dropdown'), s = document.getElementById('style-btn'); if (d && d.classList.contains('show') && !s.contains(e.target)) d.classList.remove('show'); });
+
+        initTheme(); renderAllRows(); renderPresets(); iNP(); updateClock(); showDashboard();
+    </script>
+</body>
+</html>
