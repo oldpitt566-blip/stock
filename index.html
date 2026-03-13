@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>祥老師投資戰情室 - 行動端排版修正版</title>
+    <title>祥老師投資戰情室 - 核心功能全修復版</title>
     <style>
         :root {
             --primary: #006241; --accent: #e60012;  
@@ -35,7 +35,13 @@
         }
         
         #container { display: flex; flex-direction: column; height: 100vh; position: relative; }
-        .ticker-wrap { width: 100%; height: 40px; background: #000; border-bottom: 1px solid rgba(255,255,255,0.15); z-index: 35000; position: fixed; top: 0; left: 0; }
+        
+        .ticker-wrap { 
+            width: 100%; height: 40px; background: #000; border-bottom: 1px solid rgba(255,255,255,0.15); 
+            z-index: 35000; position: fixed; top: 0; left: 0; 
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        #container.hide-ticker .ticker-wrap { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 
         #nav { 
             display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -55,9 +61,10 @@
         }
         [data-theme="shiang"] #nav-toggle { background: #fff !important; color: #000 !important; border: 1px solid #000; }
 
-        #content { position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 40px); display: none; background: #000; z-index: 1; }
+        #content { position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 40px); display: none; background: #000; z-index: 1; transition: all 0.4s ease; }
         #container.active #content { display: block; }
         #container.active #content.split-grid { display: grid; gap: 5px; padding: 5px; box-sizing: border-box; }
+        #container.hide-ticker #content { top: 0; height: 100%; }
 
         #clock { font-family: monospace; font-size: 1.4rem; color: #ffffff; font-weight: 900; text-shadow: 0 2px 10px rgba(0,0,0,1); display: block; min-width: 120px; text-align: center; }
 
@@ -90,19 +97,21 @@
         #style-dropdown { 
             position: absolute; top: 50px; left: 0; width: 100%; background: #1a1a2e; 
             border: 1px solid #444; border-radius: 4px; display: none; z-index: 50000; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.9); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.9); overflow: hidden;
         }
-        #style-dropdown.show { display: block; }
+        #style-dropdown.show { display: block !important; }
         .style-option { padding: 15px; cursor: pointer; font-weight: 700; border-bottom: 1px solid #333; color: #fff; text-align: center; }
         .style-option:hover { background: var(--primary); }
 
+        /* 數據儀表板樣式 */
         #home-dashboard { 
             position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 40px); 
-            z-index: 10; pointer-events: none; transition: 0.5s; 
+            z-index: 10; pointer-events: none; transition: 0.4s ease; 
             display: none; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box;
             background: rgba(0,0,0,0.3); backdrop-filter: blur(25px);
         }
         #container.show-dashboard #home-dashboard { display: flex; pointer-events: auto; }
+        #container.hide-ticker #home-dashboard { top: 0; height: 100%; padding-top: 40px; }
         .dashboard-main { width: 100%; max-width: 1000px; height: 100%; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-bottom: 40px; }
 
         #dashboard-grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
@@ -114,6 +123,26 @@
         #dash-date { font-size: 1.1rem; font-weight: 700; text-shadow: 0 2px 8px #000; color: #fff; }
         #dash-time { font-size: 2.2rem; font-weight: 900; text-shadow: 0 2px 10px #000; font-family: monospace; color: #fff; }
 
+        /* 分割視窗控制列樣式 */
+        .split-item { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; border: 1px solid #333; }
+        .split-item iframe { background: #fff; border: none; position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+        .split-controls { 
+            position: absolute; top: 10px; left: 10px; z-index: 20000; display: flex; gap: 5px; 
+            background: rgba(0,0,0,0.7); padding: 5px; border-radius: 4px; border: 1px solid var(--primary); 
+        }
+        .ctrl-btn { 
+            background: var(--primary); color: #fff; border: 1px solid rgba(255,255,255,0.3); 
+            width: 40px; height: 35px; cursor: pointer; font-size: 18px; font-weight: 700; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        .zoom-info { 
+            background: rgba(0,0,0,0.7); color: #ffffff; height: 35px; padding: 0 8px; 
+            border-radius: 4px; font-size: 13px; font-weight: 700; display: flex; 
+            align-items: center; justify-content: center; text-shadow: 0 1px 2px #000; 
+        }
+
+        .row-label { text-align: left; max-width: 1200px; margin: 0 auto 12px; font-weight: 900; font-size: 1.2rem; padding-left: 15px; border-left: 6px solid var(--primary); text-transform: uppercase; }
+        
         .btn-wrapper { position: relative; width: 100%; }
         .del-badge { position: absolute; top: -10px; right: -10px; background: var(--accent); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; cursor: pointer; border: 2px solid #fff; z-index: 100; }
         body.manage-mode .del-badge { display: flex; }
@@ -124,18 +153,9 @@
             #dashboard-grid-container { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; } 
             #dash-time { font-size: 1.8rem; } 
             .widget-box { height: 125px; } 
-            
-            /* 強制手機端功能列兩欄排列 */
-            .mini-row { 
-                display: grid !important; 
-                grid-template-columns: repeat(2, 1fr) !important; 
-                gap: 10px; 
-                height: auto !important;
-            }
+            .mini-row { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 10px; height: auto !important; }
             .mini-row > * { width: 100%; height: 50px !important; }
-            #clock-wrapper { grid-column: span 2; }
-            #search-input { grid-column: span 2; }
-            
+            #clock-wrapper, #search-input { grid-column: span 2; }
             .nav-row:not(.mini-row) { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
@@ -161,11 +181,11 @@
                     <div class="widget-box" id="w-dji" onclick="loadDashboardPage('dji')"></div>
                     <div class="widget-box" id="w-spx" onclick="loadDashboardPage('spx')"></div>
                     <div class="widget-box" id="w-ixic" onclick="loadDashboardPage('ixic')"></div>
-                    <div class="widget-box" id="w-vix" onclick="loadDashboardPage('vix')"></div>
-                    <div class="widget-box" id="w-btc" onclick="loadDashboardPage('btc')"></div>
-                    <div class="widget-box" id="w-oil" onclick="loadDashboardPage('oil')"></div>
-                    <div class="widget-box" id="w-gold" onclick="loadDashboardPage('gold')"></div>
-                    <div class="widget-box" id="w-twd" onclick="loadDashboardPage('twd')"></div>
+                    <div class="widget-box" id="vix" onclick="loadDashboardPage('vix')"></div>
+                    <div class="widget-box" id="btc" onclick="loadDashboardPage('btc')"></div>
+                    <div class="widget-box" id="oil" onclick="loadDashboardPage('oil')"></div>
+                    <div class="widget-box" id="gold" onclick="loadDashboardPage('gold')"></div>
+                    <div class="widget-box" id="twd" onclick="loadDashboardPage('twd')"></div>
                 </div>
             </div>
         </div>
@@ -182,7 +202,7 @@
                 <button id="btn-save" class="btn" onclick="saveCurrentLayout()">儲存</button>
                 <button id="manage-btn" class="btn" onclick="toggleManageMode()">管理</button>
                 <div class="style-select-wrapper">
-                    <button id="style-btn" class="btn" onclick="toggleStyleDropdown(event)">風格</button>
+                    <button id="style-btn" class="btn">風格</button>
                     <div id="style-dropdown"><div class="style-option" onclick="setTheme('shiang')">祥老師</div><div class="style-option" onclick="setTheme('maritime')">航海王</div><div class="style-option" onclick="setTheme('ai')">AI王</div></div>
                 </div>
                 <input type="text" id="search-input" placeholder="搜尋..." oninput="filterButtons()">
@@ -197,7 +217,7 @@
 
     <script>
         const globalContainer = document.getElementById('container'), globalContent = document.getElementById('content');
-        let refreshConfigs = [], wakeLock = null, isManageMode = false, dragSrcEl = null;
+        let refreshConfigs = [], wakeLock = null, isManageMode = false, fmTimer = null;
 
         const defaultBtns = {
             "row-1": [{name:"台股現貨", url:"https://www.cmoney.tw/forum/stock"},{name:"台指期夜盤", url:"https://www.cmoney.tw/forum/futures/TXF1?s=p"},{name:"美股現貨", url:"https://www.cmoney.tw/usfinance/ixic"},{name:"美股期貨", url:"https://www.cmoney.tw/usfinance/nq"}],
@@ -205,12 +225,15 @@
             "row-3": [{name:"BDI 指數", url:"https://www.stockq.org/market/baltic_index.php"},{name:"記憶體報價", url:"https://www.trendforce.com.tw/price/dram/dram_spot"},{name:"美國經濟數據", url:"eco-data.html"},{name:"貪婪指數", url:"https://www.macromicro.me/charts/50108/cnn-fear-and-greed", isExt:true},{name:"融資融卷", url:"https://tw.stock.yahoo.com/margin-balance", isExt:true},{name:"即時新聞", url:"https://news.cnyes.com/news/cat/headline", isExt:true},{name:"美股指標股", url:"https://tw.tradingview.com/markets/stocks-usa/market-movers-large-cap/", isExt:true},{name:"台灣指標股", url:"https://tw.tradingview.com/markets/stocks-taiwan/market-movers-large-cap/", isExt:true},{name:"台股燈號", url:"https://index.ndc.gov.tw/n/zh_tw", isExt:true},{name:"融資維持率", url:"https://www.macromicro.me/charts/53117/taiwan-taiex-maintenance-margin", isExt:true},{name:"川普投顧", url:"https://truthsocial.com/@realDonaldTrump", isExt:true},{name:"比特幣", url:"https://tw.tradingview.com/symbols/BTCUSD/", isExt:true},{name:"SCFI 指數", url:"https://www.sse.net.cn/index/singleIndex?indexType=scfi", isExt:true},{name:"產業鏈查詢", url:"ai-chain.html"}]
         };
 
-        function filterButtons() {
-            const t = document.getElementById('search-input').value.toLowerCase();
-            document.querySelectorAll('.btn-wrapper').forEach(el => {
-                const name = el.getAttribute('data-name');
-                if (name) { el.style.display = name.toLowerCase().includes(t) ? '' : 'none'; }
-            });
+        async function requestWakeLock() { if ('wakeLock' in navigator) { try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {} } }
+        function releaseWakeLock() { if (wakeLock) { wakeLock.release(); wakeLock = null; } }
+
+        function filterButtons() { 
+            const t = document.getElementById('search-input').value.toLowerCase(); 
+            document.querySelectorAll('.btn-wrapper').forEach(el => { 
+                const name = el.getAttribute('data-name'); 
+                if (name) el.style.display = name.toLowerCase().includes(t) ? '' : 'none'; 
+            }); 
         }
 
         function updateClock() { 
@@ -224,10 +247,10 @@
         function setTheme(t) { if (t === 'maritime') document.body.removeAttribute('data-theme'); else document.body.setAttribute('data-theme', t); localStorage.setItem('user_theme', t); document.getElementById('style-dropdown').classList.remove('show'); if (globalContainer.classList.contains('show-dashboard')) updateWidgets(); }
         function initTheme() { setTheme(localStorage.getItem('user_theme') || 'maritime'); }
 
-        function showDashboard() { globalContainer.classList.remove('active'); globalContainer.classList.add('show-dashboard', 'nav-hidden'); updateToggleText(); updateWidgets(); }
+        function showDashboard() { globalContainer.classList.remove('active'); globalContainer.classList.add('show-dashboard', 'nav-hidden', 'hide-ticker'); updateToggleText(); updateWidgets(); requestWakeLock(); }
 
         function updateWidgets() {
-            const symbols = { 'w-tsm':'TSM', 'w-dji':'DJI', 'w-spx':'SPX500', 'w-ixic':'NSXUSD', 'w-vix':'VIX', 'w-btc':'BTCUSD', 'w-oil':'UKOIL', 'w-gold':'GOLD', 'w-twd':'USDTWD' };
+            const symbols = { 'w-tsm':'TSM', 'w-dji':'DJI', 'w-spx':'SPX500', 'w-ixic':'NSXUSD', 'vix':'VIX', 'btc':'BTCUSD', 'oil':'UKOIL', 'gold':'GOLD', 'twd':'USDTWD' };
             for (const [id, sym] of Object.entries(symbols)) {
                 const el = document.getElementById(id); if (!el) continue; el.innerHTML = '';
                 const s = document.createElement('script'); s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js'; s.async = true;
@@ -236,33 +259,55 @@
             }
         }
 
-        function loadPage(b, u) {
+        // 核心建立視窗函式：包含控制列
+        function createViewElement(u, iS=1.0) {
+            const w = document.createElement('div'); w.className = 'split-item';
+            const ctrl = document.createElement('div'); ctrl.className = 'split-controls';
+            const ifr = document.createElement('iframe'); 
+            ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation'); 
+            ifr.src = u; ifr.style.width='100%'; ifr.style.height='100%'; 
+            
+            const zI = document.createElement('span'); zI.className = 'zoom-info'; zI.innerText = Math.round(100*iS)+'%';
+            const myC = { ifr, scale: iS, url: u }; refreshConfigs.push(myC);
+            
+            const uZ = (d) => { 
+                myC.scale = Math.max(.3, Math.min(2.0, Math.round(10*(myC.scale+d))/10)); 
+                ifr.style.width = 100/myC.scale+'%'; ifr.style.height = 100/myC.scale+'%'; 
+                ifr.style.transform = `scale(${myC.scale})`; zI.innerText = Math.round(100*myC.scale)+'%'; 
+            };
+            if (iS !== 1.0) uZ(0);
+
+            const rB = createCtrlBtn('🔄', () => { ifr.src = u; });
+            const ziB = createCtrlBtn('➕', () => uZ(.1)); 
+            const zoB = createCtrlBtn('➖', () => uZ(-.1));
+            
+            [rB, ziB, zoB, zI].forEach(el => ctrl.appendChild(el));
+            w.appendChild(ctrl); w.appendChild(ifr); return w;
+        }
+        function createCtrlBtn(t, o) { const b = document.createElement('button'); b.className = 'ctrl-btn'; b.innerHTML = t; if (o) b.onclick = o; return b; }
+
+        function loadPage(b, u, iS=1.0) {
             if (document.getElementById('nav').classList.contains('show-chks')) { if (b) b.classList.toggle('split-selected'); return; }
-            globalContainer.classList.remove('show-dashboard'); globalContainer.classList.add('active', 'nav-hidden'); updateToggleText();
-            globalContent.innerHTML = ''; globalContent.classList.remove('split-grid');
-            const ifr = document.createElement('iframe'); ifr.src = u; ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation'); ifr.style.width='100%'; ifr.style.height='100%'; ifr.style.border='none'; globalContent.appendChild(ifr);
+            releaseWakeLock(); globalContainer.classList.remove('show-dashboard', 'hide-ticker'); globalContainer.classList.add('active', 'nav-hidden'); 
+            globalContent.innerHTML = ''; refreshConfigs = []; globalContent.classList.remove('split-grid');
+            globalContent.appendChild(createViewElement(u, iS));
             document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('selected', 'split-selected')); if (b) b.classList.add('selected');
         }
 
         function toggleSplitMode() { const n = document.getElementById('nav'); n.classList.toggle('show-chks'); document.getElementById('apply-split').style.display = n.classList.contains('show-chks') ? 'inline-block' : 'none'; document.querySelectorAll('.btn').forEach(b => b.classList.remove('split-selected')); }
-
         function startSplit(urls = null) {
             let s = []; if (urls) s = urls; else { document.querySelectorAll('.btn.split-selected').forEach(btn => { const raw = btn.closest('.btn-wrapper').getAttribute('data-raw'); if(raw) s.push(JSON.parse(raw)); }); }
             if (s.length < 2) return alert("請選擇 2 個以上網頁");
-            globalContent.innerHTML = ''; globalContent.classList.add('split-grid'); globalContainer.classList.remove('show-dashboard'); globalContainer.classList.add('active', 'nav-hidden'); updateToggleText();
+            releaseWakeLock(); globalContent.innerHTML = ''; refreshConfigs = []; globalContent.classList.add('split-grid'); globalContainer.classList.remove('show-dashboard', 'hide-ticker'); globalContainer.classList.add('active', 'nav-hidden'); updateToggleText();
             const count = s.length, cols = count <= 2 ? count : (count <= 4 ? 2 : 3), rows = Math.ceil(count / cols);
             globalContent.style.gridTemplateColumns = `repeat(${cols}, 1fr)`; globalContent.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-            s.forEach(item => { const ifr = document.createElement('iframe'); ifr.src = item.url; ifr.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation'); ifr.style.width='100%'; ifr.style.height='100%'; ifr.style.border='none'; globalContent.appendChild(ifr); });
+            s.forEach(item => globalContent.appendChild(createViewElement(item.url, item.scale || 1.0)));
             if(!urls) toggleSplitMode();
         }
 
-        function loadDashboardPage(type) {
-            const maps = { 'tsm': 'https://www.cmoney.tw/usfinance/ixic', 'dji': 'https://www.cmoney.tw/usfinance/ixic', 'spx': 'https://www.cmoney.tw/usfinance/ixic', 'ixic': 'https://www.cmoney.tw/usfinance/ixic', 'vix': 'https://www.macromicro.me/charts/50108/cnn-fear-and-greed', 'btc': 'https://tw.tradingview.com/symbols/BTCUSD/', 'oil': 'https://tw.tradingview.com/symbols/UKOIL/', 'gold': 'https://tw.tradingview.com/symbols/GOLD/', 'twd': 'eco-data.html' };
-            if(maps[type]) loadPage(null, maps[type]);
-        }
-
-        function saveCurrentLayout() { if (!globalContainer.classList.contains('active')) return alert("請先開啟網頁再儲存"); const n = prompt("配置名稱：", "我的配置 " + new Date().toLocaleTimeString()); if (!n) return; const p = { name: n, isSplit: globalContent.classList.contains('split-grid'), views: Array.from(globalContent.querySelectorAll('iframe')).map(ifr => ({ url: ifr.src })) }; const ps = JSON.parse(localStorage.getItem('user_presets') || "[]"); ps.push(p); localStorage.setItem('user_presets', JSON.stringify(ps)); renderPresets(); }
-        function renderPresets() { const row = document.getElementById('presets-row'), list = document.getElementById('presets-list'), ps = JSON.parse(localStorage.getItem('user_presets') || "[]"); if (ps.length === 0) { row.style.display = 'none'; return; } row.style.display = 'grid'; list.innerHTML = ''; ps.forEach((p, i) => { const w = document.createElement('div'); w.className = 'btn-wrapper'; const btn = document.createElement('button'); btn.className = 'btn'; btn.style.background = '#4834d4'; btn.innerText = p.name; btn.onclick = () => { if (isManageMode) return; if(p.isSplit) { startSplit(p.views); } else { loadPage(null, p.views[0].url); } }; const del = document.createElement('div'); del.className = 'del-badge'; del.innerText = '×'; del.onclick = (e) => { e.stopPropagation(); if (confirm(`刪除配置「${p.name}」？`)) { ps.splice(i, 1); localStorage.setItem('user_presets', JSON.stringify(ps)); renderPresets(); } }; w.appendChild(btn); w.appendChild(del); list.appendChild(w); }); }
+        function loadDashboardPage(type) { const maps = { 'tsm': 'https://www.cmoney.tw/usfinance/ixic', 'dji': 'https://www.cmoney.tw/usfinance/ixic', 'spx': 'https://www.cmoney.tw/usfinance/ixic', 'ixic': 'https://www.cmoney.tw/usfinance/ixic', 'vix': 'https://www.macromicro.me/charts/50108/cnn-fear-and-greed', 'btc': 'https://tw.tradingview.com/symbols/BTCUSD/', 'oil': 'https://tw.tradingview.com/symbols/UKOIL/', 'gold': 'https://tw.tradingview.com/symbols/GOLD/', 'twd': 'eco-data.html' }; if(maps[type]) loadPage(null, maps[type]); }
+        function saveCurrentLayout() { if (!globalContainer.classList.contains('active')) return alert("請先開啟網頁再儲存"); const n = prompt("配置名稱：", "我的配置 " + new Date().toLocaleTimeString()); if (!n) return; const p = { name: n, isSplit: globalContent.classList.contains('split-grid'), views: refreshConfigs.map(c => ({ url: c.url, scale: c.scale })) }; const ps = JSON.parse(localStorage.getItem('user_presets') || "[]"); ps.push(p); localStorage.setItem('user_presets', JSON.stringify(ps)); renderPresets(); }
+        function renderPresets() { const row = document.getElementById('presets-row'), list = document.getElementById('presets-list'), ps = JSON.parse(localStorage.getItem('user_presets') || "[]"); if (ps.length === 0) { row.style.display = 'none'; return; } row.style.display = 'grid'; list.innerHTML = ''; ps.forEach((p, i) => { const w = document.createElement('div'); w.className = 'btn-wrapper'; const btn = document.createElement('button'); btn.className = 'btn'; btn.style.background = '#4834d4'; btn.innerText = p.name; btn.onclick = () => { if (isManageMode) return; if(p.isSplit) { startSplit(p.views); } else { loadPage(null, p.views[0].url, p.views[0].scale); } }; const del = document.createElement('div'); del.className = 'del-badge'; del.innerText = '×'; del.onclick = (e) => { e.stopPropagation(); if (confirm(`刪除配置「${p.name}」？`)) { ps.splice(i, 1); localStorage.setItem('user_presets', JSON.stringify(ps)); renderPresets(); } }; w.appendChild(btn); w.appendChild(del); list.appendChild(w); }); }
 
         function addBtn() { const n = prompt("名稱："), u = prompt("網址：", "https://"); if (n && u) { const iE = confirm("是否另開？"), btns = JSON.parse(localStorage.getItem('user_btns') || "[]"); btns.push({ name: n, url: u, isExt: iE, custom: true }); localStorage.setItem('user_btns', JSON.stringify(btns)); renderAllRows(); } }
         function toggleManageMode() { isManageMode = !isManageMode; document.body.classList.toggle('manage-mode', isManageMode); document.getElementById('manage-btn').innerText = isManageMode ? '✅ 完成' : '管理'; renderAllRows(); renderPresets(); }
@@ -300,18 +345,13 @@
         nT.onpointermove = e => { if (e.buttons !== 0) { const dx = e.clientX - sX, dy = e.clientY - sY; if (Math.abs(dx) > 5 || Math.abs(dy) > 5) { iD = true; nT.style.left = iX + dx + 'px'; nT.style.top = iY + dy + 'px'; nT.style.right = 'auto'; } } };
         nT.onpointerup = e => { nT.releasePointerCapture(e.pointerId); nT.style.transition = '0.3s'; if (iD) localStorage.setItem('nav_btn_pos', JSON.stringify({ left: nT.style.left, top: nT.style.top })); else globalContainer.classList.toggle('nav-hidden'); updateToggleText(); };
 
-        function goHome() { 
-            clearAllTimers(); 
-            globalContainer.classList.remove('active', 'show-dashboard'); 
-            globalContainer.classList.add('nav-hidden'); 
-            updateToggleText(); 
-            globalContent.innerHTML = ''; 
-            globalContent.classList.remove('split-grid'); 
-        }
+        function goHome() { releaseWakeLock(); globalContainer.classList.remove('active', 'show-dashboard', 'hide-ticker'); globalContainer.classList.add('nav-hidden'); updateToggleText(); globalContent.innerHTML = ''; globalContent.classList.remove('split-grid'); }
         function updateToggleText() { document.getElementById('nav-toggle').innerText = globalContainer.classList.contains('nav-hidden') ? '選單 🔽' : '選單 🔼'; }
-        function clearAllTimers() { refreshConfigs = []; }
-        function toggleStyleDropdown(e) { if(e) e.stopPropagation(); document.getElementById('style-dropdown').classList.toggle('show'); }
-        window.addEventListener('click', e => { const d = document.getElementById('style-dropdown'), s = document.getElementById('style-btn'); if (d && d.classList.contains('show') && !s.contains(e.target)) d.classList.remove('show'); });
+        
+        document.getElementById('style-btn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('style-dropdown').classList.toggle('show'); });
+        window.addEventListener('click', e => { const d = document.getElementById('style-dropdown'), w = document.querySelector('.style-select-wrapper'); if (d && d.classList.contains('show') && !w.contains(e.target)) d.classList.remove('show'); });
+        document.addEventListener('click', () => { if (globalContainer.classList.contains('show-dashboard') && !wakeLock) requestWakeLock(); }, { once: false });
+        document.addEventListener('visibilitychange', () => { if (wakeLock !== null && document.visibilityState === 'visible' && globalContainer.classList.contains('show-dashboard')) requestWakeLock(); });
 
         initTheme(); renderAllRows(); renderPresets(); iNP(); updateClock(); showDashboard();
     </script>
