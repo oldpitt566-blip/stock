@@ -125,8 +125,7 @@
         .dashboard-main { width: 100%; max-width: 800px; height: 100%; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; padding-right: 5px; }
 
         #dashboard-grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%; }
-        .widget-box { height: 80px; min-height: 80px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; }
-        .widget-box:hover { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        .widget-box { height: 80px; min-height: 80px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; cursor: default; overflow: hidden; position: relative; pointer-events: none; }
         .widget-box iframe { 
             filter: brightness(1.5) contrast(1.1); 
             width: 140% !important; height: 180% !important; 
